@@ -1,0 +1,71 @@
+backende nodejs 
+olacaklar normal landıng page olacak menu vs olacak 
+kasiyer ve admin girişi olacak 
+kasıyer masaları gorecek bunlara siperiş ekle cıkar odeme al vs yapacak 
+admin menu ekle cıkar guncelle olacak 
+kasıyer odeme olduugnda fişi nodejs sayesinde cıktı alır 
+
+login register icin githupdaki o siteyi 
+admin dashboard icin youtube var 
+kasiyer icin biz tasarlayacagız 
+herseyı ile landing page dahil tamamlanmıs bir proje olacak 
+
+
+
+                2 aralık 
+- toast ekle ortala ve stil ekle                                    tamam
+- app yonlendirme                                                   tamam
+- mongoose yemek tablosu                                            tamam
+- dashboard layout ekle sidebar ve page                             tamam
+- admin icin kullanıcı onaylama silme vs ekle 
+- admin yemek ekleme duzenleme
+- navbar duzenleme tasrım olarak 
+
+
+
+ad ,ucret,acıklama, resimleri 2 tane 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    1 aralık 
+- giris sayfası biraz tasrlandı                                     tamam
+- user logi n auth işlemleri yapıldı                                tamam
+- mongoose baglantısı yapıld                                        tamam
+- redux kuruldu                                                     tamam
+- zod yapıldı                                                       tamam
