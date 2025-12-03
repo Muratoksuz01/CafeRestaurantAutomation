@@ -1,13 +1,10 @@
-import { RootState } from "@/store";
 import DashboardLayout from "../DashboardLayout";
 import AdminOverview from "./AdminOverview";
 import AdminUsers from "./AdminUsers";
-import { useSelector } from "react-redux";
 import AdminFoods from "./AdminFoods";
+import AdminCategory from "./AdminCategory";
 
 function AdminDashboard() {
-    const { user } = useSelector((state: RootState) => state.auth);
-
     const renderContent = (activeTab: string) => {
         switch (activeTab) {
             case "overview":
@@ -16,11 +13,12 @@ function AdminDashboard() {
                 return <AdminUsers />;
             case "foods":
                 return <AdminFoods />;
+            case "category":
+                return <AdminCategory />;
             default:
                 return <AdminOverview />;
         }
     };
-
     return (
         <DashboardLayout>
             {({ activeTab }: any) => renderContent(activeTab)}

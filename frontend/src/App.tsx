@@ -21,7 +21,7 @@ import AdminDashboard from "./pages/Dashboard/Admin/AdminDashboard";
 
 
 function App() {
-  // const { user } = useSelector((state: RootState) => state.auth);
+  //  const { user } = useSelector((state: RootState) => state.auth);
   const dispatch = useDispatch<AppDispatch>();
   
 /*   const [user, setUser] = useState<any>(null)
@@ -47,7 +47,7 @@ function App() {
  */
    useEffect(() => {
     dispatch(getUser());
-  }, []);
+  }, [dispatch]);
   return (
     <BrowserRouter>
       <Routes>

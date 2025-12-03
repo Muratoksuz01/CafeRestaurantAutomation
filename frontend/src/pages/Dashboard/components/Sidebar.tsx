@@ -9,6 +9,7 @@ const adminItems = [
   { id: "overview", label: "Overview", icon: LuChrome },
   { id: "users", label: "Users", icon: LuUsers },
   { id: "foods", label: "Foods", icon: LuUsers },
+  { id: "category", label: "Kategoriler", icon: LuUsers },
 ];
 const userItems=[
   { id: "overview", label: "Overview", icon: LuChrome },

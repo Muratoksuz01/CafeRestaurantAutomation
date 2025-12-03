@@ -11,8 +11,64 @@ kasiyer icin biz tasarlayacagız
 herseyı ile landing page dahil tamamlanmıs bir proje olacak 
 
 
+                    4 aralık 
+- categor yemege eklendi ama edit e eklenmdi ve gosterilmedi ekle
+- yemegi category gore filtrele 
+- yemek search ekle
+- categot silindiginde varsa altında yemek sorulacak 
 
-                2 aralık 
+
+app yonlendirme 
+-landing navabrda oturum varsa navbarda degişiklik olmalı 
+kasiyer girişi icin basit giriş meslea 2025+ random sayı girsin dogru ise girsin 
+
+
+- yemeklere kategory 
+- sonrasında back de index de bazı test kaldı onları sil 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                    1 aralık                                        mukemmel
+- giris sayfası biraz tasrlandı                                     tamam
+- user logi n auth işlemleri yapıldı                                tamam
+- mongoose baglantısı yapıld                                        tamam
+- redux kuruldu                                                     tamam
+- zod yapıldı                                                       tamam
+                2 aralık                                            4/7 tamamlanmıs
 - toast ekle ortala ve stil ekle                                    tamam
 - app yonlendirme                                                   tamam
 - mongoose yemek tablosu                                            tamam
@@ -20,52 +76,10 @@ herseyı ile landing page dahil tamamlanmıs bir proje olacak
 - admin icin kullanıcı onaylama silme vs ekle 
 - admin yemek ekleme duzenleme
 - navbar duzenleme tasrım olarak 
-
-
-
-ad ,ucret,acıklama, resimleri 2 tane 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                    1 aralık 
-- giris sayfası biraz tasrlandı                                     tamam
-- user logi n auth işlemleri yapıldı                                tamam
-- mongoose baglantısı yapıld                                        tamam
-- redux kuruldu                                                     tamam
-- zod yapıldı                                                       tamam
+                3 aralık                                                        4/6 tamamlanmıs
+- admin icin kullanıcı onaylama silme vs ekle  x yada tık icnou                                 tamam
+- kategori eklendi edit delete create                                                           tamam
+- admin yemek ekleme duzenlemecard formunda                                                     tamam
+- yemegı kategirye gore ekle                                                                    tamam
+- navbar duzenleme tasrım olarak 
+- admin owerlow icin basit istatistikler 

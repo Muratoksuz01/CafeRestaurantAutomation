@@ -1,67 +1,121 @@
 import { useEffect, useState } from "react";
 import { API_PATHS } from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
-import { Pencil, Trash } from "lucide-react";
-import { User } from "@/models/User";
+import { Trash, Check, X } from "lucide-react";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, } from "@/components/ui/table"
+import { Accordion, AccordionItem, AccordionContent, AccordionTrigger, } from "@/components/ui/accordion";
+import { useGetUsers } from "@/hooks/useGetUsers";
 
-function AdminUsers() {
-const [users, setUsers] = useState<User[]>([]);
-
+export default function AdminUsers() {
+  const { users, getUsers } = useGetUsers()
   useEffect(() => {
     getUsers();
   }, []);
+  const nullUsers = users.filter((u) => u.isActive === null);
+  const falseUsers = users.filter((u) => u.isActive === false);
 
-  const getUsers = async () => {
-    try {
-      const res = await axiosInstance.get(API_PATHS.getUsers);
 
-      if (res.data?.success === true) {
-        setUsers(res.data.data);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+  const Approact = async (id: string) => {
+    axiosInstance.put(API_PATHS.giveApproach(id))
+    getUsers()
+  }
+  const RejectUser = async (id: string) => {
+    await axiosInstance.put(API_PATHS.giveReject(id));
+    getUsers();
+  };
+  const DeleteUser = async (id: string) => {
+    await axiosInstance.delete(API_PATHS.deleteUser(id));
+    getUsers();
   };
 
   return (
-    <div className="p-6">
-      <h2 className="text-xl font-semibold mb-4">Aktif Olmayan Kullanıcılar</h2>
+    <div className="p-6 space-y-6">
+      <h2 className="text-xl font-semibold mb-4">Kullanıcı Yönetimi</h2>
 
-      <table className="w-full border border-gray-300 rounded-lg">
-        <thead className="bg-gray-100">
-          <tr>
-            <th className="p-3 border">Actions</th>
-            <th className="p-3 border">First Name</th>
-            <th className="p-3 border">Last Name</th>
-            <th className="p-3 border">Email</th>
-            <th className="p-3 border">Phone</th>
-            <th className="p-3 border">Role</th>
-          </tr>
-        </thead>
+      <Accordion type="single" collapsible className="w-full">
+        <AccordionItem value="null-users">
+          <AccordionTrigger>Onay Bekleyen Kullanıcılar (isActive = null)</AccordionTrigger>
+          <AccordionContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Actions</TableHead>
+                  <TableHead>First</TableHead>
+                  <TableHead>Last</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Role</TableHead>
+                </TableRow>
+              </TableHeader>
 
-        <tbody>
-          {users.map((user) => (
-            <tr key={user._id} className="text-center">
-              <td className="p-3 border flex justify-center gap-3">
-                <button className="text-blue-600 hover:text-blue-800">
-                  <Pencil size={18} />
-                </button>
-                <button className="text-red-600 hover:text-red-800">
-                  <Trash size={18} />
-                </button>
-              </td>
 
-              <td className="p-3 border">{user.firstName}</td>
-              <td className="p-3 border">{user.lastName}</td>
-              <td className="p-3 border">{user.email}</td>
-              <td className="p-3 border">{user.phoneNumber}</td>
-              <td className="p-3 border">{user.role}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              <TableBody>
+                {nullUsers.map((u) => (
+                  <TableRow key={u._id}>
+                    <TableCell className="flex justify-center gap-3">
+                      <button onClick={() => { Approact(String(u._id)) }}>
+                        <Check size={18} className="text-green-600" />
+                      </button>
+                      <button onClick={() => RejectUser(String(u._id))}>
+                        <X size={18} className="text-red-600" />
+                      </button>
+                    </TableCell>
+
+
+                    <TableCell>{u.firstName}</TableCell>
+                    <TableCell>{u.lastName}</TableCell>
+                    <TableCell>{u.email}</TableCell>
+                    <TableCell>{u.phoneNumber}</TableCell>
+                    <TableCell>{u.role}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="false-users">
+          <AccordionTrigger>Aktif Olmayan Kullanıcılar (isActive = false)</AccordionTrigger>
+          <AccordionContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Actions</TableHead>
+                  <TableHead>First</TableHead>
+                  <TableHead>Last</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Role</TableHead>
+                </TableRow>
+              </TableHeader>
+
+
+              <TableBody>
+                {falseUsers.map((u) => (
+                  <TableRow key={u._id}>
+                    <TableCell className="flex justify-center gap-3">
+                      <button onClick={() => Approact(String(u._id))}>
+                        <Check size={18} className="text-green-600" />
+                      </button>
+
+                      <button onClick={() => DeleteUser(String(u._id))}>
+                        <Trash size={18} className="text-red-600" />
+                      </button> 
+                    </TableCell>
+
+
+                    <TableCell>{u.firstName}</TableCell>
+                    <TableCell>{u.lastName}</TableCell>
+                    <TableCell>{u.email}</TableCell>
+                    <TableCell>{u.phoneNumber}</TableCell>
+                    <TableCell>{u.role}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
     </div>
   );
 }
-
-export default AdminUsers;
