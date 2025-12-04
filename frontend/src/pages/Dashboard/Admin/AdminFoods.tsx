@@ -7,20 +7,27 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/co
 import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
 import CreateFoodForm from "./CreateFoodForm";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select"
+
 import EditFoodForm from "./EditFoodForm";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
+import { useGetCategory } from "@/hooks/useGetCategory";
 
 export default function AdminFoods() {
-  const { getFoods, foods, setFoods } = useGetFoods();
   const [showEdit, setShowEdit] = useState(false);
   const [selectedFood, setSelectedFood] = useState<any>(null);
   const [showDelete, setShowDelete] = useState(false);
   const [showCreate, setShowCreate] = useState(false)
+  const [filterCategory, setFilterCategory] = useState("all");
+  const [search, setSearch] = useState("");
+  const { getFoods, foods, setFoods } = useGetFoods();
+  const { categories, getCategories } = useGetCategory();
   useEffect(() => {
     getFoods();
+    getCategories()
   }, []);
 
   const handleDelete = async () => {
@@ -38,9 +45,52 @@ export default function AdminFoods() {
       setSelectedFood(null);
     }
   };
+  const onUpdate = (updatedFood: any) => {
+    /*  setFoods(prev =>
+       prev.map(f => f._id === updatedFood._id ? updatedFood : f)
+     ); */
+    getFoods()
+  };
+const filteredFoods = foods.filter(f => {
+  const matchCategory = filterCategory === "all" || f.categoryId === filterCategory;
+  const matchSearch =
+    f.name.toLowerCase().includes(search) ||
+    f.description.toLowerCase().includes(search) ||
+    f.price.toString().includes(search);
 
+  return matchCategory && matchSearch;
+});
   return (
     <div className="p-6 space-y-6">
+      <div className="flex items-center gap-4 mt-4">
+
+        {/* Kategori Filter */}
+        <div className="w-60">
+          <Select
+            onValueChange={(val) => setFilterCategory(val)}
+            defaultValue="all"
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Kategori seç" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all" >Tümü</SelectItem>
+              {categories.map(c => (
+                <SelectItem key={c._id} value={c._id}>{c.name}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* Search */}
+        <input
+          type="text"
+          placeholder="Ara..."
+          className="border p-2 w-60 rounded"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
       {/* Create */}
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Yemekler</h2>
@@ -50,12 +100,12 @@ export default function AdminFoods() {
           Yemek Ekle
         </Button>
 
-      
+
       </div>
 
       {/* Food List */}
       <div className="grid grid-cols-3 gap-6">
-        {foods.map((food) => {
+        {filteredFoods.map((food) => {
           const hasTwoImages = food.imgs.length > 1;
           return (
             <div
@@ -82,7 +132,8 @@ export default function AdminFoods() {
               </div>
 
               <h3 className="font-semibold text-xl mt-3">{food.name}</h3>
-              <p className="text-gray-600">{food.description}</p>
+              <p className="text-gray-600 truncate">{food.description}</p>
+              <p className="text-red-600">{categories.find(i => i._id === food.categoryId)?.name || "Kategori Yok"}</p>
               <p className="font-semibold mt-2">{food.price}₺</p>
 
               <div className="flex gap-3 mt-4">
@@ -118,19 +169,19 @@ export default function AdminFoods() {
           <DialogHeader>
             <DialogTitle>Yemeği Düzenle</DialogTitle>
           </DialogHeader>
-          {selectedFood && <EditFoodForm food={selectedFood} onClose={() => setShowEdit(false)} />}
+          {selectedFood && <EditFoodForm food={selectedFood} onClose={() => setShowEdit(false)} onUpdate={onUpdate} />}
         </DialogContent>
       </Dialog>
-      
+
       {/* Create Dialog */}
-        <Dialog open={showCreate} onOpenChange={setShowCreate}>
-          <DialogContent className="sm:max-w-[500px]">
-            <DialogHeader>
-              <DialogTitle>Yeni Yemek Ekle</DialogTitle>
-            </DialogHeader>
-            <CreateFoodForm />
-          </DialogContent>
-        </Dialog>
+      <Dialog open={showCreate} onOpenChange={setShowCreate}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Yeni Yemek Ekle</DialogTitle>
+          </DialogHeader>
+          <CreateFoodForm />
+        </DialogContent>
+      </Dialog>
 
       {/* Delete AlertDialog */}
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>

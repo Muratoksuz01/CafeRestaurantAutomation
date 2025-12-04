@@ -10,14 +10,14 @@ admin dashboard icin youtube var
 kasiyer icin biz tasarlayacagız 
 herseyı ile landing page dahil tamamlanmıs bir proje olacak 
 
+                    5 aralık cuma
+- masa tablosu ekle 
+- masa controller ekle
+- sipariş tablosu ekle buraya tamamlanan siaprşleri koyalım 
+- gecici tablo olusturalım  burada masaya eklendi ama odenmemiş olanlar icin 
 
-                    4 aralık 
-- categor yemege eklendi ama edit e eklenmdi ve gosterilmedi ekle
-- yemegi category gore filtrele 
-- yemek search ekle
-- categot silindiginde varsa altında yemek sorulacak 
-
-
+loginde loading icin bir componet ayarla 
+auth işlemleri 
 app yonlendirme 
 -landing navabrda oturum varsa navbarda degişiklik olmalı 
 kasiyer girişi icin basit giriş meslea 2025+ random sayı girsin dogru ise girsin 
@@ -83,3 +83,10 @@ kasiyer girişi icin basit giriş meslea 2025+ random sayı girsin dogru ise gir
 - yemegı kategirye gore ekle                                                                    tamam
 - navbar duzenleme tasrım olarak 
 - admin owerlow icin basit istatistikler 
+                    4 aralık 
+- categor yemege eklendi ama edit e eklenmdi ve gosterilmedi ekle                                   tamam
+- yemegi category gore filtrele                                                                     tamam
+- yemek search ekle                                                                                 tamam
+- categot silindiginde varsa altında yemek sorulacak                                                tamam
+- user dashboard tanımla masa tsarımı ve dialog tanımla                                             tamam
+ 

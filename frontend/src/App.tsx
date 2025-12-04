@@ -1,7 +1,6 @@
 
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import UserLayout from "./components/UserLayout";
 import { useDispatch, useSelector, } from "react-redux";
 import { AppDispatch, RootState, store, } from "./store";
 import { useEffect, useState } from "react";
@@ -15,6 +14,7 @@ import Register from "./pages/Landing/Register";
 import Menuler from "./pages/Landing/Menuler";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/Dashboard/Admin/AdminDashboard";
+import UserDashboard from "./pages/Dashboard/User/UserDashboard";
 
 
 
@@ -46,6 +46,8 @@ function App() {
   }, []);
  */
    useEffect(() => {
+    console.log("appjsx getuser dispatch calişti");
+    
     dispatch(getUser());
   }, [dispatch]);
   return (
@@ -58,17 +60,17 @@ function App() {
           <Route
             path="login"
             element={
-              <ProtectedAuthRoute>
+             
                 <Login />
-              </ProtectedAuthRoute>
+             
             }
           />
           <Route
             path="register"
             element={
-              <ProtectedAuthRoute>
+              
                 <Register />
-              </ProtectedAuthRoute>
+             
             }
           />
 
@@ -76,24 +78,17 @@ function App() {
         </Route>
 
         {/* Admin korumalı */}
-        <Route
-          path="/admin"
-          element={
-            <ProtectedRoute role="admin">
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        >
-          <Route index element={<Landing />} />
-        </Route>
+        <Route path="/admin" element={<AdminDashboard /> }/>
+      
+      
 
         {/* User korumalı */}
         <Route
           path="/user"
           element={
-            <ProtectedRoute role="user">
-              <UserLayout />
-            </ProtectedRoute>
+           
+              <UserDashboard />
+           
           }
         >
           <Route index element={<Landing />} />

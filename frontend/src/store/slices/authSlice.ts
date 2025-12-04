@@ -1,6 +1,8 @@
 import { API_PATHS } from "@/lib/api";
+import axiosInstance from "@/lib/axiosInstance";
+import { RegisterForm } from "@/models/User";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-
+import axios from "axios";
 // User tipi
 interface User {
   id: string;
@@ -30,19 +32,14 @@ export const loginUser = createAsyncThunk(
   "auth/loginUser",
   async (credentials: { email: string; password: string }, { rejectWithValue }) => {
     try {
-      const res = await fetch(API_PATHS.login, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
-      });
-
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Giriş başarısız");
+      const res = await axios.post(API_PATHS.login, credentials)
+      let data = res.data;
+      if (data.success && !data.data) {
+        return rejectWithValue(data.message);
+      } else if (data.success && data.data) {
+        return data
       }
 
-      const data = await res.json(); // { user, token }
-      return data;
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
@@ -51,24 +48,22 @@ export const loginUser = createAsyncThunk(
 // Async thunk login
 export const registerUser = createAsyncThunk(
   "auth/registerUser",
-  async (credentials: { email: string; password: string }, { rejectWithValue }) => {
+  async (credentials: RegisterForm, { rejectWithValue }) => {
     try {
-      const res = await fetch(API_PATHS.register, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
+      const res = await axios.post(API_PATHS.register, credentials, {
+        headers: { "Content-Type": "application/json" }
       });
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        return rejectWithValue(errorData.message || "Giriş başarısız");
+      if (!res.data.success) {
+        return rejectWithValue(res.data.message || "Giriş başarısız");
       }
-
-      const data = await res.json(); // { user, token }
-      return data.data;
+      console.log(res.data);
+      
+      return res.data;
     } catch (err: any) {
-      return rejectWithValue(err.message);
+      return rejectWithValue(err.response?.data?.message || err.message);
     }
+
   }
 );
 export const getUser = createAsyncThunk(
@@ -78,21 +73,23 @@ export const getUser = createAsyncThunk(
 
     try {
       const token = localStorage.getItem("token")
-      if (!token) return rejectWithValue("token yok");
-
-      const res = await fetch(API_PATHS.getUser, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        return rejectWithValue(err.message || "Kullanıcı bilgisi alınamadı");
+      if (!token) {
+        console.log("token yok");
+        return rejectWithValue("toen yok ")
+        
       }
 
-      const data = await res.json(); // { user }
-      console.log("gelen veri getuser:", data.data);
+      const response = await axiosInstance.get(API_PATHS.getUser, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (response.data.success && response.data.data) {
+        console.log("istek sonrası gonderlie degr:", response.data);
 
-      return data.data;
+        return response.data
+      } else {
+        return rejectWithValue(response.data.message)
+      }
+
     } catch (err: any) {
       return rejectWithValue(err.message);
     }
@@ -120,8 +117,7 @@ const authSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
         console.log("slice:", action);
-        state.user = action.payload.data.user;
-        localStorage.setItem("user", JSON.stringify(action.payload.data.user))
+        state.user = action.payload.data?.user || null;
         localStorage.setItem("token", action.payload.data.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -138,10 +134,8 @@ const authSlice = createSlice({
         console.log(action.payload);
 
         if (action.payload.data.user) {
-          state.user = action.payload.user;
-          // state.token = action.payload.token;
-          localStorage.setItem("user", JSON.stringify(action.payload.data.user))
-          localStorage.setItem("token", action.payload.token);
+          state.user = action.payload.data.user;
+          localStorage.setItem("token", action.payload.data.token);
         }
 
       })
@@ -156,11 +150,12 @@ const authSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        console.log(action.payload.user);  // burada doğru şekilde user gelir
-        state.user = action.payload.user;  // sadece user'ı ata
+        console.log("getuser slice gelen user degeri:", action || "bos deger ");  // burada doğru şekilde user gelir
+        state.user = action.payload.data.user;  // sadece user'ı ata
       })
       .addCase(getUser.rejected, (state, action) => {
         state.loading = false;
+        console.log("getuser slice gelen action degeri:", action.payload as string)
         state.error = action.payload as string;
       });
   },

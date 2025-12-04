@@ -29,7 +29,7 @@ export default function Sidebar({ activeTab, setActiveTab }: any) {
   }
   return (
     <aside className="fixed left-0 top-0 h-full w-64 bg-white shadow-md p-4">
-      <h1 className="text-xl font-bold mb-4">Admin Panel</h1>
+      <h1 className="text-xl font-bold mb-4">{user?.role=="admin"?"Admin Panel": user?.role=="user" ? "User Panel": ""}</h1>
 
       <div className="space-y-2">
         {menuItems.map((item) => (

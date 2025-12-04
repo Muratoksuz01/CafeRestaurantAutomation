@@ -14,12 +14,15 @@ export const API_PATHS = {
 
   getFoods: `${API_BASE_URL}/admin/foods`,
   createFood: `${API_BASE_URL}/admin/food`,
-  deleteFood: (id: string) => `${API_BASE_URL}/admin/food` + id,
-  updateFood: (id: string) => `${API_BASE_URL}/admin/food` + id,
+  deleteFood: (id: string) => `${API_BASE_URL}/admin/food/` + id,
+  updateFood: (id: string) => `${API_BASE_URL}/admin/food/` + id,
 
   getCategories: `${API_BASE_URL}/admin/categories`,
   createCategory: `${API_BASE_URL}/admin/category`,
   deleteCategory: (id: string) => `${API_BASE_URL}/admin/category/${id}`,
   updateCategory: (id: string) => `${API_BASE_URL}/admin/category/${id}`,
+
+  reassignFoods: (id:string) => `${API_BASE_URL}/admin/categories/${id}/reassign`,
+
 
 };

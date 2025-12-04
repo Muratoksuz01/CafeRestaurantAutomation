@@ -19,6 +19,7 @@ import { useEffect } from "react";
 
 
 export default function Login() {
+  const { user, loading, error } = useSelector((state: RootState) => state.auth);
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -26,63 +27,43 @@ export default function Login() {
       password: "12345678"
     },
   });
-  useEffect(()=>{
-    console.log("login usef");
-    
-  },[])
-  /**
-   * {
-    "type": "auth/loginUser/fulfilled",
-    "payload": {
-        "success": true,
-        "message": "Login successful",
-        "data": {
-            "user": {
-                "id": "692d939c48829e4c3db9007c",
-                "firstName": "Murat",
-                "lastName": "Öksüz",
-                "email": "admin@example.com",
-                "role": "admin",
-                "phoneNumber": "05555555555"
-            },
-            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2OTJkOTM5YzQ4ODI5ZTRjM2RiOTAwN2MiLCJpYXQiOjE3NjQ1OTc0NjAsImV4cCI6MTc2NTIwMjI2MH0.cvFaAVJKGweV6I3HqpzLejhxRnBoHER4XVKxhV6AQmw"
-        }
-    },
-    "meta": {
-        "arg": {
-            "email": "admin@example.com",
-            "password": "12345678"
-        },
-        "requestId": "OYSItmcx-_NhMjlbQmVA6",
-        "requestStatus": "fulfilled"
-    }
-}
-   */
   const navigate = useNavigate()
+  useEffect(() => {
+    let token = localStorage.getItem("token")
+    if (token) {
+      console.log(user)
+      if (user?.role == "admin")
+        navigate("/admin")
+      else if (user?.role == "user")
+        navigate("/user")
+      
+
+    }
+  }, [])
+
 
 
   const dispatch = useDispatch<AppDispatch>();
-  const { loading, error } = useSelector((state: RootState) => state.auth);
 
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     console.log("Login data:", data);
     // Burada API çağrısı yapılabilir
     const res = await dispatch(loginUser(data));
     console.log(res)
-    if (res.payload.success) {
-      if(res.payload.data.user.role=="admin"){
+    if (res.payload.success && res.payload.data) {
+      if (res.payload.data.user.role == "admin") {
         navigate("/admin")
-        toast.success("giriş yapıldı admin olarak",successStyle)
+        toast.success("giriş yapıldı admin olarak", successStyle)
       }
-      if(res.payload.data.user.role=="user"){
+      if (res.payload.data.user.role == "user") {
         navigate("/user")
-        toast.success("giriş yapıldı user olarak",successStyle)
+        toast.success("giriş yapıldı user olarak", successStyle)
       }
-        
-    }else{
-      console.log(res.payload.message);
-      toast.warning(res.payload.message || "giris hatası ",warningStyle)
-      
+
+    } else {
+      console.log(res.payload);
+      toast.warning(error || "giris hatası ", warningStyle)
+
     }
   };
 
@@ -124,7 +105,7 @@ export default function Login() {
               </FormItem>
             )}
           />
-          {/* {error && <p className="text-red-600 text-sm text-center">{error}</p>} */}
+          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
 
           <Button
             type="submit"

@@ -11,11 +11,14 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { registerSchema } from "@/models/User";
+import { useEffect } from "react";
 
 
 
 
 export default function Register() {
+    const { user,loading, error } = useSelector((state: RootState) => state.auth);
+
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -28,15 +31,25 @@ export default function Register() {
     },
   });
   const dispatch = useDispatch<AppDispatch>();
-  const { loading } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate()
+  useEffect(()=>{
+    let token=localStorage.getItem("token")
+    if(token){
+     if(user?.role=="admin")
+       navigate("/admin")
+     else if(user?.role=="user")
+      navigate("/user")
+     
+     
+   }
+   },[])
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     console.log("Register data:", data);
     // API çağrısı yapılabilir
     const res = await dispatch(registerUser(data));
     if (res.payload.success) {
 
-      if (res.payload.data.user) {
+      if (res.payload.data) {
         toast.success(res.payload.message, successStyle)
         navigate("/admin")
       } else {

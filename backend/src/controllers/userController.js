@@ -88,8 +88,8 @@ const login = async (req, res) => {
 
     // Hesap aktif mi?
     if (!user.isActive) {
-      return res.status(401).json({
-        success: false,
+      return res.status(201).json({
+        success: true,
         message: "Your account is pending admin approval.",
       });
     }
