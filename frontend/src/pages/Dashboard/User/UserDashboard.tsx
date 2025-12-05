@@ -5,6 +5,7 @@ import { RootState } from "@/store";
 import { useNavigate } from "react-router-dom";
 import DashboardLayout from "@/pages/Dashboard/DashboardLayout";
 import UserOverview from "./UserOverview";
+import UserList from "./UserList";
 
 function UserDashboard() {
     const { user, loading, error } = useSelector((state: RootState) => state.auth);
@@ -25,7 +26,8 @@ const navigate=useNavigate()
         switch (activeTab) {
             case "overview":
                 return <UserOverview />;
-            
+            case "userList":
+                return <UserList />;
             default:
                 return <UserOverview />;
         }

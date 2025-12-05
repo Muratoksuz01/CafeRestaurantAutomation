@@ -13,6 +13,7 @@ const adminItems = [
 ];
 const userItems=[
   { id: "overview", label: "Overview", icon: LuChrome },
+  { id: "userList", label: "listeler", icon: LuChrome },
 ]
 
 export default function Sidebar({ activeTab, setActiveTab }: any) {

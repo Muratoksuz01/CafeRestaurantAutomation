@@ -1,25 +1,12 @@
 const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
-
-const {
-  register,
-  login,
-  getProfile,
-  updateProfile,
-  changePassword,
- 
-} = require('../controllers/userController');
-// const { authenticateToken } = require('../middleware/auth');
-
-// Public routes (kimlik doğrulama gerektirmez)
-router.post('/register', register);
-router.post('/login', login);
-// Protected routes (kimlik doğrulama gerektirir)
-router.get('/profile', authenticateToken, getProfile);
-
-
-// router.put('/profile', authenticateToken, updateProfile);
-// router.put('/change-password', authenticateToken, changePassword);
+const {getTables,getTable,editTable,deleteTable, createTable, createOrder} =require("../controllers/user/userController")
+router.get('/getTables',getTables );
+router.get('/getTable',getTable );
+router.delete('/deleteTable/:id',deleteTable );
+router.put('/editTable/:id',editTable );
+router.post("/createTable",createTable)
+router.post("/createOrder",createOrder)
 
 module.exports = router;

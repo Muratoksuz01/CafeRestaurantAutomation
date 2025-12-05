@@ -1,5 +1,5 @@
-const User = require('../models/User');
-const { generateToken } = require('../middleware/auth');
+const User = require('../../models/User');
+const { generateToken } = require('../../middleware/auth');
 
 // Kullanıcı kayıt
 const register = async (req, res) => {
