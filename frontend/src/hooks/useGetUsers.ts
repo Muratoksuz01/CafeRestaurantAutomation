@@ -1,4 +1,3 @@
-import { getUser } from './../store/slices/authSlice';
 import axiosInstance from '@/lib/axiosInstance';
 import { User } from '../models/User';
 import { useState } from 'react';
@@ -16,10 +15,10 @@ export function useGetUsers() {
   async function getUsers() {
     try {
       const res = await axiosInstance.get(API_PATHS.getUsers); // buraya auth koruması sadece admin ise ulasabilecek sekilde ayarlanacak
-      console.log(res.data.data)
+    //  console.log(res.data.data)
       if (res.data.success && res.data.data) {
         setUsers(res.data.data);
-        console.log("basrılı");
+      //  console.log("basrılı");
         
       }
     } catch (err: any) {

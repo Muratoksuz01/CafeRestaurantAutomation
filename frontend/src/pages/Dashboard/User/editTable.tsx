@@ -15,7 +15,7 @@ function editTable({ editOpen, setEditOpen, onEdit, selectetTable }: any) {
     const { register, handleSubmit, reset, formState: { errors } } = useForm({
         resolver: zodResolver(tableCreateEditSchema),
         defaultValues: {
-            name: selectetTable.name
+            name: selectetTable?.name
         }
     });
     useEffect(() => {

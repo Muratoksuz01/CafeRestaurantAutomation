@@ -11,15 +11,9 @@ kasiyer icin biz tasarlayacagız
 herseyı ile landing page dahil tamamlanmıs bir proje olacak 
 
 
-                8 aralık pazartesi
-- useroverview bu sayfada sadece tablonun status orderId degeri gelsin items gelmesin buraya 
-- oncelikle useroverview de dilaogu ayrı dosyaya al ardından useeffect yap gelen masanınID 
-    attigin istekte orderId de olacak ve glen items listele
-- siparis onayla birdaha tıklanırsa bir guncelleme varsa o zaman gonderelim istegi ve
-    bunu back de yazalım 
-- sipariş sil butonuunu aktiflestir bu zaten tableId alıp buna ait orderi cancalled ayarla 
-- useroverview dialogu width height ayarla 1024px gore ayarla
-- masa degistir btn gelmeli 
+
+            9 aralık 
+- masa degistir                                 tamam
 
 
 
@@ -84,13 +78,20 @@ kasiyer girişi icin basit giriş meslea 2025+ random sayı girsin dogru ise gir
 - yemegı kategirye gore ekle                                                                    tamam
 - navbar duzenleme tasrım olarak 
 - admin owerlow icin basit istatistikler 
-                    4 aralık 
+                    4 aralık                                                                        mukekmel
 - categor yemege eklendi ama edit e eklenmdi ve gosterilmedi ekle                                   tamam
 - yemegi category gore filtrele                                                                     tamam
 - yemek search ekle                                                                                 tamam
 - categot silindiginde varsa altında yemek sorulacak                                                tamam
 - user dashboard tanımla masa tsarımı ve dialog tanımla                                             tamam
-                     5 aralık cuma
+                     5 aralık cuma                                                                   2/3
 - masa tablosu ekle                                                                             tamam
 - masa controller ekle                                                                          tamam
 - sipariş tablosu ekle buraya tamamlanan siaprşleri koyalım                                             
+                8 aralık pazartesi
+- useroverview dialogu width height ayarla 1024px gore ayarla                                           tamam
+- oncelikle useroverview de dilaogu ayrı dosyaya al                                                     tamam
+- siparis onayla birdaha tıklanırsa bir guncelleme varsa o zaman gonderelim istegi ve                   tamam
+    bunu back de yazalım 
+- masa degistir btn gelmeli                                                                             
+- sipariş sil butonuunu aktiflestir bu zaten tableId alıp buna ait orderi cancalled ayarla              tamam

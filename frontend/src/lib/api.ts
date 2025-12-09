@@ -29,6 +29,11 @@ export const API_PATHS = {
   getTable:`${API_BASE_URL}/user/getTable`,
   editTable:(id:string)=>`${API_BASE_URL}/user/editTable/${id}`,
   deleteTable:(id:string)=>`${API_BASE_URL}/user/deleteTable/${id}`,
+  reassignTables:`${API_BASE_URL}/user/reassign`,// categori silinirse yemekler icin yeni kategori belirlemek icin 
 
+  // order
   createOrder:`${API_BASE_URL}/user/createOrder`,
+  editOrder:`${API_BASE_URL}/user/editOrder`,
+  deleteOrder:`${API_BASE_URL}/user/deleteOrder`,
+  paidOrder:`${API_BASE_URL}/user/paidOrder`,
 };

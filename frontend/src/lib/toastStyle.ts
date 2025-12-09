@@ -3,13 +3,12 @@ export const successStyle = {
         '--normal-bg': 'light-dark(var(--color-green-600), var(--color-green-400))',
         '--normal-text': 'var(--color-white)',
         '--normal-border': 'light-dark(var(--color-green-600), var(--color-green-400))'
-    }
+    }as React.CSSProperties
 }
 export const warningStyle = {
-    style: {
-        '--normal-bg': 'light-dark(var(--color-amber-600), var(--color-amber-400))',
-        '--normal-text': 'var(--color-white)',
-        '--normal-border': 'light-dark(var(--color-amber-600), var(--color-amber-400))'
-    }
-
-}
+  style: {
+    '--normal-bg': 'light-dark(var(--color-amber-600), var(--color-amber-400))',
+    '--normal-text': 'var(--color-white)',
+    '--normal-border': 'light-dark(var(--color-amber-600), var(--color-amber-400))'
+  } as React.CSSProperties
+};

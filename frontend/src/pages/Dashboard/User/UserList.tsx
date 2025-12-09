@@ -29,34 +29,34 @@ import CreateTable from "./CreateTable";
 // ];
 
 function UserList() {
- // const [tables, setTables] = useState<TableType[]>(initialTables);
+  // const [tables, setTables] = useState<TableType[]>(initialTables);
 
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
-const [createOpen, setCreateOpen] = useState(false)
+  const [createOpen, setCreateOpen] = useState(false)
   const [selected, setSelected] = useState<MyTable | null>(null);
-const {tables,getTables} =useGetTables()
-  useEffect(()=>{
+  const { tables, getTables } = useGetTables()
+  useEffect(() => {
     getTables()
-  },[])
+  }, [])
 
-  const openEdit = (t:  MyTable) => {
+  const openEdit = (t: MyTable) => {
     if (t.status === "dolu") {
-      toast.warning("Bu masa dolu olduğu için düzenleme yapamazsın.",warningStyle);
+      toast.warning("Bu masa dolu olduğu için düzenleme yapamazsın.", warningStyle);
       return;
     }
     setSelected(t);
     setEditOpen(true);
   };
   const saveEdit = () => {
-   // if (!selected) return;
-   getTables()
-   // setEditOpen(false);
+    // if (!selected) return;
+    getTables()
+    // setEditOpen(false);
   };
 
   const openDelete = (t: MyTable) => {
     if (t.status === "dolu") {
-      toast.warning("Dolu masa silinemez.",warningStyle);
+      toast.warning("Dolu masa silinemez.", warningStyle);
       return;
     }
     setSelected(t);
@@ -68,13 +68,13 @@ const {tables,getTables} =useGetTables()
     getTables()
     setDeleteOpen(false);
   };
-const createTable = async () => {
-  getTables(); 
-};
+  const createTable = async () => {
+    getTables();
+  };
 
   return (
     <div className="p-5">
-<Button onClick={() => setCreateOpen(true)}>Yeni Masa</Button>
+      <Button onClick={() => setCreateOpen(true)}>Yeni Masa</Button>
 
       <h2 className="text-xl font-semibold mb-4">Masalar</h2>
 
@@ -124,9 +124,9 @@ const createTable = async () => {
       </Table>
 
       {/* EDIT DIALOG */}
-     <EditTable editOpen={editOpen} setEditOpen={setEditOpen} onEdit={saveEdit} selectetTable={selected} />
-{/* CREATE DILALOG */}
-<CreateTable createOpen={createOpen}setCreateOpen={setCreateOpen} onCreate={createTable}/>
+      <EditTable editOpen={editOpen} setEditOpen={setEditOpen} onEdit={saveEdit} selectetTable={selected} />
+      {/* CREATE DILALOG */}
+      <CreateTable createOpen={createOpen} setCreateOpen={setCreateOpen} onCreate={createTable} />
       {/* DELETE ALERT DIALOG */}
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
         <AlertDialogContent>

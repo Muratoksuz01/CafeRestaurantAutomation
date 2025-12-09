@@ -16,10 +16,10 @@ export function useGetFoods() {
   async function getFoods() {
     try {
       const res = await axiosInstance.get(API_PATHS.getFoods); // buraya auth koruması sadece admin ise ulasabilecek sekilde ayarlanacak
-      console.log(res.data.data)
+    //  console.log(res.data.data)
       if (res.data.success && res.data.data) {
         setFoods(res.data.data);
-        console.log("basrılı");
+      //  console.log("basrılı");
         
       }
     } catch (err: any) {

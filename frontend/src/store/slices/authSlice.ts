@@ -57,7 +57,7 @@ export const registerUser = createAsyncThunk(
       if (!res.data.success) {
         return rejectWithValue(res.data.message || "Giriş başarısız");
       }
-      console.log(res.data);
+     // console.log(res.data);
       
       return res.data;
     } catch (err: any) {
@@ -69,7 +69,7 @@ export const registerUser = createAsyncThunk(
 export const getUser = createAsyncThunk(
   "auth/getUser",
   async (_, { rejectWithValue }) => {
-    console.log("getuser calişti slice.ts");
+ //   console.log("getuser calişti slice.ts");
 
     try {
       const token = localStorage.getItem("token")
@@ -83,7 +83,7 @@ export const getUser = createAsyncThunk(
         headers: { Authorization: `Bearer ${token}` },
       })
       if (response.data.success && response.data.data) {
-        console.log("istek sonrası gonderlie degr:", response.data);
+      //  console.log("istek sonrası gonderlie degr:", response.data);
 
         return response.data
       } else {
@@ -116,7 +116,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        console.log("slice:", action);
+       // console.log("slice:", action);
         state.user = action.payload.data?.user || null;
         localStorage.setItem("token", action.payload.data.token);
       })
@@ -131,7 +131,7 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        console.log(action.payload);
+      //  console.log(action.payload);
 
         if (action.payload.data.user) {
           state.user = action.payload.data.user;
@@ -150,12 +150,12 @@ const authSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-        console.log("getuser slice gelen user degeri:", action || "bos deger ");  // burada doğru şekilde user gelir
+      //  console.log("getuser slice gelen user degeri:", action || "bos deger ");  // burada doğru şekilde user gelir
         state.user = action.payload.data.user;  // sadece user'ı ata
       })
       .addCase(getUser.rejected, (state, action) => {
         state.loading = false;
-        console.log("getuser slice gelen action degeri:", action.payload as string)
+      //  console.log("getuser slice gelen action degeri:", action.payload as string)
         state.error = action.payload as string;
       });
   },
