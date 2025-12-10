@@ -5,8 +5,8 @@ const User = require('../models/User');
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-change-in-production';
   
 // Token oluşturma fonksiyonu
-const generateToken = (userId) => {
-  return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '7d' });
+const generateToken = (userId,role) => {
+  return jwt.sign({ userId ,role}, JWT_SECRET, { expiresIn: '7d' });
 };
 const authenticateToken = async (req, res, next) => {
   try {

@@ -8,6 +8,7 @@ const {
   giveAproach,
   giveReject,
   deleteUser,
+  getAdminStats
 } = require('../controllers/admin/userController');
 const {
   reassign,
@@ -32,7 +33,7 @@ router.put("/giveAproach/:id", authenticateToken, giveAproach)
 router.put("/giveReject/:id", authenticateToken, giveReject);
 router.delete("/deleteUser/:id", authenticateToken, deleteUser);
 router.get('/getUsers', authenticateToken, getUsers);
-
+router.get("/getAdminStats",getAdminStats)
 
 router.get("/categories", authenticateToken, getCategories);
 router.put("/categories/:id/reassign", authenticateToken, reassign);

@@ -1,48 +1,57 @@
-import React from "react";
-
-function Footer() {
+export function Footer() {
   return (
-    <footer className="bg-gray-900 text-gray-300 py-8 ">
-      <div className="max-w-6xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
-
-        {/* Logo + açıklama */}
+    <footer className="bg-black text-white py-16 px-6 md:px-20 mt-20">
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-10 max-w-6xl mx-auto">
         <div>
-          <h2 className="text-xl font-bold text-white">CafeSystem</h2>
-          <p className="text-sm mt-2 text-gray-400">
-            Modern ve hızlı kafe & restoran yönetim sistemi.
+          <div className="flex items-center gap-2 text-xl font-bold mb-4">
+            <img src="/logo.png" alt="CafeSystem" className="h-10" />
+            <span>CafeSystem</span>
+          </div>
+          <p className="text-gray-400 text-sm">
+            Elevating dining experiences through exceptional cuisine and warm hospitality.
           </p>
-        </div>
-
-        {/* Linkler */}
-        <div>
-          <h3 className="font-semibold text-white mb-3">Links</h3>
-          <ul className="space-y-2 text-sm">
-            <li><a href="/" className="hover:text-white">Home</a></li>
-            <li><a href="/login" className="hover:text-white">Login</a></li>
-            <li><a href="/menu" className="hover:text-white">Menu</a></li>
-            <li><a href="/contact" className="hover:text-white">Contact</a></li>
-          </ul>
-        </div>
-
-        {/* Sosyal medya */}
-        <div>
-          <h3 className="font-semibold text-white mb-3">Social</h3>
-          <div className="flex space-x-4 text-xl">
-            <a href="#" className="hover:text-white"><i className="fa-brands fa-facebook"></i></a>
-            <a href="#" className="hover:text-white"><i className="fa-brands fa-twitter"></i></a>
-            <a href="#" className="hover:text-white"><i className="fa-brands fa-instagram"></i></a>
-            <a href="#" className="hover:text-white"><i className="fa-brands fa-github"></i></a>
+          <div className="flex gap-4 mt-4">
+            <i className="fa-brands fa-facebook"></i>
+            <i className="fa-brands fa-instagram"></i>
+            <i className="fa-brands fa-twitter"></i>
           </div>
         </div>
 
-      </div>
 
-      {/* Alt telif hakkı */}
-      <div className="text-center text-xs text-gray-500 mt-8">
-        © {new Date().getFullYear()} CafeSystem. All rights reserved.
+        <div>
+          <h3 className="font-semibold text-lg mb-4">Quick Links</h3>
+          <ul className="space-y-2 text-gray-400">
+            <li><a href="/">Home</a></li>
+            <li><a href="/about">About</a></li>
+            <li><a href="/menu">Menu</a></li>
+            <li><a href="/contact">Contact</a></li>
+          </ul>
+        </div>
+
+
+        <div>
+          <h3 className="font-semibold text-lg mb-4">My Account</h3>
+          <ul className="space-y-2 text-gray-400">
+            <li><a href="/login">Login</a></li>
+            <li><a href="/register">Register</a></li>
+            <li><a href="/dashboard">Dashboard</a></li>
+          </ul>
+        </div>
+
+
+        <div>
+          <h3 className="font-semibold text-lg mb-4">Get in Touch</h3>
+          <ul className="space-y-2 text-gray-400 text-sm">
+            <li>123 Culinary Street</li>
+            <li>Food District, PC 12345</li>
+            <li>+1 (555) 123-4567</li>
+            <li>info@cafesystem.com</li>
+            <li>Mon–Fri: 7AM–11PM</li>
+            <li>Sat–Sun: 8AM–12AM</li>
+          </ul>
+        </div>
       </div>
+      <p className="text-center text-gray-600 text-sm mt-10">© 2025 CafeSystem. All rights reserved.</p>
     </footer>
   );
 }
-
-export default Footer;

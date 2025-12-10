@@ -11,7 +11,7 @@ const uploadDir = path.join(__dirname, "assets/foods");
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
-
+/* 
 // Multer ayarı (tek dosya)
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
@@ -20,7 +20,7 @@ const storage = multer.diskStorage({
         const name = file.fieldname + "-" + Date.now() + ext;
         cb(null, name);
     },
-});
+}); */
 
 
 
@@ -37,12 +37,12 @@ async function startServer() {
         app.use(cors());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
-        const upload = multer({ dest: "assets/foods" });
+        // const upload = multer({ dest: "assets/foods" });
 
         app.get('/health', (req, res) => {
             res.status(200).json({ status: 'ok' });
         });
-        app.post("/single", upload.single("imgs"), (req, res) => {
+       /*  app.post("/single", upload.single("imgs"), (req, res) => {
             console.log("Dosya geldi mi?", req.file);
             res.json({ success: true, file: req.file });
         });
@@ -57,7 +57,7 @@ async function startServer() {
             }
 
             res.sendFile(absolutePath);
-        });
+        }); */
         // API routes
         app.use('/api', apiRoutes);
 

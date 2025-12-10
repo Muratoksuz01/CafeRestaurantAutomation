@@ -94,7 +94,7 @@ const login = async (req, res) => {
       });
     }
 
-    const token = generateToken(user._id);
+    const token = generateToken(user._id,user.role);
 
     res.json({
       success: true,
@@ -105,7 +105,7 @@ const login = async (req, res) => {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          role: user.role,
+       //   role: user.role,
           phoneNumber: user.phoneNumber,
         },
         token,

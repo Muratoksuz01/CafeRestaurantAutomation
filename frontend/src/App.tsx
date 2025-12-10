@@ -11,87 +11,50 @@ import Layout from "./pages/Landing/Layout";
 import Landing from "./pages/Landing/Landing";
 import Login from "./pages/Landing/Login";
 import Register from "./pages/Landing/Register";
-import Menuler from "./pages/Landing/Menuler";
+import Menu from "./pages/Landing/Menu";
 import NotFound from "./pages/NotFound";
 import AdminDashboard from "./pages/Dashboard/Admin/AdminDashboard";
-import UserDashboard from "./pages/Dashboard/User/UserDashboard";
+
+import DashboardLayout from "./pages/Dashboard/DashboardLayout";
+import UserOverview from "./pages/Dashboard/User/UserOverview";
+import UserList from "./pages/Dashboard/User/UserList";
+import AdminOverview from "./pages/Dashboard/Admin/AdminOverview";
+import AdminUsers from "./pages/Dashboard/Admin/AdminUsers";
+import AdminFoods from "./pages/Dashboard/Admin/AdminFoods";
+import AdminCategory from "./pages/Dashboard/Admin/AdminCategory";
 
 
 
 
 
 function App() {
-  //  const { user } = useSelector((state: RootState) => state.auth);
-  const dispatch = useDispatch<AppDispatch>();
-  
-/*   const [user, setUser] = useState<any>(null)
-  useEffect(() => {
-    console.log("app.tsx usef calişti getUser");
-    const user=localStorage.getItem("user")
-    if(!user){
-      dispatch(getUser()).then((res) => {
-        console.log(res);
-        if(res.type=="auth/getUser/rejected"){
-          setUser({})
-        }if(res.type=="auth/getUser/fulfilled"){
-          setUser(res.payload.data.user)
-        }
-        
-      })
-    }else{
-      setUser(JSON.parse(user))
-    }
-    console.log("app.tsx user:",user);
-    
-  }, []);
- */
-   useEffect(() => {
-    console.log("appjsx getuser dispatch calişti");
-    
-    dispatch(getUser());
-  }, [dispatch]);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Landing />} />
-
-          {/* Giriş yapılmışsa login/register'a izin verme */}
-          <Route
-            path="login"
-            element={
-             
-                <Login />
-             
-            }
-          />
-          <Route
-            path="register"
-            element={
-              
-                <Register />
-             
-            }
-          />
-
-          <Route path="menuler" element={<Menuler />} />
+          <Route path="login" element={<Login />} />
+          <Route path="register" element={<Register />} />
+          <Route path="menu" element={<Menu />} />
         </Route>
 
         {/* Admin korumalı */}
-        <Route path="/admin" element={<AdminDashboard /> }/>
-      
-      
+        <Route path="/admin" element={<DashboardLayout />}>
+              <Route index element={<AdminOverview />} />
+              <Route path="overview" element={<AdminOverview />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="foods" element={<AdminFoods />} />
+              <Route path="category" element={<AdminCategory />} />
+        </Route>
+
+
 
         {/* User korumalı */}
-        <Route
-          path="/user"
-          element={
-           
-              <UserDashboard />
-           
-          }
-        >
-          <Route index element={<Landing />} />
+        <Route path="/user" element={<DashboardLayout />}>
+          <Route index element={<UserOverview />} />
+          <Route path="overview" element={<UserOverview />} />
+          <Route path="userList" element={<UserList />} />
         </Route>
 
         <Route path="*" element={<NotFound />} />

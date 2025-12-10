@@ -7,21 +7,14 @@ import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { useNavigate } from "react-router-dom";
+import { useAuthControl } from "@/hooks/useAuthControl";
 
 function AdminDashboard() {
     const { user, loading, error } = useSelector((state: RootState) => state.auth);
 const navigate=useNavigate()
     useEffect(() => {
-        let token = localStorage.getItem("token")
-        if (token) {
-            if (user?.role == "admin")
-                navigate("/admin")
-            else if (user?.role == "user")
-                navigate("/user")
-            
-        }else{
-            navigate("/login")
-        }
+      useAuthControl();
+
     }, [])
     const renderContent = (activeTab: string) => {
         switch (activeTab) {

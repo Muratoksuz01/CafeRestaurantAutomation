@@ -1,5 +1,6 @@
 import { API_PATHS } from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
+import { getRole } from "@/lib/utils";
 import { RegisterForm } from "@/models/User";
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import axios from "axios";
@@ -10,19 +11,19 @@ interface User {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
-  role?: string
+ // role?: string
 }
 
 interface AuthState {
   user: User | null;
-  // token: string | null;
+   token: string | null;
   loading: boolean;
   error: string | null;
 }
 
 const initialState: AuthState = {
   user: null,
-  // token: null,
+   token: null,
   loading: false,
   error: null,
 };
@@ -104,6 +105,8 @@ const authSlice = createSlice({
       // state.token = null;
       state.loading = false;
       state.error = null;
+      state.user=null
+      state.token=null
       localStorage.removeItem("token");
     },
   },
@@ -118,6 +121,9 @@ const authSlice = createSlice({
         state.loading = false;
        // console.log("slice:", action);
         state.user = action.payload.data?.user || null;
+       // state.user?.role=getRole(action.payload.data.token)
+         state.token = action.payload.data.token;  // <-- sadece state'e yaz
+
         localStorage.setItem("token", action.payload.data.token);
       })
       .addCase(loginUser.rejected, (state, action) => {

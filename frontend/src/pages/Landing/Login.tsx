@@ -13,6 +13,8 @@ import { loginUser } from "@/store/slices/authSlice";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useEffect } from "react";
+import { useAuthControl } from "@/hooks/useAuthControl";
+import { getRole } from "@/lib/utils";
 
 // Validasyon şeması
 
@@ -28,18 +30,8 @@ export default function Login() {
     },
   });
   const navigate = useNavigate()
-  useEffect(() => {
-    let token = localStorage.getItem("token")
-    if (token) {
-      console.log(user)
-      if (user?.role == "admin")
-        navigate("/admin")
-      else if (user?.role == "user")
-        navigate("/user")
-      
+  useAuthControl()
 
-    }
-  }, [])
 
 
 
@@ -51,11 +43,11 @@ export default function Login() {
     const res = await dispatch(loginUser(data));
     console.log(res)
     if (res.payload.success && res.payload.data) {
-      if (res.payload.data.user.role == "admin") {
+      if (getRole() == "admin") {
         navigate("/admin")
         toast.success("giriş yapıldı admin olarak", successStyle)
       }
-      if (res.payload.data.user.role == "user") {
+      if (getRole() == "user") {
         navigate("/user")
         toast.success("giriş yapıldı user olarak", successStyle)
       }

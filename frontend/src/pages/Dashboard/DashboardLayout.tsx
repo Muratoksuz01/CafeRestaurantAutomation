@@ -1,19 +1,20 @@
-import { useState } from "react";
+import { useAuthControl } from "@/hooks/useAuthControl";
 import Sidebar from "@/pages/Dashboard/components/Sidebar";
+import { useEffect } from "react";
+import { Outlet } from "react-router-dom";
 
-function DashboardLayout({ children }: any) {
-  const [activeTab, setActiveTab] = useState("overview");
+function DashboardLayout() {
+  useAuthControl(); // doğru kullanım
 
   return (
     <div className="flex min-h-screen bg-gray-100">
-      
-      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
-
+      <Sidebar />
       <main className="ml-64 flex-1 p-6">
-        {children({ activeTab })}
+        <Outlet />
       </main>
     </div>
   );
 }
 
 export default DashboardLayout;
+

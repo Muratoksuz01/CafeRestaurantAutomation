@@ -13,6 +13,7 @@ export default function AdminUsers() {
   }, []);
   const nullUsers = users.filter((u) => u.isActive === null);
   const falseUsers = users.filter((u) => u.isActive === false);
+  const trueUsers = users.filter((u) => u.isActive === true);
 
 
   const Approact = async (id: string) => {
@@ -99,6 +100,44 @@ export default function AdminUsers() {
                       </button>
 
                       <button onClick={() => DeleteUser(String(u._id))}>
+                        <Trash size={18} className="text-red-600" />
+                      </button> 
+                    </TableCell>
+
+
+                    <TableCell>{u.firstName}</TableCell>
+                    <TableCell>{u.lastName}</TableCell>
+                    <TableCell>{u.email}</TableCell>
+                    <TableCell>{u.phoneNumber}</TableCell>
+                    <TableCell>{u.role}</TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </AccordionContent>
+        </AccordionItem>
+
+         <AccordionItem value="true-users">
+          <AccordionTrigger>Aktif  Kullanıcılar (isActive = true)</AccordionTrigger>
+          <AccordionContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Actions</TableHead>
+                  <TableHead>First</TableHead>
+                  <TableHead>Last</TableHead>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Phone</TableHead>
+                  <TableHead>Role</TableHead>
+                </TableRow>
+              </TableHeader>
+
+
+              <TableBody>
+                {trueUsers.map((u) => (
+                  <TableRow key={u._id}>
+                    <TableCell className="flex justify-center gap-3">
+                       <button onClick={() => DeleteUser(String(u._id))}>
                         <Trash size={18} className="text-red-600" />
                       </button> 
                     </TableCell>

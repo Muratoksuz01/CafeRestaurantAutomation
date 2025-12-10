@@ -1,53 +1,66 @@
 import { Button } from "@/components/ui/button";
 import { RootState } from "@/store";
-import { useEffect } from "react";
-import { LuChrome, LuLogOut, LuUsers } from "react-icons/lu";
 import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { LuChrome, LuLogOut, LuUsers } from "react-icons/lu";
 
 const adminItems = [
-  { id: "overview", label: "Overview", icon: LuChrome },
-  { id: "users", label: "Users", icon: LuUsers },
-  { id: "foods", label: "Foods", icon: LuUsers },
-  { id: "category", label: "Kategoriler", icon: LuUsers },
+  { path: "/admin/overview", label: "Overview", icon: LuChrome },
+  { path: "/admin/users", label: "Users", icon: LuUsers },
+  { path: "/admin/foods", label: "Foods", icon: LuUsers },
+  { path: "/admin/category", label: "Kategoriler", icon: LuUsers },
 ];
-const userItems=[
-  { id: "overview", label: "Overview", icon: LuChrome },
-  { id: "userList", label: "listeler", icon: LuChrome },
-]
 
-export default function Sidebar({ activeTab, setActiveTab }: any) {
+const userItems = [
+  { path: "/user/overview", label: "Overview", icon: LuChrome },
+  { path: "/user/userList", label: "Listeler", icon: LuChrome },
+];
+import { useDispatch } from "react-redux";
+import { logout } from "@/store/slices/authSlice";
+import { getRole } from "@/lib/utils";
+export default function Sidebar() {
+  const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
-  const menuItems= user?.role=="admin" ? adminItems : userItems
-   useEffect(()=>{
-    console.log("sidebar user",user);
-    
-   },[])
-  const navigate=useNavigate()
-  const onLogout =() => {
-    localStorage.clear()
-    navigate("/")
-  }
-  return (
-    <aside className="fixed left-0 top-0 h-full w-64 bg-white shadow-md p-4">
-      <h1 className="text-xl font-bold mb-4">{user?.role=="admin"?"Admin Panel": user?.role=="user" ? "User Panel": ""}</h1>
+  const navigate = useNavigate();
+  const role=getRole()
+  const menuItems = role === "admin" ? adminItems : userItems;
 
-      <div className="space-y-2">
+  const onLogout = () => {
+    /* localStorage.clear();
+    navigate("/");
+    window.location.reload() */
+    dispatch(logout());   // Redux state temizlenir
+    navigate("/");  
+
+  };
+
+  return (
+    <aside className="fixed left-0 top-0 h-full w-64 bg-white shadow-md p-4 flex flex-col">
+      <h1 className="text-xl font-bold mb-4">
+        {role === "admin"
+          ? "Admin Panel"
+          : role === "user"
+            ? "User Panel"
+            : "bilinmiyore "}
+      </h1>
+
+      <div className="space-y-2 flex-1">
         {menuItems.map((item) => (
-          <Button
-            key={item.id}
-            variant={activeTab === item.id ? "default" : "ghost"}
-            className="w-full flex items-center gap-2 justify-start"
-            onClick={() => setActiveTab(item.id)}
-          >
-            <item.icon className="w-5 h-5" />
-            {item.label}
-          </Button>
+          <Link key={item.path} to={item.path}>
+            <Button
+              variant="ghost"
+              className="w-full flex items-center gap-2 justify-start"
+            >
+              <item.icon className="w-5 h-5" />
+              {item.label}
+            </Button>
+          </Link>
         ))}
       </div>
+
       <Button
         variant="destructive"
-        className="w-full  mt-auto"
+        className="w-full mt-auto"
         onClick={onLogout}
       >
         <LuLogOut className="w-5 h-5" />

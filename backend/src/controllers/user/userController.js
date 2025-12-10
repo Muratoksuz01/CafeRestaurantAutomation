@@ -27,7 +27,7 @@ exports.getTables = async (req, res) => {
 // TEK MASA DETAY + ORDER + ORDER ITEMS
 exports.getTable = async (req, res) => {
   try {
-    console.log(req.query.id);
+    // console.log(req.query.id);
 
     const table = await Tables.findById(req.query.id);
 

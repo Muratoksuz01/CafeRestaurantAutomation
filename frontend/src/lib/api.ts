@@ -11,6 +11,7 @@ export const API_PATHS = {
   giveApproach: (id: string) => `${API_BASE_URL}/admin/giveAproach/` + id,
   deleteUser: (id: string) => `${API_BASE_URL}/admin/deleteUser/` + id,
   giveReject: (id: string) => `${API_BASE_URL}/admin/giveReject/` + id,
+  getAdminStats:`${API_BASE_URL}/admin/getAdminStats`,
 
   getFoods: `${API_BASE_URL}/admin/foods`,
   createFood: `${API_BASE_URL}/admin/food`,

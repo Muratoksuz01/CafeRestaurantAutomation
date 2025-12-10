@@ -12,9 +12,6 @@ herseyı ile landing page dahil tamamlanmıs bir proje olacak
 
 
 
-            9 aralık 
-- masa degistir                                 tamam
-
 
 
 
@@ -28,10 +25,7 @@ herseyı ile landing page dahil tamamlanmıs bir proje olacak
 
 loginde loading icin bir componet ayarla 
 auth işlemleri 
-app yonlendirme 
--landing navabrda oturum varsa navbarda degişiklik olmalı 
 kasiyer girişi icin basit giriş meslea 2025+ random sayı girsin dogru ise girsin 
-- sonrasında back de index de bazı test kaldı onları sil 
 
 
 

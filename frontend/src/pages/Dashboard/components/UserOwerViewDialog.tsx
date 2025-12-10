@@ -165,7 +165,9 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
     }
   }
   useEffect(() => {
-    if (selectedTable) {
+    console.log("calişri");
+    
+    if (selectedTable ) {
       console.log(selectedTable);
 
       getCategories()
@@ -176,7 +178,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
     }
 
 
-  }, [open, selectedTable]);
+  }, [selectedTable]);
 
   const filteredFoods = foods
     .filter(f => selectedCat === "all" ? true : f.categoryId === selectedCat)

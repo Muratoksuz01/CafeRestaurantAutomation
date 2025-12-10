@@ -1,84 +1,36 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { Menu, User, X } from "lucide-react";
-import {
-  DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel,
-  DropdownMenuPortal,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuSub,
-  DropdownMenuSubContent,
-  DropdownMenuSubTrigger,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import { Button } from "@/components/ui/button";
-export default function Navbar() {
-  const [open, setOpen] = useState(false);
+import { RootState } from "@/store";
+import { useSelector } from "react-redux";
+
+export function Navbar() {
+  const { user } = useSelector((state: RootState) => state.auth);
 
   return (
-    <header className="w-full bg-white shadow-sm fixed top-0 left-0">
-      <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
-
-        {/* Logo */}
-        <Link to="/" className="text-xl font-semibold">
-          LOGO
-        </Link>
-
-        {/* Desktop Menu */}
-        <nav className="hidden md:flex gap-6">
-          <Link to="/" className="hover:text-purple-600 transition">Home</Link>
-          <Link to="/about" className="hover:text-purple-600 transition">About</Link>
-          <Link to="/contact" className="hover:text-purple-600 transition">Contact</Link>
-          <Link to="/menuler" className="hover:text-purple-600 transition">Menuler</Link>
-
-        </nav>
-
-        {/* Right */}
-        <div className="hidden md:flex">
-          <DropdownMenu>
-            <DropdownMenuTrigger  asChild>
-              <Button variant="outline"><User /></Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="" align="start">
-              <DropdownMenuItem className="hover:bg-gray-200">
-                <Link to="/login" className="  text-black">Login</Link>
-              </DropdownMenuItem>
-              <DropdownMenuItem className="hover:bg-gray-200">
-                <Link to="/register" className="  text-black">Register</Link>
-
-              </DropdownMenuItem>
-             
-              
-            </DropdownMenuContent>
-          </DropdownMenu>
-
-        </div>
-
-        {/* Mobile Toggle */}
-        <button className="md:hidden" onClick={() => setOpen(!open)}>
-          {open ? <X size={26} /> : <Menu size={26} />}
-        </button>
+    <nav className="fixed top-0 left-0 w-full h-20 bg-white shadow-sm z-50 flex items-center px-6 md:px-20 justify-between">
+      <div className="flex items-center gap-2 text-2xl font-bold">
+        <img src="/logo.png" alt="CafeSystem" className="w-24" />
       </div>
 
-      {/* Mobile Menu */}
-      {open && (
-        <div className="md:hidden bg-white shadow-sm border-t">
-          <nav className="flex flex-col gap-4 p-4">
-            <Link onClick={() => setOpen(false)} to="/">Home</Link>
-            <Link onClick={() => setOpen(false)} to="/about">About</Link>
-            <Link onClick={() => setOpen(false)} to="/contact">Contact</Link>
-            <Link onClick={() => setOpen(false)} to="/menuler">Menuler</Link>
+      <ul className="hidden md:flex gap-8 text-gray-700 font-medium">
+        <li><a href="/">Home</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/menu">Menu</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
 
-            <Link
-              onClick={() => setOpen(false)}
-              to="/login"
-              className="mt-2 px-4 py-2 bg-purple-600 text-white rounded-md text-center"
-            >
-              Login
-            </Link>
-          </nav>
-        </div>
-      )}
-    </header>
+      <div className="flex gap-4">
+        {user ? (
+          <a href="/dashboard" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700">
+            Dashboard
+          </a>
+        ) : (
+          <>
+            <a href="/login" className="border px-4 py-2 rounded-lg hover:bg-gray-100">Login</a>
+            <a href="/register" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700">
+              Register
+            </a>
+          </>
+        )}
+      </div>
+    </nav>
   );
 }
