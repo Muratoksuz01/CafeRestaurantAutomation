@@ -1,3 +1,4 @@
+import { getRole } from "@/lib/utils";
 import { RootState } from "@/store";
 import { useSelector } from "react-redux";
 
@@ -19,7 +20,8 @@ export function Navbar() {
 
       <div className="flex gap-4">
         {user ? (
-          <a href="/dashboard" className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700">
+          <a href={getRole() =="admin" ? "/admin" :getRole() =="user" ?"/user":"unknown" }
+          className="bg-orange-600 text-white px-4 py-2 rounded-lg hover:bg-orange-700">
             Dashboard
           </a>
         ) : (

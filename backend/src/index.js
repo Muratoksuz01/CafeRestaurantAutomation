@@ -31,21 +31,21 @@ async function startServer() {
         await connectToDatabase();
 
         const app = express();
-        // app.use(fileUpload());
+    //    app.use(fileUpload());
         app.use(express.static('public'));
 
         app.use(cors());
         app.use(express.json());
         app.use(express.urlencoded({ extended: true }));
-        // const upload = multer({ dest: "assets/foods" });
+        const upload = multer({ dest: "assets/foods" });
 
         app.get('/health', (req, res) => {
             res.status(200).json({ status: 'ok' });
         });
-       /*  app.post("/single", upload.single("imgs"), (req, res) => {
+        /* app.post("/single", upload.single("imgs"), (req, res) => {
             console.log("Dosya geldi mi?", req.file);
             res.json({ success: true, file: req.file });
-        });
+        }); */
         app.get("/file", (req, res) => {
             const filePath = req.query.path;
             if (!filePath) return res.status(400).send("path gerekli");
@@ -57,7 +57,7 @@ async function startServer() {
             }
 
             res.sendFile(absolutePath);
-        }); */
+        });
         // API routes
         app.use('/api', apiRoutes);
 

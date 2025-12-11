@@ -45,7 +45,7 @@ export default function AdminFoods() {
       setSelectedFood(null);
     }
   };
-  const onUpdate = (updatedFood: any) => {
+  const onUpdate = () => {
     /*  setFoods(prev =>
        prev.map(f => f._id === updatedFood._id ? updatedFood : f)
      ); */

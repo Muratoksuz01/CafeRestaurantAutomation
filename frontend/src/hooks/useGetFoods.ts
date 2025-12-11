@@ -3,13 +3,14 @@ import axiosInstance from '@/lib/axiosInstance';
 import { User } from '../models/User';
 import { useState } from 'react';
 import { API_PATHS } from '@/lib/api';
+import { Food } from '@/models/Food';
 // src/hooks/useProducts.ts
 
 
 
 
 export function useGetFoods() {
-  const [foods, setFoods] = useState<any[]>([]);
+  const [foods, setFoods] = useState<Food[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

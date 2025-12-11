@@ -2,19 +2,41 @@ const Tables = require("../../models/Table");
 const Order = require("../../models/Order");
 const OrderItems = require("../../models/OrderItem")
 // MASA LİSTELE
-// MASA LİSTELE (sade)
 exports.getTables = async (req, res) => {
   try {
+    // Tüm masaları çek
     const tables = await Tables.find();
 
-    const result = tables.map((table) => {
-      return {
+    const result = [];
+
+    for (const table of tables) {
+      let orderCreated = null;
+      let orderTotal = null;
+
+      // Masa doluysa aktif sipariş bilgisini al
+      if (table.status === "dolu" && table.currentOrderId) {
+        const order = await Order.findById(table.currentOrderId);
+
+        if (order) {
+          // Sipariş oluşma saati (HH:MM formatında)
+          const createdAt = new Date(order.createdAt);
+          const hours = createdAt.getHours().toString().padStart(2, "0");
+          const minutes = createdAt.getMinutes().toString().padStart(2, "0");
+
+          orderCreated = `${hours}:${minutes}`;
+          orderTotal = order.total;
+        }
+      }
+
+      result.push({
         _id: table._id,
         name: table.name,
-        status: table.status,        // bos / dolu
-        currentOrderId: table.currentOrderId || null
-      };
-    });
+        status: table.status,                // bos / dolu
+        currentOrderId: table.currentOrderId || null,
+        orderCreated,                        // "19:03"
+        orderTotal                           // Örn: 200
+      });
+    }
 
     return res.json({ success: true, data: result });
 
@@ -22,6 +44,7 @@ exports.getTables = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
+
 
 // TEK MASA GETİR
 // TEK MASA DETAY + ORDER + ORDER ITEMS

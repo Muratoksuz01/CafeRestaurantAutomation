@@ -12,12 +12,15 @@ import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { registerSchema } from "@/models/User";
 import { useEffect } from "react";
+import { getRole } from "@/lib/utils";
+import { useAuthControl } from "@/hooks/useAuthControl";
 
 
 
 
 export default function Register() {
     const { user,loading, error } = useSelector((state: RootState) => state.auth);
+    useAuthControl()
 
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
@@ -32,17 +35,7 @@ export default function Register() {
   });
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate()
-  useEffect(()=>{
-    let token=localStorage.getItem("token")
-    if(token){
-     if(user?.role=="admin")
-       navigate("/admin")
-     else if(user?.role=="user")
-      navigate("/user")
-     
-     
-   }
-   },[])
+
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     console.log("Register data:", data);
     // API çağrısı yapılabilir

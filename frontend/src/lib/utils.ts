@@ -11,6 +11,6 @@ export function cn(...inputs: ClassValue[]) {
 export function getRole(){
   const token=localStorage.getItem("token") || ""
   const decoded = jwtDecode<TokenPayload>(token);
-  return decoded.role === "admin" ? "admin" : decoded.role === "user" ? "user" :  "unknown"
+  return decoded.role 
 
 }

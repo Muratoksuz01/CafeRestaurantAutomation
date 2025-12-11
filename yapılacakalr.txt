@@ -4,7 +4,6 @@ kasiyer ve admin girişi olacak
 kasıyer masaları gorecek bunlara siperiş ekle cıkar odeme al vs yapacak 
 admin menu ekle cıkar guncelle olacak 
 kasıyer odeme olduugnda fişi nodejs sayesinde cıktı alır 
-
 login register icin githupdaki o siteyi 
 admin dashboard icin youtube var 
 kasiyer icin biz tasarlayacagız 
@@ -14,18 +13,14 @@ herseyı ile landing page dahil tamamlanmıs bir proje olacak
 
 
 
+about iletişim ekle 
+logout un ustunde bizimle iletişim ekranı goster 
 
 
 
 
 
 
-
-
-
-loginde loading icin bir componet ayarla 
-auth işlemleri 
-kasiyer girişi icin basit giriş meslea 2025+ random sayı girsin dogru ise girsin 
 
 
 

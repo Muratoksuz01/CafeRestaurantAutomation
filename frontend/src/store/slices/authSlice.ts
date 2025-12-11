@@ -121,9 +121,7 @@ const authSlice = createSlice({
         state.loading = false;
        // console.log("slice:", action);
         state.user = action.payload.data?.user || null;
-       // state.user?.role=getRole(action.payload.data.token)
-         state.token = action.payload.data.token;  // <-- sadece state'e yaz
-
+         state.token = action.payload.data.token;  
         localStorage.setItem("token", action.payload.data.token);
       })
       .addCase(loginUser.rejected, (state, action) => {
@@ -137,13 +135,11 @@ const authSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-      //  console.log(action.payload);
-
         if (action.payload.data.user) {
           state.user = action.payload.data.user;
+         state.token = action.payload.data.token; 
           localStorage.setItem("token", action.payload.data.token);
         }
-
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.loading = false;
@@ -156,12 +152,10 @@ const authSlice = createSlice({
       })
       .addCase(getUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
-      //  console.log("getuser slice gelen user degeri:", action || "bos deger ");  // burada doğru şekilde user gelir
         state.user = action.payload.data.user;  // sadece user'ı ata
       })
       .addCase(getUser.rejected, (state, action) => {
         state.loading = false;
-      //  console.log("getuser slice gelen action degeri:", action.payload as string)
         state.error = action.payload as string;
       });
   },

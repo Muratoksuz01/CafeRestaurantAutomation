@@ -21,7 +21,9 @@ export const allTableSchema = z.object({
   _id: z.string(),                     // MongoDB id string
   name: z.string(),
   status: z.enum(["bos", "dolu"]),
-  currentOrderId:z.string()                    // masa boşsa adisyon yok
+  currentOrderId:z.string() ,
+  orderCreated:z.string(),
+   orderTotal:z.string()                  // masa boşsa adisyon yok
 });
 export const tableCreateEditSchema = z.object({
     name: z.string().min(1, { message: "masa adı boş olamaz" }),

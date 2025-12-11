@@ -6,14 +6,14 @@ import { Textarea } from "@/components/ui/textarea";
 import { useEffect, useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
-import { foodSchema } from "@/models/Food";
+import { foodCreateSchema } from "@/models/Food";
 import { useGetCategory } from "@/hooks/useGetCategory";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select"
-export default function CreateFoodForm() {
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
+export default function CreateFoodForm({ onUpdate }: any) {
     const [loading, setLoading] = useState(false);
     const { categories, getCategories } = useGetCategory()
-    const { register, handleSubmit,control, reset, formState: { errors } } = useForm({
-        resolver: zodResolver(foodSchema),
+    const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
+        resolver: zodResolver(foodCreateSchema),
     });
     useEffect(() => {
         getCategories()
@@ -40,6 +40,7 @@ export default function CreateFoodForm() {
             });
             reset();
             console.log("Yemek oluşturuldu");
+            onUpdate?.(); // üst componentte listeyi güncelle
         } catch (err) {
             console.log(err);
         } finally {

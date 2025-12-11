@@ -19,7 +19,7 @@ import { useGetFoods } from "@/hooks/useGetFoods";
 interface EditFoodFormProps {
   food: any;
   onClose: () => void;
-  onUpdate?: (updatedFood: any) => void; // listeyi güncellemek için
+  onUpdate?: () => void; // listeyi güncellemek için
 }
 
 export default function EditFoodForm({ food, onClose, onUpdate }: EditFoodFormProps) {
@@ -64,7 +64,7 @@ export default function EditFoodForm({ food, onClose, onUpdate }: EditFoodFormPr
 
       if (res.data.success) {
         toast.success("Yemek güncellendi", successStyle);
-        onUpdate?.(data.data); // üst componentte listeyi güncelle
+        onUpdate?.(); // üst componentte listeyi güncelle
         onClose();
         reset()
       }
