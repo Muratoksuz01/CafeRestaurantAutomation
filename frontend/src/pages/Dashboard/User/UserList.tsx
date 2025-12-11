@@ -71,79 +71,122 @@ function UserList() {
 
   return (
     <div className="p-5">
-      <Button onClick={() => setCreateOpen(true)}>Yeni Masa</Button>
+  <div className="flex justify-between mb-5 pb-3 border-b">
+    <h2 className="text-xl font-semibold">Masalar</h2>
+    <Button onClick={() => setCreateOpen(true)}>Yeni Masa</Button>
+  </div>
 
-      <h2 className="text-xl font-semibold mb-4">Masalar</h2>
+  <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
+    <Table>
+      <TableHeader>
+        <TableRow className="bg-gray-50">
+          <TableHead className="py-4 text-gray-700 font-semibold">Sıra</TableHead>
+          <TableHead className="py-4 text-gray-700 font-semibold">Masa Adı</TableHead>
+          <TableHead className="py-4 text-gray-700 font-semibold">Durum</TableHead>
+          <TableHead className="py-4 text-right text-gray-700 font-semibold">İşlemler</TableHead>
+        </TableRow>
+      </TableHeader>
 
-      {/* TABLO */}
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>ID</TableHead>
-            <TableHead>Masa Adı</TableHead>
-            <TableHead>Durum</TableHead>
-            <TableHead className="text-right">İşlemler</TableHead>
+      <TableBody>
+        {tables.map((t, index) => (
+          <TableRow
+            key={t._id}
+            className="
+              transition-all 
+              hover:bg-gray-100/60
+              border-b
+            "
+          >
+            <TableCell className="font-medium py-4">{index + 1}</TableCell>
+
+            <TableCell className="font-medium py-4">
+              {t.name}
+            </TableCell>
+
+            <TableCell className="py-4">
+              {t.status === "dolu" ? (
+                <span
+                  className="
+                    inline-flex items-center 
+                    bg-red-600 text-white
+                    text-xs font-semibold 
+                    px-3 py-1.5
+                    rounded-full shadow-sm
+                  "
+                >
+                  Dolu
+                </span>
+              ) : (
+                <span
+                  className="
+                    inline-flex items-center 
+                    text-green-700 bg-green-100
+                    text-xs font-semibold 
+                    px-3 py-1.5
+                    rounded-full
+                    border border-green-300
+                  "
+                >
+                  Boş
+                </span>
+              )}
+            </TableCell>
+
+            <TableCell className="text-right space-x-2 py-4">
+              <Button
+                size="sm"
+                variant="outline"
+                className="rounded-lg"
+                onClick={() => openEdit(t)}
+              >
+                <Pencil size={16} />
+              </Button>
+
+              <Button
+                size="sm"
+                variant="destructive"
+                className="rounded-lg"
+                onClick={() => openDelete(t)}
+              >
+                <Trash2 size={16} />
+              </Button>
+            </TableCell>
           </TableRow>
-        </TableHeader>
+        ))}
+      </TableBody>
+    </Table>
+  </div>
 
-        <TableBody>
-          {tables.map(t => (
-            <TableRow key={t._id}>
-              <TableCell>{t._id}</TableCell>
-              <TableCell>{t.name}</TableCell>
-              <TableCell className={t.status === "dolu" ? "text-red-600" : "text-green-600"}>
-                {t.status}
-              </TableCell>
+  {/* Dialoglar */}
+  {editOpen && (
+    <EditTable
+      editOpen={editOpen}
+      setEditOpen={setEditOpen}
+      onEdit={saveEdit}
+      selectetTable={selected}
+    />
+  )}
 
-              <TableCell className="text-right space-x-2">
+  <CreateTable
+    createOpen={createOpen}
+    setCreateOpen={setCreateOpen}
+    onCreate={createTable}
+  />
 
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => openEdit(t)}
-                >
-                  <Pencil size={16} />
-                </Button>
+  <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+    <AlertDialogContent>
+      <AlertDialogHeader>
+        <AlertDialogTitle>Bu masayı silmek istiyor musun?</AlertDialogTitle>
+      </AlertDialogHeader>
 
-                <Button
-                  size="sm"
-                  variant="destructive"
-                  onClick={() => openDelete(t)}
-                >
-                  <Trash2 size={16} />
-                </Button>
+      <AlertDialogFooter>
+        <AlertDialogCancel>İptal</AlertDialogCancel>
+        <AlertDialogAction onClick={deleteTable}>Sil</AlertDialogAction>
+      </AlertDialogFooter>
+    </AlertDialogContent>
+  </AlertDialog>
+</div>
 
-              </TableCell>
-
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-
-      {/* EDIT DIALOG */}
-      {editOpen && <EditTable editOpen={editOpen} setEditOpen={setEditOpen} onEdit={saveEdit} selectetTable={selected} />
-      }
-      {/* CREATE DILALOG */}
-      <CreateTable createOpen={createOpen} setCreateOpen={setCreateOpen} onCreate={createTable} />
-      {/* DELETE ALERT DIALOG */}
-      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>
-              Bu masayı silmek istiyor musun?
-            </AlertDialogTitle>
-          </AlertDialogHeader>
-
-          <AlertDialogFooter>
-            <AlertDialogCancel>İptal</AlertDialogCancel>
-            <AlertDialogAction onClick={deleteTable}>
-              Sil
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
-
-    </div>
   );
 }
 

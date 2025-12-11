@@ -1,25 +1,28 @@
-backende nodejs 
-olacaklar normal landıng page olacak menu vs olacak 
-kasiyer ve admin girişi olacak 
-kasıyer masaları gorecek bunlara siperiş ekle cıkar odeme al vs yapacak 
-admin menu ekle cıkar guncelle olacak 
-kasıyer odeme olduugnda fişi nodejs sayesinde cıktı alır 
-login register icin githupdaki o siteyi 
-admin dashboard icin youtube var 
-kasiyer icin biz tasarlayacagız 
-herseyı ile landing page dahil tamamlanmıs bir proje olacak 
+satarken 
+- modemsunucu pc ye statik ıp veriyor mesela 192.168.1.20 bu static oluyor 
+- nodejs i bir pc ye kuruyouym o pc de o portunu local ağda açıyorum  mesela bu :5000 calissin
+- sonra ben build alıp bunu server pc de bir porta yerleştiriyorum ve  burada ayrıca kaynank kodlarda olacak  
+        acıyorum herkese mesela bu :5173 de calissin
+- pos ,yazarkasa bunlarda zaten loakl agda static oluyor diye biliyorum 
+nodejs bu işlemelrde o lokal aga istek atıp alacak 
+landing sayfasınıda zaten sirket bir pc yi server yapmıstı ona bir static ıp ve domain alacak bu işlemi bilmiyorum ogreniriz 
+diger client pc ler ise modem rasgele ıp veriyor 
+bir exe dosyası olusturuyourm bu dosya tarayıcıda 192.168.1.20:5173/login adresine gidecek 
 
 
 
 
 
-about iletişim ekle 
-logout un ustunde bizimle iletişim ekranı goster 
 
-
-
-
-
+                                                                        projeye devam edilirse 
+- user role sistemi olmalı 
+    patron canım sıkıldı mudur bu kısma erismesin artık demeli 
+- mutfak bolumu eklenir siparis gelir gelmez bir fis cıkarılır 
+- e ticaret sistemi oradan da siparis gelebilir 
+- masalar rezerve edilebilir  ve isşetmede kat olabilir 2.kattaki masaları goster mesela 
+- garson ile kasiyeri ayır 
+- patron icin gun raporu
+- gider tablosu ,malzeme tablosu 
 
 
 

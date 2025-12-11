@@ -1,6 +1,4 @@
 import { Button } from "@/components/ui/button";
-import { RootState } from "@/store";
-import { useSelector } from "react-redux";
 import { Link, useNavigate } from "react-router-dom";
 import { LuChrome, LuLogOut, LuUsers } from "react-icons/lu";
 
@@ -20,17 +18,14 @@ import { logout } from "@/store/slices/authSlice";
 import { getRole } from "@/lib/utils";
 export default function Sidebar() {
   const dispatch = useDispatch();
-  const { user } = useSelector((state: RootState) => state.auth);
   const navigate = useNavigate();
-  const role=getRole()
+  const role = getRole()
   const menuItems = role === "admin" ? adminItems : userItems;
 
   const onLogout = () => {
-    /* localStorage.clear();
-    navigate("/");
-    window.location.reload() */
-    dispatch(logout());   // Redux state temizlenir
-    navigate("/");  
+   
+    dispatch(logout());   
+    navigate("/login");
 
   };
 
@@ -60,7 +55,7 @@ export default function Sidebar() {
 
       <Button
         variant="destructive"
-        className="w-full mt-auto"
+        className="w-full mt-auto bg-gradient-to-r from-[#E83C91] to-[#FF8FB7] cursor-pointer" 
         onClick={onLogout}
       >
         <LuLogOut className="w-5 h-5" />

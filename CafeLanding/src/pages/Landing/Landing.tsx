@@ -104,7 +104,7 @@ export default function Landing() {
         </div>
 
         <div className="text-center mt-10">
-          <button className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700">Tüm Menüyü Gör</button>
+          <a  href={"/menu"} className="bg-orange-600 text-white px-6 py-3 rounded-lg hover:bg-orange-700">Tüm Menüyü Gör</a>
         </div>
       </section>
 

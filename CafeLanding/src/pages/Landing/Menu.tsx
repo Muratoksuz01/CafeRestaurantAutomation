@@ -14,7 +14,7 @@ function Menu() {
   useEffect(() => {
     getFoods();
     getCategories();
-    
+
   }, []);
 
   const filteredFoods = foods.filter((f) => {
@@ -57,31 +57,48 @@ function Menu() {
 
       {/* FOOD GRID */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
-        {filteredFoods.map((food) => (
-          <div
-            key={food._id}
-            className="border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all bg-white"
-          >
-            <div className="h-48 w-full overflow-hidden">
-              <img
-                src={`http://localhost:5000/file?path=${food.imgs[0]}`}
-                className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
-              />
+        {filteredFoods.map((food) => {
+          const hasTwoImages = food.imgs.length > 1;
+
+          return (
+            <div
+              key={food._id}
+              className="border rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all bg-white"
+            >
+              <div className="aspect-[4/3] w-full rounded-lg overflow-hidden relative"
+                onMouseMove={(e:any) => {
+                  const rect = e.currentTarget.getBoundingClientRect();
+                  const x = e.clientX - rect.left;
+                  if (!hasTwoImages) return;
+                  const half = rect.width / 2;
+                  e.currentTarget.querySelector("img").src =
+                    x < half
+                      ? `http://localhost:5000/file?path=${food.imgs[0]}`
+                      : `http://localhost:5000/file?path=${food.imgs[1]}`;
+                }}
+              >
+                <img
+                  src={`http://localhost:5000/file?path=${food.imgs[0]}`}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+
+              <div className="p-4 space-y-1">
+                <h3 className="font-semibold text-lg">{food.name}</h3>
+
+                <p className="text-gray-600 text-sm line-clamp-2">{food.description}</p>
+
+                <p className="text-red-600 font-medium">
+                  {categories.find((i) => i._id === food.categoryId)?.name || "Kategori Yok"}
+                </p>
+
+                <p className="font-bold text-xl mt-2">{food.price} ₺</p>
+              </div>
             </div>
-
-            <div className="p-4 space-y-1">
-              <h3 className="font-semibold text-lg">{food.name}</h3>
-              <p className="text-gray-600 text-sm line-clamp-2">{food.description}</p>
-
-              <p className="text-red-600 font-medium">
-                {categories.find((i) => i._id === food.categoryId)?.name || "Kategori Yok"}
-              </p>
-
-              <p className="font-bold text-xl mt-2">{food.price} ₺</p>
-            </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
 
     </div>
   );

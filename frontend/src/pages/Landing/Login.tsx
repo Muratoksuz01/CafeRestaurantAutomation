@@ -1,47 +1,39 @@
-"use client";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage, } from "@/components/ui/form";
+import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button";
-import { Link, useNavigate } from "react-router-dom";
-import { loginSchema } from "@/models/User";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "@/store";
-import { loginUser } from "@/store/slices/authSlice";
-import { toast } from "sonner";
-import { successStyle, warningStyle } from "@/lib/toastStyle";
-import { useEffect } from "react";
-import { useAuthControl } from "@/hooks/useAuthControl";
-import { getRole } from "@/lib/utils";
-
-// Validasyon şeması
-
-
+import { Button } from "@/components/ui/button"
+import { useForm } from "react-hook-form"
+import type { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useDispatch, useSelector } from "react-redux"
+import type { AppDispatch, RootState } from "@/store"
+import { loginUser } from "@/store/slices/authSlice"
+import { Link, useNavigate } from "react-router-dom"
+import { toast } from "sonner"
+import { successStyle, warningStyle } from "@/lib/toastStyle"
+import { loginSchema } from "@/models/User"
+import { Eye, EyeOff } from "lucide-react"
+import { useState } from "react"
+import { getRole } from "@/lib/utils"
 
 export default function Login() {
-  const { user, loading, error } = useSelector((state: RootState) => state.auth);
+  const { loading, error } = useSelector((state: RootState) => state.auth)
+  const [showPassword, setShowPassword] = useState(false)
+  const dispatch = useDispatch<AppDispatch>()
+  const navigate = useNavigate()
+
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "admin@example.com",
-      password: "12345678"
+      password: "12345678",
     },
-  });
-  const navigate = useNavigate()
-  useAuthControl()
+  })
 
-
-
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     console.log("Login data:", data);
     // Burada API çağrısı yapılabilir
     const res = await dispatch(loginUser(data));
-    console.log(res)
+   
     if (res.payload.success && res.payload.data) {
       if (getRole() == "admin") {
         navigate("/admin")
@@ -55,66 +47,113 @@ export default function Login() {
     } else {
       console.log(res.payload);
       toast.warning(error || "giris hatası ", warningStyle)
-
     }
   };
 
   return (
-    <div className="flex justify-center items-center min-h-[80vh] bg-gray-50 p-4">
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="bg-white p-8 rounded-md shadow-md w-full max-w-sm space-y-4"
-        >
-          <h2 className="text-2xl text-gray-800 font-semibold text-center">
-            Login
-          </h2>
+    <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-50 to-orange-100 flex items-center justify-center p-4">
+      {/* Background decorative element */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-amber-200 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-blob animation-delay-2000"></div>
+      </div>
 
-          <FormField
-            control={form.control}
-            name="email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Email</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="you@example.com" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      <div className="relative w-full max-w-md">
+        {/* Card with shadow */}
+        <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
+          {/* Logo and branding */}
+          <div className="flex flex-col items-center space-y-4">
+           
+            <div className="text-center">
+              <h1 className="text-3xl font-bold text-slate-900">Cafe System</h1>
+              <p className="text-sm text-slate-600 mt-2">Kahve dükkanınızı yönetin</p>
+            </div>
+          </div>
 
-          <FormField
-            control={form.control}
-            name="password"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Şifre</FormLabel>
-                <FormControl>
-                  <Input {...field} type="password" placeholder="••••••" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+          {/* Form */}
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              <FormField
+                control={form.control}
+                name="email"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 font-medium">E-posta</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        type="email"
+                        placeholder="ornek@email.com"
+                        className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-          <Button
-            type="submit"
-            className="w-full mt-2"
-            disabled={loading}
-          >
-            {loading ? "Giriş Yapılıyor..." : "Giriş Yap"}
-          </Button>
+              <FormField
+                control={form.control}
+                name="password"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-slate-700 font-medium">Şifre</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Input
+                          {...field}
+                          type={showPassword ? "text" : "password"}
+                          placeholder="••••••••"
+                          className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg pr-10"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowPassword(!showPassword)}
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                        >
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                        </button>
+                      </div>
+                    </FormControl>
+                    <FormMessage className="text-red-500" />
+                  </FormItem>
+                )}
+              />
 
-          <p className="text-sm text-gray-600 text-center">
-            Hesabınız yok mu?{" "}
-            <Link to="/register" className="text-blue-600 hover:underline">
-              Kayıt Ol
-            </Link>
-          </p>
-        </form>
-      </Form>
+              <Button
+                type="submit"
+                disabled={loading}
+                className="w-full bg-gradient-to-r from-amber-600 to-orange-600 hover:from-amber-700 hover:to-orange-700 text-white font-semibold py-3 rounded-lg transition-all duration-300 shadow-lg hover:shadow-xl"
+              >
+                {loading ? "Giriş yapılıyor..." : "Giriş Yap"}
+              </Button>
+            </form>
+          </Form>
+
+          {/* Divider */}
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-slate-200"></div>
+            </div>
+            <div className="relative flex justify-center text-sm">
+              <span className="px-2 bg-white text-slate-500">veya</span>
+            </div>
+          </div>
+
+          {/* Register link */}
+          <div className="text-center">
+            <p className="text-slate-600 text-sm">
+              Henüz hesabınız yok mu?{" "}
+              <Link to="/register" className="text-amber-600 hover:text-amber-700 font-semibold transition-colors">
+                Kayıt Ol
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        {/* Footer text */}
+        <p className="text-center text-slate-600 text-xs mt-6">© 2025 Cafe System. Tüm hakları saklıdır.</p>
+      </div>
     </div>
-  );
+  )
 }
