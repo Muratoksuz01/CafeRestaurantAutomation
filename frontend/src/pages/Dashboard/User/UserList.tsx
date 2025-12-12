@@ -1,14 +1,8 @@
-import {
-  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogFooter, AlertDialogAction, AlertDialogCancel } from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
 import { Pencil, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetTables } from "@/hooks/useGetTables";
@@ -17,11 +11,15 @@ import EditTable from "./editTable";
 import CreateTable from "./CreateTable";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
-
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 function UserList() {
-  // const [tables, setTables] = useState<TableType[]>(initialTables);
-
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false)
@@ -39,11 +37,7 @@ function UserList() {
     setSelected(t);
     setEditOpen(true);
   };
-  const saveEdit = () => {
-    // if (!selected) return;
-    getTables()
-    // setEditOpen(false);
-  };
+  
 
   const openDelete = (t: AllTable) => {
     if (t.status === "dolu") {
@@ -65,60 +59,99 @@ function UserList() {
     }
     setDeleteOpen(false);
   };
-  const createTable = async () => {
+  const onSuccess = async () => {
     getTables();
   };
+  const [search, setSearch] = useState("");
+  const [statusFilter, setStatusFilter] =
+    useState<"all" | "dolu" | "bos">("all");
+  const filteredTables = useMemo(() => {
+    return tables.filter((t) => {
+      const matchSearch = t.name.toLowerCase().includes(search.toLowerCase());
+      const matchStatus =
+        statusFilter === "all"
+          ? true
+          : statusFilter === "dolu"
+            ? t.status === "dolu"
+            : t.status !== "dolu";
 
+      return matchSearch && matchStatus;
+    });
+  }, [tables, search, statusFilter]);
+
+  // Dolu masalar
+ 
   return (
     <div className="p-5">
-  <div className="flex justify-between mb-5 pb-3 border-b">
-    <h2 className="text-xl font-semibold">Masalar</h2>
-    <Button onClick={() => setCreateOpen(true)}>Yeni Masa</Button>
-  </div>
+      <div className="flex justify-between mb-5 pb-3 border-b">
+        <h2 className="text-xl font-semibold">Masalar</h2>
+        {/*search and fileter alanı */}
+        <div className="flex gap-3 items-center">
+          <input
+            type="text"
+            placeholder="Masa ara..."
+            className="border px-3 py-2 rounded-md"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+          <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
+            <SelectTrigger className="w-[160px] rounded-xl bg-white shadow-sm border-gray-300">
+              <SelectValue placeholder="Durum seç" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl shadow-lg">
+              <SelectItem value="all">Hepsi</SelectItem>
+              <SelectItem value="dolu">Dolu</SelectItem>
+              <SelectItem value="bos">Boş</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <Button onClick={() => setCreateOpen(true)}>Yeni Masa</Button>
 
-  <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
-    <Table>
-      <TableHeader>
-        <TableRow className="bg-gray-50">
-          <TableHead className="py-4 text-gray-700 font-semibold">Sıra</TableHead>
-          <TableHead className="py-4 text-gray-700 font-semibold">Masa Adı</TableHead>
-          <TableHead className="py-4 text-gray-700 font-semibold">Durum</TableHead>
-          <TableHead className="py-4 text-right text-gray-700 font-semibold">İşlemler</TableHead>
-        </TableRow>
-      </TableHeader>
+      </div>
 
-      <TableBody>
-        {tables.map((t, index) => (
-          <TableRow
-            key={t._id}
-            className="
+      <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
+        <Table>
+          <TableHeader>
+            <TableRow className="bg-gray-50">
+              <TableHead className="py-4 text-gray-700 font-semibold">Sıra</TableHead>
+              <TableHead className="py-4 text-gray-700 font-semibold">Masa Adı</TableHead>
+              <TableHead className="py-4 text-gray-700 font-semibold">Durum</TableHead>
+              <TableHead className="py-4 text-right text-gray-700 font-semibold">İşlemler</TableHead>
+            </TableRow>
+          </TableHeader>
+
+          <TableBody>
+            {filteredTables.map((t, index) => (
+              <TableRow
+                key={t._id}
+                className="
               transition-all 
               hover:bg-gray-100/60
               border-b
             "
-          >
-            <TableCell className="font-medium py-4">{index + 1}</TableCell>
+              >
+                <TableCell className="font-medium py-4">{index + 1}</TableCell>
 
-            <TableCell className="font-medium py-4">
-              {t.name}
-            </TableCell>
+                <TableCell className="font-medium py-4">
+                  {t.name}
+                </TableCell>
 
-            <TableCell className="py-4">
-              {t.status === "dolu" ? (
-                <span
-                  className="
+                <TableCell className="py-4">
+                  {t.status === "dolu" ? (
+                    <span
+                      className="
                     inline-flex items-center 
                     bg-red-600 text-white
                     text-xs font-semibold 
                     px-3 py-1.5
                     rounded-full shadow-sm
                   "
-                >
-                  Dolu
-                </span>
-              ) : (
-                <span
-                  className="
+                    >
+                      Dolu
+                    </span>
+                  ) : (
+                    <span
+                      className="
                     inline-flex items-center 
                     text-green-700 bg-green-100
                     text-xs font-semibold 
@@ -126,66 +159,66 @@ function UserList() {
                     rounded-full
                     border border-green-300
                   "
-                >
-                  Boş
-                </span>
-              )}
-            </TableCell>
+                    >
+                      Boş
+                    </span>
+                  )}
+                </TableCell>
 
-            <TableCell className="text-right space-x-2 py-4">
-              <Button
-                size="sm"
-                variant="outline"
-                className="rounded-lg"
-                onClick={() => openEdit(t)}
-              >
-                <Pencil size={16} />
-              </Button>
+                <TableCell className="text-right space-x-2 py-4">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    className="rounded-lg"
+                    onClick={() => openEdit(t)}
+                  >
+                    <Pencil size={16} />
+                  </Button>
 
-              <Button
-                size="sm"
-                variant="destructive"
-                className="rounded-lg"
-                onClick={() => openDelete(t)}
-              >
-                <Trash2 size={16} />
-              </Button>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  </div>
+                  <Button
+                    size="sm"
+                    variant="destructive"
+                    className="rounded-lg"
+                    onClick={() => openDelete(t)}
+                  >
+                    <Trash2 size={16} />
+                  </Button>
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
 
-  {/* Dialoglar */}
-  {editOpen && (
-    <EditTable
-      editOpen={editOpen}
-      setEditOpen={setEditOpen}
-      onEdit={saveEdit}
-      selectetTable={selected}
-    />
-  )}
+      {/* Dialoglar */}
+      {editOpen && (
+        <EditTable
+          editOpen={editOpen}
+          setEditOpen={setEditOpen}
+          onEdit={onSuccess}
+          selectetTable={selected}
+        />
+      )}
 
-  <CreateTable
-    createOpen={createOpen}
-    setCreateOpen={setCreateOpen}
-    onCreate={createTable}
-  />
+      <CreateTable
+        createOpen={createOpen}
+        setCreateOpen={setCreateOpen}
+        onCreate={onSuccess}
+      />
 
-  <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
-    <AlertDialogContent>
-      <AlertDialogHeader>
-        <AlertDialogTitle>Bu masayı silmek istiyor musun?</AlertDialogTitle>
-      </AlertDialogHeader>
+      <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Bu masayı silmek istiyor musun?</AlertDialogTitle>
+          </AlertDialogHeader>
 
-      <AlertDialogFooter>
-        <AlertDialogCancel>İptal</AlertDialogCancel>
-        <AlertDialogAction onClick={deleteTable}>Sil</AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
-  </AlertDialog>
-</div>
+          <AlertDialogFooter>
+            <AlertDialogCancel>İptal</AlertDialogCancel>
+            <AlertDialogAction onClick={deleteTable}>Sil</AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </div>
 
   );
 }

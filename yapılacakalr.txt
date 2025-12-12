@@ -1,28 +1,29 @@
 satarken 
-- modemsunucu pc ye statik ıp veriyor mesela 192.168.1.20 bu static oluyor 
-- nodejs i bir pc ye kuruyouym o pc de o portunu local ağda açıyorum  mesela bu :5000 calissin
-- sonra ben build alıp bunu server pc de bir porta yerleştiriyorum ve  burada ayrıca kaynank kodlarda olacak  
+- modem sunucu pc ye statik ıp veriyor mesela 192.168.1.20 bu static oluyor 
+- nodejs i bir pc ye kuruyorsun ve  o pc de o portu local ağda açıyorum  mesela bu :5000 portunda calissin
+- sonra ben build alıp bunu server pc de bir porta yerleştiriyorum ve bir portunu  
         acıyorum herkese mesela bu :5173 de calissin
-- pos ,yazarkasa bunlarda zaten loakl agda static oluyor diye biliyorum 
+- pos ,yazarkasa bunlarda zaten lokal agda static oluyor diye biliyorum  yanliş olabilr bunu arastır 
 nodejs bu işlemelrde o lokal aga istek atıp alacak 
 landing sayfasınıda zaten sirket bir pc yi server yapmıstı ona bir static ıp ve domain alacak bu işlemi bilmiyorum ogreniriz 
 diger client pc ler ise modem rasgele ıp veriyor 
+- suanda mongo db kullanıyourm yeni bir tablo gelirse otomatik olusturuyor kendisi haa olmazsa frontend e bir btn koyarız tıkladıgında benim gonderdigim script dosyasını caliştiracak ve tablolar otomatik entegre edilmiş olacak 
+- kurarken server pc ye mongodb yide kurman gerek
 bir exe dosyası olusturuyourm bu dosya tarayıcıda 192.168.1.20:5173/login adresine gidecek 
 
 
 
 
 
-
                                                                         projeye devam edilirse 
-- user role sistemi olmalı 
-    patron canım sıkıldı mudur bu kısma erismesin artık demeli 
-- mutfak bolumu eklenir siparis gelir gelmez bir fis cıkarılır 
-- e ticaret sistemi oradan da siparis gelebilir 
-- masalar rezerve edilebilir  ve isşetmede kat olabilir 2.kattaki masaları goster mesela 
-- garson ile kasiyeri ayır 
-- patron icin gun raporu
-- gider tablosu ,malzeme tablosu 
+- user role sistemi olmalı                                                                      4 iş gunu
+    patron canım sıkıldı mudur bu kısma erismesin artık demeli  
+- mutfak bolumu eklenir siparis gelir gelmez bir fis cıkarılır  websocet                        4iş gunu
+- e ticaret sistemi oradan da siparis gelebilir                                                 apıleri vs arastırmak gerekir 
+- masalar rezerve edilebilir  ve isşetmede kat olabilir 2.kattaki masaları goster mesela          .5 iş gunu
+- garson ile kasiyeri ayır                                                                         2 iş gunu
+- patron icin gun raporu                                                                            .5 iş gunu
+- gider tablosu ,malzeme tablosu                                                                    giderleri belirlerdikten sonra .5 iş gunu 
 
 
 

@@ -112,6 +112,7 @@ export default function UserOverview() {
           selectedTable={selectedTable}
           onChange={onChange}
           allTable={tables}
+          setSelectedTable={setSelectedTable}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-import {jwtDecode} from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -12,14 +12,13 @@ export function useAuthControl() {
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
+    if (token) {
+      const decoded = jwtDecode<TokenPayload>(token);
+
+      if (decoded.role === "admin") navigate("/admin/overview");
+      else if (decoded.role === "user") navigate("/user/overview");
+      else navigate("/login")
       return;
     }
-
-    const decoded = jwtDecode<TokenPayload>(token);
-
-    if (decoded.role === "admin") navigate("/admin/overview");
-    if (decoded.role === "user") navigate("/user/overview");
   }, []);
 }

@@ -274,13 +274,13 @@ exports.deleteOrder = async (req, res) => {
   try {
     const { orderId } = req.body;
     if (!orderId) {
-      return res.status(204).json({ success: false, message: "orderId gerekli" });
+      return res.status(200).json({ success: false, message: "orderId gerekli" });
     }
 
     // Order var mı?
     const order = await Order.findById(orderId);
     if (!order) {
-      return res.status(204).json({ success: false, message: "Adisyon bulunamadı" });
+      return res.status(200).json({ success: false, message: "Adisyon bulunamadı" });
     }
     // OrderItems varsa sil
     if (order.orderItems && order.orderItems.length > 0) {

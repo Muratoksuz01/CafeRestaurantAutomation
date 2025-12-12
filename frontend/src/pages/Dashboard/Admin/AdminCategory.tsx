@@ -17,10 +17,11 @@ import { API_PATHS } from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetFoods } from "@/hooks/useGetFoods";
+import { Pencil, X } from "lucide-react";
 
 export default function AdminCategory() {
     const { categories, loading, error, getCategories } = useGetCategory();
-    const {foods,getFoods} =useGetFoods()
+    const { foods, getFoods } = useGetFoods()
     const [showDelete, setShowDelete] = useState(false)
     const [showCreate, setShowCreate] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
@@ -92,13 +93,15 @@ export default function AdminCategory() {
             ) : error ? (
                 <p className="text-red-500">{error}</p>
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-6 md:grid-cols-5 sm:grid-cols-3 gap-4">
                     {categories.map(cat => (
-                        <div key={cat._id} className="p-4 border rounded-lg shadow-sm flex flex-col justify-between">
+                        <div key={cat._id} className="p-4 border rounded-lg shadow-sm flex flex-col bg-white justify-between">
                             <h2 className="font-semibold text-lg mb-2">{cat.name}</h2>
                             <div className="flex gap-2 mt-4">
                                 <Button
-                                    variant="secondary"
+                                    variant="outline"
+                                    className="h-8 gap-2 border-green-500/50 text-green-600 hover:bg-green-500/10 hover:text-green-600 bg-transparent"
+
                                     size="sm"
                                     onClick={() => {
                                         setSelectedCategory(cat);
@@ -106,17 +109,21 @@ export default function AdminCategory() {
                                         setShowEdit(true);
                                     }}
                                 >
+                                    <Pencil />
                                     Düzenle
                                 </Button>
 
                                 <Button
-                                    variant="destructive"
+                                    variant="outline"
+                                className="h-8 gap-2 border-rose-500/50 text-rose-600 hover:bg-rose-500/10 hover:text-rose-600 bg-transparent"
+                                      
                                     size="sm"
                                     onClick={() => {
                                         setSelectedCategory(cat); // Silinecek kategoriyi seç
                                         setShowDelete(true);       // AlertDialog'u aç
                                     }}
                                 >
+                                     <X className="h-4 w-4" />
                                     Sil
                                 </Button>
                             </div>
@@ -168,85 +175,85 @@ export default function AdminCategory() {
             </Dialog>
 
             {/* DELETE CATEGORY DIALOG WITH OPTIONS */}
-<AlertDialog open={showDelete} onOpenChange={setShowDelete}>
-    <AlertDialogContent>
-        <AlertDialogHeader>
-            <AlertDialogTitle>Kategori silinsin mi?</AlertDialogTitle>
+            <AlertDialog open={showDelete} onOpenChange={setShowDelete}>
+                <AlertDialogContent>
+                    <AlertDialogHeader>
+                        <AlertDialogTitle>Kategori silinsin mi?</AlertDialogTitle>
 
-            {selectedCategory && foods.some(f => f.categoryId === selectedCategory._id) ? (
-                <AlertDialogDescription className="text-red-600">
-                    Bu kategoriye bağlı ürünler var. Bir seçenek seçmelisin:
-                </AlertDialogDescription>
-            ) : (
-                <AlertDialogDescription>
-                    Bu işlem geri alınamaz.
-                </AlertDialogDescription>
-            )}
-        </AlertDialogHeader>
+                        {selectedCategory && foods.some(f => f.categoryId === selectedCategory._id) ? (
+                            <AlertDialogDescription className="text-red-600">
+                                Bu kategoriye bağlı ürünler var. Bir seçenek seçmelisin:
+                            </AlertDialogDescription>
+                        ) : (
+                            <AlertDialogDescription>
+                                Bu işlem geri alınamaz.
+                            </AlertDialogDescription>
+                        )}
+                    </AlertDialogHeader>
 
-        {/* Eğer bu kategoriye bağlı ürün varsa seçenekleri göster */}
-        {selectedCategory && foods.some(f => f.categoryId === selectedCategory._id) && (
-            <div className="space-y-4 mt-4">
-                {/* OPTION 1 */}
-                <Button
-                    variant="destructive"
-                    className="w-full"
-                    onClick={() => handleDelete(selectedCategory._id)}
-                >
-                    Kategoriyi ve bağlı tüm ürünleri sil
-                </Button>
+                    {/* Eğer bu kategoriye bağlı ürün varsa seçenekleri göster */}
+                    {selectedCategory && foods.some(f => f.categoryId === selectedCategory._id) && (
+                        <div className="space-y-4 mt-4">
+                            {/* OPTION 1 */}
+                            <Button
+                                variant="destructive"
+                                className="w-full"
+                                onClick={() => handleDelete(selectedCategory._id)}
+                            >
+                                Kategoriyi ve bağlı tüm ürünleri sil
+                            </Button>
 
-                {/* OPTION 2 */}
-                <div className="space-y-2">
-                    <p>Bu kategoriye bağlı ürünlerin yeni kategorisini seç:</p>
-                    <select
-                        className="border p-2 w-full rounded"
-                        onChange={(e) => setSelectedCategory((prev :any) => ({ ...prev, newCategoryId: e.target.value }))}
-                    >
-                        <option value="">Kategori seç</option>
-                        {categories
-                            .filter(c => c._id !== selectedCategory._id)
-                            .map(c => (
-                                <option key={c._id} value={c._id}>{c.name}</option>
-                            ))
-                        }
-                    </select>
+                            {/* OPTION 2 */}
+                            <div className="space-y-2">
+                                <p>Bu kategoriye bağlı ürünlerin yeni kategorisini seç:</p>
+                                <select
+                                    className="border p-2 w-full rounded"
+                                    onChange={(e) => setSelectedCategory((prev: any) => ({ ...prev, newCategoryId: e.target.value }))}
+                                >
+                                    <option value="">Kategori seç</option>
+                                    {categories
+                                        .filter(c => c._id !== selectedCategory._id)
+                                        .map(c => (
+                                            <option key={c._id} value={c._id}>{c.name}</option>
+                                        ))
+                                    }
+                                </select>
 
-                    <Button
-                        disabled={!selectedCategory.newCategoryId}
-                        className="w-full"
-                        onClick={async () => {
-                            const { data } = await axiosInstance.put(
-                                API_PATHS.reassignFoods(selectedCategory._id),
-                                { newCategoryId: selectedCategory.newCategoryId }
-                            );
+                                <Button
+                                    disabled={!selectedCategory.newCategoryId}
+                                    className="w-full"
+                                    onClick={async () => {
+                                        const { data } = await axiosInstance.put(
+                                            API_PATHS.reassignFoods(selectedCategory._id),
+                                            { newCategoryId: selectedCategory.newCategoryId }
+                                        );
 
-                            if (data.success) {
-                                toast.success("Ürünler yeni kategoriye taşındı", successStyle);
-                                handleDelete(selectedCategory._id);
-                            }
-                        }}
-                    >
-                        Kategoriyi sil ve ürünleri bu kategoriye taşı
-                    </Button>
-                </div>
-            </div>
-        )}
+                                        if (data.success) {
+                                            toast.success("Ürünler yeni kategoriye taşındı", successStyle);
+                                            handleDelete(selectedCategory._id);
+                                        }
+                                    }}
+                                >
+                                    Kategoriyi sil ve ürünleri bu kategoriye taşı
+                                </Button>
+                            </div>
+                        </div>
+                    )}
 
-        {/* Eğer bağlı ürün yoksa eski basit dialog */}
-        {!selectedCategory || !foods.some(f => f.categoryId === selectedCategory._id) && (
-            <AlertDialogFooter>
-                <Button variant="outline" onClick={() => setShowDelete(false)}>İptal</Button>
-                <Button
-                    variant="destructive"
-                    onClick={() => handleDelete(selectedCategory._id)}
-                >
-                    Sil
-                </Button>
-            </AlertDialogFooter>
-        )}
-    </AlertDialogContent>
-</AlertDialog>
+                    {/* Eğer bağlı ürün yoksa eski basit dialog */}
+                    {!selectedCategory || !foods.some(f => f.categoryId === selectedCategory._id) && (
+                        <AlertDialogFooter>
+                            <Button variant="outline" onClick={() => setShowDelete(false)}>İptal</Button>
+                            <Button
+                                variant="destructive"
+                                onClick={() => handleDelete(selectedCategory._id)}
+                            >
+                                Sil
+                            </Button>
+                        </AlertDialogFooter>
+                    )}
+                </AlertDialogContent>
+            </AlertDialog>
 
         </div>
     );

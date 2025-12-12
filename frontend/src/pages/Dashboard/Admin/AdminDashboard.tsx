@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuthControl } from "@/hooks/useAuthControl";
 
 function AdminDashboard() {
-    const { user, loading, error } = useSelector((state: RootState) => state.auth);
+   // const { user, loading, error } = useSelector((state: RootState) => state.auth);
 const navigate=useNavigate()
     useEffect(() => {
       useAuthControl();

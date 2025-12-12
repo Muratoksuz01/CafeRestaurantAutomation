@@ -2,15 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { authenticateToken } = require('../middleware/auth');
 const {getTables,getTable,editTable,deleteTable, createTable, createOrder,editOrder,deleteOrder,getPaid,reassignTables} =require("../controllers/user/userController")
-router.get('/getTables',getTables );
-router.get('/getTable',getTable );
-router.delete('/deleteTable/:id',deleteTable );
-router.put('/editTable/:id',editTable );
-router.post("/createTable",createTable)
-router.post("/createOrder",createOrder)
-router.post("/editOrder",editOrder)
-router.delete("/deleteOrder",deleteOrder)
-router.post("/paidOrder",getPaid)
-router.put('/reassign',reassignTables );
+router.get('/getTables',authenticateToken,getTables );
+router.get('/getTable',authenticateToken,getTable );
+router.delete('/deleteTable/:id',authenticateToken,deleteTable );
+router.put('/editTable/:id',authenticateToken,editTable );
+router.post("/createTable",authenticateToken,createTable)
+router.post("/createOrder",authenticateToken,createOrder)
+router.post("/editOrder",authenticateToken,editOrder)
+router.delete("/deleteOrder",authenticateToken,deleteOrder)
+router.post("/paidOrder",authenticateToken,getPaid)
+router.put('/reassign',authenticateToken,reassignTables );
 
 module.exports = router;

@@ -13,7 +13,7 @@ import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { AllTable } from "@/models/Tables";
 type Basket = Food & { qty: number };
-function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any }) {
+function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,setSelectedTable}: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any ,setSelectedTable:any}) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
   const [deleteAlert, setDeleteAlert] = useState(false)
@@ -97,15 +97,21 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
   };
   const deleteOrder = async () => {
     // once dlete alert gosterecegiz sonra sipariş silinsin 
-    console.log(selectedTable)
+    if (!selectedTable?.currentOrderId){
+      toast.warning("once siparis olusturmalısınız",warningStyle)
+      return;
+    }
     const res = await axiosInstance.delete(API_PATHS.deleteOrder, {
       data: { orderId: selectedTable?.currentOrderId }
     });
+    console.log(res.data)
     if (res.data.success) {
       resetBasket()
       setOpen(false)
       toast.success("sipairis silindi", successStyle)
       onChange && onChange()
+    }else{
+      toast.warning(res.data.message || "istek hatası ",warningStyle)
     }
   }
   const odemeAl = async () => {
@@ -131,7 +137,6 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
   }
   const onClose = () => {
     const changed = JSON.stringify(basket) !== JSON.stringify(originalBasket);
-
     if (changed) {
       toast.warning("degiişklikler kaydediilmedi", warningStyle)
     } else {
@@ -140,9 +145,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
     }
   }
   const fetchTable = async (id: string) => {
-    console.log("vlişti");
-
-    const res = await axiosInstance.get(API_PATHS.getTable, {
+     const res = await axiosInstance.get(API_PATHS.getTable, {
       params: { id: id }
     })
     if (res.data.success) {
@@ -164,20 +167,13 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
       toast.error(res.data.message, warningStyle)
     }
   }
-  useEffect(() => {
-    console.log("calişri");
-    
+  useEffect(() => { 
     if (selectedTable ) {
       console.log(selectedTable);
-
       getCategories()
       getFoods();
-      console.log("id:", selectedTable?._id);
-
       fetchTable(selectedTable?._id || "")
-    }
-
-
+    } 
   }, [selectedTable]);
 
   const filteredFoods = foods
@@ -206,7 +202,12 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
   return (
     <>
 
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={() => {
+        setSelectedTable({})
+        setBasket([])
+        setOriginalBasket([])
+        setOpen(false)
+      }}>
         <DialogContent
           className="w-full max-w-[95vw] h-[85vh] p-0 flex flex-col overflow-hidden md:flex-row md:max-w-[1200px] "
         >
@@ -260,7 +261,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable }
                         <Button
                           size="sm"
                           variant="outline"
-                          onClick={() => removeFood(food._id)}
+                          onClick={() => removeFood(String(food._id))}
                         >
                           -
                         </Button>

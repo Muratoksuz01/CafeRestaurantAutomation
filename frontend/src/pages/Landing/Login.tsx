@@ -14,13 +14,14 @@ import { loginSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
 import { getRole } from "@/lib/utils"
+import { useAuthControl } from "@/hooks/useAuthControl"
 
 export default function Login() {
   const { loading, error } = useSelector((state: RootState) => state.auth)
   const [showPassword, setShowPassword] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-
+useAuthControl()
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -37,16 +38,16 @@ const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     if (res.payload.success && res.payload.data) {
       if (getRole() == "admin") {
         navigate("/admin")
-        toast.success("giriş yapıldı admin olarak", successStyle)
+        toast.success("Yönetici olarak Giriş yapıldı", successStyle)
       }
       if (getRole() == "user") {
         navigate("/user")
-        toast.success("giriş yapıldı user olarak", successStyle)
+        toast.success("Calışan olarak Giriş yapıldı", successStyle)
       }
 
     } else {
       console.log(res.payload);
-      toast.warning(error || "giris hatası ", warningStyle)
+      toast.warning(error || res.payload || "giris hatası ", warningStyle)
     }
   };
 

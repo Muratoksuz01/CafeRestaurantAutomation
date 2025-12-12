@@ -13,6 +13,7 @@ import { successStyle, warningStyle } from "@/lib/toastStyle"
 import { registerSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
+import { useAuthControl } from "@/hooks/useAuthControl"
 
 export default function Register() {
   const { loading } = useSelector((state: RootState) => state.auth)
@@ -31,6 +32,7 @@ export default function Register() {
       adminCode: "",
     },
   })
+useAuthControl()
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     const res = await dispatch(registerUser(data))
