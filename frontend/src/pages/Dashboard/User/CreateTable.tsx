@@ -1,31 +1,49 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { API_PATHS } from "@/lib/api";
-import axiosInstance from "@/lib/axiosInstance";
-import { successStyle } from "@/lib/toastStyle";
-import { tableCreateEditSchema } from "@/models/Tables"; 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
+"use client"
 
-function CreateTable({ createOpen, setCreateOpen, onCreate }: any) {
+import { Button } from "@/components/ui/button"
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { API_PATHS } from "@/lib/api"
+import axiosInstance from "@/lib/axiosInstance"
+import { successStyle } from "@/lib/toastStyle"
+import { cn } from "@/lib/utils"
+import { tableCreateEditSchema } from "@/models/Tables"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { Check, ChevronsUpDown, Plus } from "lucide-react"
+import { useState } from "react"
+import { Controller, useForm } from "react-hook-form"
+import { toast } from "sonner"
 
-  const { register, handleSubmit, reset, formState: { errors } } = useForm({
+function CreateTable({ createOpen, setCreateOpen, onCreate, locations }: any) {
+  const [open, setOpen] = useState(false)
+  const [searchValue, setSearchValue] = useState("")
+
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm({
     resolver: zodResolver(tableCreateEditSchema),
-  });
+  })
 
-  const onsubmit =async (data: any) => {
-    // üst component create isteğini gönderecek
-   const res= await axiosInstance.post(API_PATHS.createTable,data)
-   if(res.data.success){
-     toast.success("masa eklendi",successStyle)
-     if (onCreate) onCreate();
-   }
-    reset();  
-    setCreateOpen(false); 
-  };
+
+
+
+ 
+  const onsubmit = async (data: any) => {
+    const res = await axiosInstance.post(API_PATHS.createTable, data)
+    if (res.data.success) {
+      toast.success("Masa eklendi", successStyle)
+      if (onCreate) onCreate()
+    }
+    reset()
+    setCreateOpen(false)
+  }
+
 
   return (
     <Dialog open={createOpen} onOpenChange={setCreateOpen}>
@@ -35,21 +53,19 @@ function CreateTable({ createOpen, setCreateOpen, onCreate }: any) {
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onsubmit)} className="flex flex-col gap-4">
-
           <div className="flex flex-col gap-2">
             <Label>Masa Adı</Label>
             <Input {...register("name")} />
-            {errors.name && (
-              <span className="text-red-500 text-sm">{errors.name.message}</span>
-            )}
+            {errors.name && <span className="text-red-500 text-sm">{errors.name.message as string}</span>}
           </div>
+
+         
 
           <Button type="submit">Ekle</Button>
         </form>
-
       </DialogContent>
     </Dialog>
-  );
+  )
 }
 
-export default CreateTable;
+export default CreateTable

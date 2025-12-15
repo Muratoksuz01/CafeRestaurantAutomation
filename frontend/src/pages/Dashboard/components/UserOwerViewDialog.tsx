@@ -12,8 +12,10 @@ import CustomAlertDialog from "@/components/CustomAlertDialog";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { AllTable } from "@/models/Tables";
+import { useSelector } from "react-redux";
+import { RootState } from "@/store";
 type Basket = Food & { qty: number };
-function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,setSelectedTable}: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any ,setSelectedTable:any}) {
+function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
   const [deleteAlert, setDeleteAlert] = useState(false)
@@ -24,8 +26,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
   const [basket, setBasket] = useState<Basket[]>([]);
   const total = basket && basket.reduce((sum, f) => sum + f.price * f.qty, 0);
   const resetBasket = () => setBasket([]);
-
-  const addFood = (food: Food) => {
+  const { user } = useSelector((state: RootState) => state.auth); const addFood = (food: Food) => {
     if (!basket) {
       setBasket([{ ...food, qty: 1 }]);
       return;
@@ -34,9 +35,6 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
     if (existing) setBasket(basket.map(b => b._id === food._id ? { ...b, qty: b.qty + 1 } : b));
     else setBasket([...basket, { ...food, qty: 1 }]);
   };
-
-
-
   const confirmBasket = async () => {
     const changed = JSON.stringify(basket) !== JSON.stringify(originalBasket);
     const hasOriginal = originalBasket && originalBasket.length > 0;
@@ -50,7 +48,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
         return;
       }
 
-      const res = await axiosInstance.post(API_PATHS.createOrder, { tableId: selectedTable?._id, basket, total })
+      const res = await axiosInstance.post(API_PATHS.createOrder, { tableId: selectedTable?._id, basket, total})
       if (res.data.success) {
         toast.success("basarılı bir sekilde kaydedildi", successStyle)
         setOpen(false); setBasket([]);
@@ -88,7 +86,6 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
 
 
   };
-
   const removeFood = (foodId: string) => {
     const existing = basket.find(b => String(b._id) === foodId);
     if (!existing) return;
@@ -97,8 +94,8 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
   };
   const deleteOrder = async () => {
     // once dlete alert gosterecegiz sonra sipariş silinsin 
-    if (!selectedTable?.currentOrderId){
-      toast.warning("once siparis olusturmalısınız",warningStyle)
+    if (!selectedTable?.currentOrderId) {
+      toast.warning("once siparis olusturmalısınız", warningStyle)
       return;
     }
     const res = await axiosInstance.delete(API_PATHS.deleteOrder, {
@@ -110,8 +107,8 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
       setOpen(false)
       toast.success("sipairis silindi", successStyle)
       onChange && onChange()
-    }else{
-      toast.warning(res.data.message || "istek hatası ",warningStyle)
+    } else {
+      toast.warning(res.data.message || "istek hatası ", warningStyle)
     }
   }
   const odemeAl = async () => {
@@ -145,7 +142,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
     }
   }
   const fetchTable = async (id: string) => {
-     const res = await axiosInstance.get(API_PATHS.getTable, {
+    const res = await axiosInstance.get(API_PATHS.getTable, {
       params: { id: id }
     })
     if (res.data.success) {
@@ -167,13 +164,13 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
       toast.error(res.data.message, warningStyle)
     }
   }
-  useEffect(() => { 
-    if (selectedTable ) {
+  useEffect(() => {
+    if (selectedTable) {
       console.log(selectedTable);
       getCategories()
       getFoods();
       fetchTable(selectedTable?._id || "")
-    } 
+    }
   }, [selectedTable]);
 
   const filteredFoods = foods
@@ -198,6 +195,20 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
     }
     console.log(table);
 
+  }
+  const handleBook = async (id: string) => {
+    console.log("rezrve edilen masa id:", id);
+    // burada orderd varsa baska işlemler yapılmalı bu işi kontrol edilmeli
+    const res = await axiosInstance.put(API_PATHS.handleBook(id))
+    if (res.data.success) {
+      toast.success(res.data.message || "işlem basarılı", successStyle)
+       setOpen(false);
+      onChange && onChange()
+
+    } else {
+      toast.success(res.data.message || "işlem basarısız", warningStyle)
+
+    }
   }
   return (
     <>
@@ -281,7 +292,27 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable ,
 
             {/* Sticky Header */}
             <div className="sticky top-0 bg-white pb-3 border-b z-10">
-              <DialogTitle>{selectedTable?.name} – Sepet</DialogTitle>
+              <DialogTitle className="flex justify-between">
+                <span>
+                  {selectedTable?.name} – Sepet
+                </span>
+                <div>
+                  {/* buraya kosullar ekle sipariş ıd varsa gosterilesin ve zaten rezerve ise gosterilmesin */}
+                  {selectedTable.currentOrderId == null && (
+                    <Button
+                      size="sm"
+                      variant={selectedTable.status === "rezerve" ? "destructive" : "default"}
+                      onClick={() => handleBook(selectedTable._id)}
+                    >
+                      {selectedTable.status === "rezerve"
+                        ? "Rezervasyonu İptal Et"
+                        : "Rezerve Et"}
+                    </Button>
+
+                  )}
+
+                </div>
+              </DialogTitle>
             </div>
 
             {/* Basket Items */}

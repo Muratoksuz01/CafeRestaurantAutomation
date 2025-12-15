@@ -11,7 +11,7 @@ export const API_PATHS = {
   giveApproach: (id: string) => `${API_BASE_URL}/admin/giveAproach/` + id,
   deleteUser: (id: string) => `${API_BASE_URL}/admin/deleteUser/` + id,
   giveReject: (id: string) => `${API_BASE_URL}/admin/giveReject/` + id,
-  getAdminStats:`${API_BASE_URL}/admin/getAdminStats`,
+  getAdminStats: `${API_BASE_URL}/admin/getAdminStats`,
 
   getFoods: `${API_BASE_URL}/admin/foods`,
   createFood: `${API_BASE_URL}/admin/food`,
@@ -22,19 +22,24 @@ export const API_PATHS = {
   createCategory: `${API_BASE_URL}/admin/category`,
   deleteCategory: (id: string) => `${API_BASE_URL}/admin/category/${id}`,
   updateCategory: (id: string) => `${API_BASE_URL}/admin/category/${id}`,
-  reassignFoods: (id:string) => `${API_BASE_URL}/admin/categories/${id}/reassign`,// categori silinirse yemekler icin yeni kategori belirlemek icin 
+  reassignFoods: (id: string) => `${API_BASE_URL}/admin/categories/${id}/reassign`,// categori silinirse yemekler icin yeni kategori belirlemek icin 
 
   //user
-  createTable:`${API_BASE_URL}/user/createTable`,
-  getTables:`${API_BASE_URL}/user/getTables`,
-  getTable:`${API_BASE_URL}/user/getTable`,
-  editTable:(id:string)=>`${API_BASE_URL}/user/editTable/${id}`,
-  deleteTable:(id:string)=>`${API_BASE_URL}/user/deleteTable/${id}`,
-  reassignTables:`${API_BASE_URL}/user/reassign`,// categori silinirse yemekler icin yeni kategori belirlemek icin 
-
+  createTable: `${API_BASE_URL}/user/createTable`,
+  getTables: `${API_BASE_URL}/user/getTables`,
+  getTable: `${API_BASE_URL}/user/getTable`,
+  editTable: (id: string) => `${API_BASE_URL}/user/editTable/${id}`,
+  deleteTable: (id: string) => `${API_BASE_URL}/user/deleteTable/${id}`,
+  reassignTables: `${API_BASE_URL}/user/reassign`,// categori silinirse yemekler icin yeni kategori belirlemek icin 
+  handleBook: (id: string) => `${API_BASE_URL}/user/book/${id}`,
   // order
-  createOrder:`${API_BASE_URL}/user/createOrder`,
-  editOrder:`${API_BASE_URL}/user/editOrder`,
-  deleteOrder:`${API_BASE_URL}/user/deleteOrder`,
-  paidOrder:`${API_BASE_URL}/user/paidOrder`,
+  createOrder: `${API_BASE_URL}/user/createOrder`,
+  editOrder: `${API_BASE_URL}/user/editOrder`,
+  deleteOrder: `${API_BASE_URL}/user/deleteOrder`,
+  paidOrder: `${API_BASE_URL}/user/paidOrder`,
+  //location
+  getLocations: `${API_BASE_URL}/user/getLocations`,
+  createLocation: `${API_BASE_URL}/user/createLocation`,
+  updateLocation: (id: string) => `${API_BASE_URL}/user/updateLocation/${id}`,
+  deleteLocation: (id: string) => `${API_BASE_URL}/user/deleteLocation/${id}`,
 };

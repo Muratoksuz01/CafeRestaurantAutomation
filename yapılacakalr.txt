@@ -18,19 +18,20 @@ bir exe dosyası olusturuyourm bu dosya tarayıcıda 192.168.1.20:5173/login adr
                                                                         projeye devam edilirse 
 - user role sistemi olmalı                                                                      4 iş gunu
     patron canım sıkıldı mudur bu kısma erismesin artık demeli  
-- mutfak bolumu eklenir siparis gelir gelmez bir fis cıkarılır  websocet                        4iş gunu
-- e ticaret sistemi oradan da siparis gelebilir                                                 apıleri vs arastırmak gerekir 
-- masalar rezerve edilebilir  ve isşetmede kat olabilir 2.kattaki masaları goster mesela          .5 iş gunu
 - garson ile kasiyeri ayır                                                                         2 iş gunu
-- patron icin gun raporu                                                                            .5 iş gunu
 - gider tablosu ,malzeme tablosu                                                                    giderleri belirlerdikten sonra .5 iş gunu 
 
+- patron icin gun raporu                                                                            .5 iş gunu
+- e ticaret sistemi oradan da siparis gelebilir                                                 apıleri vs arastırmak gerekir 
+- mutfak bolumu eklenir siparis gelir gelmez bir fis cıkarılır  websocet                        4iş gunu
 
 
 
-
-
-
+                                                                15 aralık pazartesi
+table rezerve gelecek                                                    rezrve edilirken kime ait oldugu ve zaman bilgisi yok sadece 
+acılan panelde rezerve et ve iptal  diye bir butonlar olacak ager edildi ise                tamam
+ordera garson Name gelsin                                                                   tamam
+kasiyer ve garsonu ayrsammi acaba  chatt ayır diyor bunu rol kısmında bakacagım 
 
 
 

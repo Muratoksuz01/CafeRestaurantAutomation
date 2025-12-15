@@ -1,6 +1,8 @@
 const Tables = require("../../models/Table");
 const Order = require("../../models/Order");
-const OrderItems = require("../../models/OrderItem")
+const OrderItems = require("../../models/OrderItem");
+const Table = require("../../models/Table");
+const User = require("../../models/User")
 // MASA LİSTELE
 exports.getTables = async (req, res) => {
   try {
@@ -11,8 +13,9 @@ exports.getTables = async (req, res) => {
 
     for (const table of tables) {
       let orderCreated = null;
+     // let locationName=await Location.findById(table.locationId).select("name").name || "bilinmiyor"
       let orderTotal = null;
-
+      let waiterName = null
       // Masa doluysa aktif sipariş bilgisini al
       if (table.status === "dolu" && table.currentOrderId) {
         const order = await Order.findById(table.currentOrderId);
@@ -25,6 +28,8 @@ exports.getTables = async (req, res) => {
 
           orderCreated = `${hours}:${minutes}`;
           orderTotal = order.total;
+          const waiter = await User.findById(order.waiterId).select("firstName");
+          waiterName = waiter?.firstName ?? "bilinmiyor";
         }
       }
 
@@ -33,6 +38,8 @@ exports.getTables = async (req, res) => {
         name: table.name,
         status: table.status,                // bos / dolu
         currentOrderId: table.currentOrderId || null,
+        locationId:table.locationId,
+        waiterName,
         orderCreated,                        // "19:03"
         orderTotal                           // Örn: 200
       });
@@ -44,8 +51,6 @@ exports.getTables = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
-
 // TEK MASA GETİR
 // TEK MASA DETAY + ORDER + ORDER ITEMS
 exports.getTable = async (req, res) => {
@@ -115,16 +120,16 @@ exports.getTable = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
 // MASA OLUŞTUR
 exports.createTable = async (req, res) => {
   try {
-    const { name, } = req.body;
+    const { name, locationId} = req.body;
 
     const newTable = new Tables({
       name,
       status: "bos",
-      currentOrderId: null
+      currentOrderId: null,
+      locationId
     });
 
     await newTable.save();
@@ -137,13 +142,13 @@ exports.createTable = async (req, res) => {
 // MASA GÜNCELLE
 exports.editTable = async (req, res) => {
   try {
-    const { name, } = req.body;
+    const { name, locationId} = req.body;
 
     const updated = await Tables.findByIdAndUpdate(
       req.params.id,
       {
         name,
-
+        locationId
       },
       { new: true }
     );
@@ -173,18 +178,17 @@ exports.deleteTable = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
-
 exports.createOrder = async (req, res) => {
   try {
-    const { tableId, basket, total } = req.body;
-
+    const { tableId, basket, total,  } = req.body;
+    const userId=req.user.id
     // 1) Yeni Order oluştur
     const newOrder = new Order({
       tableId,
       total,
       isClosed: false,
-      orderItems: []
+      orderItems: [],
+      waiterId: userId
     });
 
     const savedOrder = await newOrder.save();
@@ -221,7 +225,6 @@ exports.createOrder = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-
 exports.editOrder = async (req, res) => {
   try {
     const { tableId, basket, total, orderId } = req.body;
@@ -269,7 +272,6 @@ exports.editOrder = async (req, res) => {
     res.status(500).json({ message: "Sunucu hatası", error });
   }
 };
-
 exports.deleteOrder = async (req, res) => {
   try {
     const { orderId } = req.body;
@@ -305,7 +307,6 @@ exports.deleteOrder = async (req, res) => {
     return res.status(500).json({ success: false, message: "Sunucu hatası" });
   }
 };
-
 exports.getPaid = async (req, res) => {
   try {
     const { tableId, basket, total, orderId } = req.body;
@@ -398,5 +399,38 @@ exports.reassignTables = async (req, res) => {
   } catch (err) {
     console.log(err);
     return res.status(500).json({ success: false, message: "Sunucu hatası" });
+  }
+};
+exports.book = async (req, res) => {
+  try {
+    const { id } = req.params; // masa id
+
+    const table = await Table.findById(id);
+    if (!table) {
+      return res.status(200).json({
+        success: false,
+        message: "Masa bulunamadı"
+      });
+    }
+
+    const newStatus = table.status === "rezerve" ? "bos" : "rezerve";
+
+    await Table.findByIdAndUpdate(id, {
+      status: newStatus
+    });
+
+    return res.status(200).json({
+      success: true,
+      message:
+        newStatus === "rezerve"
+          ? "Masa rezerve edildi"
+          : "Rezervasyon iptal edildi"
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Bir hata oluştu"
+    });
   }
 };

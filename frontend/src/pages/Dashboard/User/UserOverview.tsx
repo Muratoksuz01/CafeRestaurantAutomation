@@ -24,7 +24,7 @@ export default function UserOverview() {
   const [selectedTable, setSelectedTable] = useState<AllTable>();
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] =
-    useState<"all" | "dolu" | "bos">("all");
+    useState<"all" | "dolu" | "bos" | "rezerve">("all");
 
   const onChange = () => getTables();
 
@@ -32,19 +32,21 @@ export default function UserOverview() {
     getTables();
   }, []);
 
-  const filteredTables = useMemo(() => {
-    return tables.filter((t) => {
-      const matchSearch = t.name.toLowerCase().includes(search.toLowerCase());
-      const matchStatus =
-        statusFilter === "all"
-          ? true
-          : statusFilter === "dolu"
-            ? t.status === "dolu"
-            : t.status !== "dolu";
+ const filteredTables = useMemo(() => {
+  return tables.filter((t) => {
+    const matchSearch = t.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
 
-      return matchSearch && matchStatus;
-    });
-  }, [tables, search, statusFilter]);
+    const matchStatus =
+      statusFilter === "all"
+        ? true
+        : t.status === statusFilter; // bos | dolu | rezerve
+
+    return matchSearch && matchStatus;
+  });
+}, [tables, search, statusFilter]);
+
 
   // Dolu masalar
   const fullTables = useMemo(
@@ -85,6 +87,7 @@ export default function UserOverview() {
           <SelectContent className="rounded-xl shadow-lg">
             <SelectItem value="all">Hepsi</SelectItem>
             <SelectItem value="dolu">Dolu</SelectItem>
+            <SelectItem value="rezerve">Rezerve</SelectItem>
             <SelectItem value="bos">Boş</SelectItem>
           </SelectContent>
         </Select>

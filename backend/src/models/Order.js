@@ -11,6 +11,12 @@ const OrderSchema = new mongoose.Schema(
     orderItems:[{
       type:mongoose.Schema.Types.ObjectId,ref:"OrderItems",required:false
     } ],
+    waiterId: {   // siparişi alan garson
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Users",
+     //   required: true
+      },
+
   },
   { timestamps: true }
 );

@@ -26,21 +26,20 @@ function UserList() {
   const [selected, setSelected] = useState<AllTable | null>(null);
   const { tables, getTables } = useGetTables()
   useEffect(() => {
+   
     getTables()
   }, [])
 
   const openEdit = (t: AllTable) => {
-    if (t.status === "dolu") {
+    if (["dolu","rezerve"].includes(t.status)) {
       toast.warning("Bu masa dolu olduğu için düzenleme yapamazsın.", warningStyle);
       return;
     }
     setSelected(t);
     setEditOpen(true);
   };
-  
-
   const openDelete = (t: AllTable) => {
-    if (t.status === "dolu") {
+    if (["dolu","rezerve"].includes(t.status)) {
       toast.warning("Dolu masa silinemez.", warningStyle);
       return;
     }
@@ -64,23 +63,25 @@ function UserList() {
   };
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] =
-    useState<"all" | "dolu" | "bos">("all");
+    useState<"all" | "dolu" | "bos" | "rezerve">("all");
   const filteredTables = useMemo(() => {
     return tables.filter((t) => {
-      const matchSearch = t.name.toLowerCase().includes(search.toLowerCase());
+      const matchSearch = t.name
+        .toLowerCase()
+        .includes(search.toLowerCase());
+
       const matchStatus =
         statusFilter === "all"
           ? true
-          : statusFilter === "dolu"
-            ? t.status === "dolu"
-            : t.status !== "dolu";
+          : t.status === statusFilter; // bos | dolu | rezerve
 
       return matchSearch && matchStatus;
     });
   }, [tables, search, statusFilter]);
 
+
   // Dolu masalar
- 
+
   return (
     <div className="p-5">
       <div className="flex justify-between mb-5 pb-3 border-b">
@@ -101,6 +102,7 @@ function UserList() {
             <SelectContent className="rounded-xl shadow-lg">
               <SelectItem value="all">Hepsi</SelectItem>
               <SelectItem value="dolu">Dolu</SelectItem>
+              <SelectItem value="rezerve">Rezerve</SelectItem>
               <SelectItem value="bos">Boş</SelectItem>
             </SelectContent>
           </Select>
@@ -149,6 +151,18 @@ function UserList() {
                     >
                       Dolu
                     </span>
+                  ) : t.status === "rezerve" ? (
+                    <span
+                      className="
+                    inline-flex items-center 
+                    bg-amber-500 text-white
+                    text-xs font-semibold 
+                    px-3 py-1.5
+                    rounded-full shadow-sm
+                  "
+                    >
+                      Rezerve
+                    </span>
                   ) : (
                     <span
                       className="
@@ -164,7 +178,7 @@ function UserList() {
                     </span>
                   )}
                 </TableCell>
-
+                 
                 <TableCell className="text-right space-x-2 py-4">
                   <Button
                     size="sm"
@@ -204,6 +218,7 @@ function UserList() {
         createOpen={createOpen}
         setCreateOpen={setCreateOpen}
         onCreate={onSuccess}
+
       />
 
       <AlertDialog open={deleteOpen} onOpenChange={setDeleteOpen}>

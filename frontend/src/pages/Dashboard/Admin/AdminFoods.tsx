@@ -179,7 +179,7 @@ const filteredFoods = foods.filter(f => {
           <DialogHeader>
             <DialogTitle>Yeni Yemek Ekle</DialogTitle>
           </DialogHeader>
-          <CreateFoodForm />
+          <CreateFoodForm                     onUpdate={onUpdate}      />
         </DialogContent>
       </Dialog>
 
