@@ -12,6 +12,7 @@ const yoneticiItems = [
   { path: "/admin/users", label: "Users", icon: LuUsers },
   { path: "/admin/foods", label: "Foods", icon: LuUsers },
   { path: "/admin/category", label: "Kategoriler", icon: LuUsers },
+  { path: "/admin/roles", label: "Roller", icon: LuUsers },
 ];
 const kasiyerItems = [
   { path: "/user/userList", label: "Listeler", icon: LuChrome },
@@ -42,7 +43,6 @@ export default function Sidebar() {
     const link = window.location.pathname
     console.log(link);
     setActiveTab(link)
-
   }, [activeTab])
   const onLogout = () => {
     dispatch(logout());

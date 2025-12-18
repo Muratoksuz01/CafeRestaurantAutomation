@@ -2,12 +2,11 @@ const User = require('../../models/User');
 const { generateToken } = require('../../middleware/auth');
 const redis = require("../../redis");
 const UserRole = require("../../models/UserRole");
-const RoleAction = require("../../models/RoleAction");
+// const RoleAction = require("../../models/RoleAction");
 const Role = require("../../models/Role");
-const { log } = require('console');
 
 // Kullanıcı kayıt
-const register = async (req, res) => {
+exports.register = async (req, res) => {
   try {
     const { firstName, lastName, email, password, phoneNumber, adminCode } =
       req.body;
@@ -69,7 +68,7 @@ const register = async (req, res) => {
 };
 
 // Kullanıcı giriş
-const login = async (req, res) => {
+exports.login = async (req, res) => {
 
   try {
     const { email, password } = req.body;
@@ -93,12 +92,12 @@ const login = async (req, res) => {
     }
 
     // Hesap aktif mi?
-    /*   if (!user.isActive) {
+     if (!user.isActive) {
         return res.status(403).json({
           success: true,
           message: "Your account is pending admin approval.",
         });
-      } */
+      } 
 
     const userRole = await UserRole
       .findOne({ userId:user._id })
@@ -155,7 +154,7 @@ const login = async (req, res) => {
 }; */
 
 
-const permissions = async (req, res) => {
+/* exports.permissions = async (req, res) => {
   const userId = req.user.id;
 
   // Redis varsa direkt dön
@@ -182,10 +181,10 @@ const permissions = async (req, res) => {
   );
 
   res.json({ success: true, data: permissions });
-}
+} */
 
 // Profil güncelleme
-const updateProfile = async (req, res) => {
+/* exports.updateProfile = async (req, res) => {
   try {
     const allowed = [
       "firstName",
@@ -214,9 +213,9 @@ const updateProfile = async (req, res) => {
     console.error("Update profile error:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
-};
+}; */
 // Şifre değiştirme
-const changePassword = async (req, res) => {
+/* exports.changePassword = async (req, res) => {
   try {
     const { currentPassword, newPassword } = req.body;
     //                                                              front da old ve new esit olmadıgını dogrula 
@@ -238,16 +237,7 @@ const changePassword = async (req, res) => {
     console.error("Change password error:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
-};
+}; */
 
 
 
-module.exports = {
-  register,
-  login,
-  // getProfile,
-  updateProfile,
-  changePassword,
-  permissions,
-
-};

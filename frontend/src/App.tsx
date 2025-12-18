@@ -29,20 +29,20 @@ function App() {
         {role == "Yonetici" && (
           <Route element={<ProtectedRoute allow={["Yonetici"]} />}>
             <Route path="/admin" element={<DashboardLayout />}>
-              <Route index element={<AdminOverview />} />
-              <Route path="overview" element={<AdminOverview />} />
-              <Route path="users" element={<AdminUsers />} />
-              <Route path="foods" element={<AdminFoods />} />
-              <Route path="category" element={<AdminCategory />} />
+                  <Route index element={<AdminOverview />} />
+                  <Route path="overview" element={<AdminOverview />} />
+                  <Route path="users" element={<AdminUsers />} />
+                  <Route path="foods" element={<AdminFoods />} />
+                  <Route path="category" element={<AdminCategory />} />
             </Route>
           </Route>
         )}
         {role && ["Kasiyer", "Garson"].includes(role) && (
             <Route element={<ProtectedRoute allow={["Kasiyer", "Garson"]} />}>
-          <Route path="/user" element={<DashboardLayout />}>
-            <Route index element={<UserOverview />} />
-            <Route path="overview" element={<UserOverview />} />
-            <Route path="userList" element={<UserList />} />
+            <Route path="/user" element={<DashboardLayout />}>
+                <Route index element={<UserOverview />} />
+                <Route path="overview" element={<UserOverview />} />
+                <Route path="userList" element={<UserList />} />
           </Route>
         </Route>
           )}

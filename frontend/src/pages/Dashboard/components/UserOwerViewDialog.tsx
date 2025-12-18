@@ -14,6 +14,7 @@ import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { AllTable } from "@/models/Tables";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
+import { getRole } from "@/lib/utils";
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
@@ -48,7 +49,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
         return;
       }
 
-      const res = await axiosInstance.post(API_PATHS.createOrder, { tableId: selectedTable?._id, basket, total})
+      const res = await axiosInstance.post(API_PATHS.createOrder, { tableId: selectedTable?._id, basket, total })
       if (res.data.success) {
         toast.success("basarılı bir sekilde kaydedildi", successStyle)
         setOpen(false); setBasket([]);
@@ -202,7 +203,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     const res = await axiosInstance.put(API_PATHS.handleBook(id))
     if (res.data.success) {
       toast.success(res.data.message || "işlem basarılı", successStyle)
-       setOpen(false);
+      setOpen(false);
       onChange && onChange()
 
     } else {
@@ -353,18 +354,24 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
               <Button onClick={resetBasket} variant="secondary" className="flex-1">
                 Reset
               </Button>
-              <Button onClick={odemeAl} variant="destructive" className="flex-1">
-                Ödeme Al
-              </Button>
+              {
+                getRole() != "Garson" && (
+                  <Button onClick={odemeAl} variant="destructive" className="flex-1">
+                    Ödeme Al
+                  </Button>
+                )
+              }
             </div>
 
             <div className="flex flex-wrap gap-2 mb-2">
               <Button onClick={onClose} variant="outline" className="flex-1">
                 Kapat
               </Button>
-              <Button onClick={() => setDeleteAlert(true)} variant="destructive" className="flex-1">
-                Siparişi Sil
-              </Button>
+              {getRole() != "Garson" && (
+                <Button onClick={() => setDeleteAlert(true)} variant="destructive" className="flex-1">
+                  Siparişi Sil
+                </Button>
+              )}
               <Button variant="secondary" onClick={() => setShowTableDialog(true)}>
                 Masa Değiştir
               </Button>

@@ -2,17 +2,16 @@ const User = require('../../models/User');
 const Order = require('../../models/Order');
 const Food = require('../../models/foods');
 const Role = require('../../models/Role');
-const Action = require('../../models/action');
+// const Action = require('../../models/action');
 const OrderItems = require('../../models/OrderItem');
 const UserRole = require('../../models/UserRole');
-const RoleAction = require('../../models/RoleAction');
-const { ok } = require('assert');
+// const RoleAction = require('../../models/RoleAction');
 
 
 
 
 
-const getAdminStats = async (req, res) => {
+exports.getAdminStats = async (req, res) => {
   try {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
@@ -123,7 +122,7 @@ const getAdminStats = async (req, res) => {
     res.status(500).json({ success: false, message: "Admin stats failed", error });
   }
 };
-const giveAproach = async (req, res) => {
+/* const giveAproach = async (req, res) => {
   const id = req.params.id;
   const user = await User.findById(id);
   if (!user) return res.status(404).json({ success: false, message: "User not found" });
@@ -132,8 +131,8 @@ const giveAproach = async (req, res) => {
   await user.save();
 
   return res.json({ success: true, message: "User approved" });
-};
-const giveReject = async (req, res) => {
+}; */
+/* const giveReject = async (req, res) => {
   const id = req.params.id;
   const user = await User.findById(id);
   if (!user) return res.status(404).json({ success: false, message: "User not found" });
@@ -142,8 +141,8 @@ const giveReject = async (req, res) => {
   await user.save();
 
   return res.json({ success: true, message: "User rejected" });
-};
-const deleteUser = async (req, res) => {
+}; */
+exports.deleteUser = async (req, res) => {
   const id = req.params.id;
   const user = await User.findById(id);
   if (!user) return res.status(404).json({ success: false, message: "User not found" });
@@ -152,7 +151,7 @@ const deleteUser = async (req, res) => {
 
   return res.json({ success: true, message: "User deleted" });
 };
-const getUser = async (req, res) => {
+exports.getUser = async (req, res) => {
   try {
     const id = req.params.id;
 
@@ -190,7 +189,7 @@ const getUser = async (req, res) => {
   }
 };
 
-const getUsers = async (req, res) => {
+exports.getUsers = async (req, res) => {
   console.log("burada")
   try {
     const users = await User.find().select("-password");
@@ -215,7 +214,7 @@ const getUsers = async (req, res) => {
     res.status(500).json({ success: false });
   }
 };
-const getRoles = async (req, res) => {
+exports.getRoles = async (req, res) => {
   try {
     const actions = await Role.find().select("_id name");
 
@@ -229,7 +228,7 @@ const getRoles = async (req, res) => {
   }
 }
 
-const getPermissions = async (req, res) => {
+exports.getPermissions = async (req, res) => {
   try {
     const actions = await Action.find().select("_id code description");
 
@@ -242,7 +241,7 @@ const getPermissions = async (req, res) => {
     res.status(500).json({ success: false });
   }
 };
-const updatePermission = async (req, res) => {
+exports.updatePermission = async (req, res) => {
   try {
     const userId = req.params.id;       // kullanıcı id
     const { ids } = req.body;           // actionId[] (string)
@@ -273,7 +272,7 @@ const updatePermission = async (req, res) => {
   }
 };
 
-const updateUser = async (req, res) => {
+exports.updateUser = async (req, res) => {
   try {
     const userId = req.params.id
     const { email, firstName, lastName, phoneNumber, roleName, isActive } = req.body
@@ -312,15 +311,6 @@ const updateUser = async (req, res) => {
   }
 }
 
-module.exports = {
-  getUser,
-  getRoles,
-  getUsers,
-  giveAproach,
-  deleteUser,
-  giveReject,
-  getAdminStats,
-  getPermissions,
-  updatePermission,
-  updateUser
-};
+exports.totallydelete =async (req,res) => {
+  
+}

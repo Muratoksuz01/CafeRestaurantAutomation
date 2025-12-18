@@ -229,7 +229,7 @@ const badgePrinter = (roleName: "Asci" | "Yonetici" | "Garson" | "Kasiyer") => {
                       </TableCell>
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button
+                          {/* <Button
                             size="sm"
                             variant="outline"
                             onClick={(e) => {
@@ -238,7 +238,7 @@ const badgePrinter = (roleName: "Asci" | "Yonetici" | "Garson" | "Kasiyer") => {
                             }}
                           >
                             İzinleri Düzenle
-                          </Button>
+                          </Button> */}
                           <Button
                             size="sm"
                             variant="outline"

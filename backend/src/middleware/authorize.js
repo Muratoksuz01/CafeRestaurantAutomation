@@ -2,57 +2,38 @@
 const mongoose = require("mongoose");
 const redis = require("../redis");
 const UserRole = require("../models/UserRole");
-module.exports = (actionCode) => {
+const Role = require("../models/Role");
+
+module.exports = (roleName) => {
     return async (req, res, next) => {
         const userId = req.user.id;
-        const cacheKey = `perm:${userId}:${actionCode}`;
+        const cacheKey = `perm:${userId}:${roleName}`;
 
-        // 1) Redis bak
+        // Redis kontrol
         const cached = await redis.get(cacheKey);
         if (cached !== null) {
-            console.log("redis have cached this request already");
-            
             if (cached === "1") return next();
             return res.sendStatus(403);
         }
 
-        // 2) DB kontrolü
-        const hasPermission = await UserRole.aggregate([
-            { $match: { userId: new mongoose.Types.ObjectId(userId) } },
+        // Kullanıcının rolü
+        const userRole = await UserRole.findOne({ userId });
+        if (!userRole) {
+            await redis.setEx(cacheKey, 600, "0");
+            return res.sendStatus(403);
+        }
 
-            {
-                $lookup: {
-                    from: "roleactions",
-                    localField: "roleId",
-                    foreignField: "roleId",
-                    as: "roleActions"
-                }
-            },
-            { $unwind: "$roleActions" },
+        const role = await Role.findById(userRole.roleId).select("name");
+        if (!role) {
+            await redis.setEx(cacheKey, 600, "0");
+            return res.sendStatus(403);
+        }
 
-            {
-                $lookup: {
-                    from: "actions",
-                    localField: "roleActions.actionId",
-                    foreignField: "_id",
-                    as: "action"
-                }
-            },
-            { $unwind: "$action" },
+        const allowed = role.name === roleName;
 
-            { $match: { "action.code": actionCode } },
-
-            { $limit: 1 },
-            { $project: { _id: 1 } }
-        ]);
-
-        const allowed = hasPermission.length > 0;
-
-
-        // 3) Cache yaz
+        // Cache yaz
         await redis.setEx(cacheKey, 600, allowed ? "1" : "0");
-        console.log("redis have not cached this request but now wrote");
-        
+
         if (!allowed) return res.sendStatus(403);
         next();
     };

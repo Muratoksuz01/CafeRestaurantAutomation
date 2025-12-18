@@ -6,7 +6,7 @@ import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
-import { getPermission, loginUser } from "@/store/slices/authSlice"
+import {  loginUser } from "@/store/slices/authSlice"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
@@ -26,9 +26,9 @@ export default function Login() {
     const role = getRole();
 
     if (role === "Yonetici") {
-      navigate("/admin/overview");
+      navigate("/admin");
     } else if (role === "Kasiyer" || role === "Garson") {
-      navigate("/user/overview");
+      navigate("/user");
     }
   }, []);
   const form = useForm<z.infer<typeof loginSchema>>({
@@ -45,17 +45,17 @@ export default function Login() {
     const res = await dispatch(loginUser(data));
     if (res.payload.success && res.payload.data) {
       if (getRole() == "Yonetici") {
-        navigate("/admin/overview")
+        navigate("/admin")
         toast.success("Yönetici olarak Giriş yapıldı", successStyle)
       }
       else if (getRole() == "Kasiyer" || getRole() == "Garson") {
-        navigate("/user/overview")
+        navigate("/user")
         toast.success(`${getRole()} olarak Giriş yapıldı`, successStyle)
       } else {
         toast.warning(`get role :${getRole()}`, warningStyle)
         console.log(getRole())
       }
-      await dispatch(getPermission())
+     // await dispatch(getPermission())
 
 
     } else {

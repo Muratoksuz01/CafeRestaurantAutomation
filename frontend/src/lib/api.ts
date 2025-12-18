@@ -6,7 +6,7 @@ export const API_PATHS = {
   login: `${API_BASE_URL}/auth/login`,
   register: `${API_BASE_URL}/auth/register`,
   //getUser: `${API_BASE_URL}/auth/profile`,
-  permission: `${API_BASE_URL}/auth/me/permissions`,
+  // permission: `${API_BASE_URL}/auth/me/permissions`,
   // admin
   getUsers: `${API_BASE_URL}/admin/getUsers`,
   getRoles: `${API_BASE_URL}/admin/getRoles`,

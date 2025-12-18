@@ -11,8 +11,8 @@ interface User {
   firstName?: string;
   lastName?: string;
   phoneNumber?: string;
-  permissions: string[]
-  role?: string
+  // permissions: string[]
+  // role?: string
 
 }
 
@@ -72,7 +72,7 @@ export const registerUser = createAsyncThunk(
   }
 );
 
-export const getPermission = createAsyncThunk(
+/* export const getPermission = createAsyncThunk(
   "auth/getPermission",
   async (_, { rejectWithValue }) => {
     try {
@@ -92,7 +92,7 @@ export const getPermission = createAsyncThunk(
       return rejectWithValue(error.message);
     }
   }
-)
+) */
 
 const authSlice = createSlice({
   name: "auth",
@@ -144,21 +144,21 @@ const authSlice = createSlice({
         state.error = action.payload as string;
       })
       // getPermission
-      .addCase(getPermission.pending, (state) => {
-        state.loading = true;
-        state.error = null;
-      })
-      .addCase(getPermission.fulfilled, (state, action: PayloadAction<any>) => {
-        console.log("slice daki payload:",action.payload);
-        state.loading = false;
-        if (state.user) {
-          state.user.permissions = action.payload;
-        }
-      })
-      .addCase(getPermission.rejected, (state, action) => {
-        state.loading = false;
-        state.error = action.payload as string;
-      })
+      // .addCase(getPermission.pending, (state) => {
+      //   state.loading = true;
+      //   state.error = null;
+      // })
+      // .addCase(getPermission.fulfilled, (state, action: PayloadAction<any>) => {
+      //   console.log("slice daki payload:",action.payload);
+      //   state.loading = false;
+      //   if (state.user) {
+      //     state.user.permissions = action.payload;
+      //   }
+      // })
+      // .addCase(getPermission.rejected, (state, action) => {
+      //   state.loading = false;
+      //   state.error = action.payload as string;
+      // })
       
   },
 });

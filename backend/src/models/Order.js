@@ -7,7 +7,7 @@ const OrderSchema = new mongoose.Schema(
       required:true
     },
     total: { type: Number, required: true }, //  
-    isClosed:{type:Boolean,required:true},//sipariş tamamlandı mı odeme alındııgnda true olacak 
+    status:{type:String ,enum:["hazirlaniyor","tamamlandi","iptal edildi"] ,required:true},//sipariş tamamlandı mı odeme alındııgnda true olacak 
     orderItems:[{
       type:mongoose.Schema.Types.ObjectId,ref:"OrderItems",required:false
     } ],

@@ -17,6 +17,7 @@ const createFood = async (req, res) => {
             description,
             categoryId,
             imgs: newImgs,
+            isDeleted:false
         });
 
         res.json({ success: true, data: food });
@@ -76,10 +77,12 @@ const deleteFood = async (req, res) => {
             return res.status(404).json({ success: false, message: "Food not found" });
 
         // Resimleri sil
-        current.imgs.forEach((img) => deleteImage(img));
+       // current.imgs.forEach((img) => deleteImage(img));
 
         // Veriyi sil
-        await Foods.findByIdAndDelete(id);
+        await Foods.findByIdAndUpdate(id,{
+            isDeleted:true
+        });
 
         res.json({ success: true, message: "Food deleted" });
     } catch (err) {
@@ -89,7 +92,7 @@ const deleteFood = async (req, res) => {
 };
 const getFoods = async (req, res) => {
     try {
-        const foods = await Foods.find();
+        const foods = await Foods.find({isDeleted:false});
         res.json({ success: true, data: foods });
     } catch (err) {
         res.status(500).json({ success: false, message: "Server error" });
@@ -100,7 +103,6 @@ module.exports = {
     createFood,
     deleteFood,
     updateFood,
-
     getFoods,
 
 };

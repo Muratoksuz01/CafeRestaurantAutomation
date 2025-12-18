@@ -1,3 +1,18 @@
+authorize guncellenmeli :guncellendi test edilmedi :test edildi
+sipariş olusturldan sonra masaya ait sipeişler gelmiyor tip hatası 
+
+
+- rezerve durumunu kontrol et bir sekilde yap ve garson icin sakla onu 
+- admin user eklemesi 
+- yapılan siparişler icin bir sayfa 
+- ascı girisi sadece order gorecek ve statusu guncelleyecek  (suanlık statik gelecek weobsocet siz yap )
+- loginden yonlendirirken sayfa bulunamadı hatası var galiba protect oluuyor redux hemen guncellenmiyor 
+
+
+
+
+
+
 satarken 
     - modem sunucu pc ye statik ıp veriyor mesela 192.168.1.20 bu static oluyor 
     - nodejs i bir pc ye kuruyorsun ve  o pc de o portu local ağda açıyorum  mesela bu :5000 portunda calissin
@@ -19,26 +34,12 @@ projeye devam edilirse
         patron canım sıkıldı mudur bu kısma erismesin artık demeli  
     - garson ile kasiyeri ayır                                                                         2 iş gunu
     - gider tablosu ,malzeme tablosu                                                                    giderleri belirlerdikten sonra .5 iş gunu 
-
     - patron icin gun raporu                                                                            .5 iş gunu
     - e ticaret sistemi oradan da siparis gelebilir                                                 apıleri vs arastırmak gerekir 
     - mutfak bolumu eklenir siparis gelir gelmez bir fis cıkarılır  websocet                        4iş gunu
     kasiyer ve garsonu ayrsammi acaba  chatt ayır diyor bunu rol kısmında bakacagım 
 
     yonetisi kişisi  diger kişisleri yaratsın  kullanıcılar panelinde yaratsın ve role action tanımlasın 
-
-
-
-
-17 aralık yapılanlar
-    user mnager sayfası tasarlandı bunun update yazıldı 
-    admin users edit sayfası tasrlandı ve endpoint yapıldı 
-    back de rol tanımlamaları gereceklesti 
-
-
-
-
-
 
 
 
@@ -154,3 +155,7 @@ yapılanlar
     redis ve docker kurulumu yapıldı                                                            tamam
                                 16 aralık salı 
     user role tamamla                                               tamam
+                            17 aralık yapılanlar
+    user mnager sayfası tasarlandı bunun update yazıldı 
+    admin users edit sayfası tasrlandı ve endpoint yapıldı 
+    back de rol tanımlamaları gereceklesti 

@@ -19,7 +19,8 @@ const FoodSchema = new mongoose.Schema(
         },
         message: "imgs alanı tam olarak 2 elemanlı bir string dizisi olmalıdır."
       }
-    }
+    },
+    isDeleted:{type:Boolean,required:false}
   },
   { timestamps: true }
 );

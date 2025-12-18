@@ -50,7 +50,6 @@ exports.getTables = async (req, res) => {
     res.status(500).json({ success: false, message: err.message });
   }
 };
-// TEK MASA GETİR
 // TEK MASA DETAY + ORDER + ORDER ITEMS
 exports.getTable = async (req, res) => {
   try {
@@ -79,7 +78,6 @@ exports.getTable = async (req, res) => {
     const order = await Order.findById(table.currentOrderId);
 
     if (!order) {
-
       return res.json({
         success: true,
         data: {
@@ -96,9 +94,8 @@ exports.getTable = async (req, res) => {
 
     const items = orderItems.map((item) => ({
       foodId: item.foodId,
-      name: item.name,
       qty: item.qty,
-      price: item.price
+      unitprice: item.price
     }));
 
     return res.json({
@@ -122,13 +119,12 @@ exports.getTable = async (req, res) => {
 // MASA OLUŞTUR
 exports.createTable = async (req, res) => {
   try {
-    const { name, locationId} = req.body;
+    const { name, } = req.body;
 
     const newTable = new Tables({
       name,
       status: "bos",
       currentOrderId: null,
-      locationId
     });
 
     await newTable.save();
@@ -215,7 +211,7 @@ exports.reassignTables = async (req, res) => {
     return res.status(500).json({ success: false, message: "Sunucu hatası" });
   }
 };
-exports.book = async (req, res) => {
+/* exports.book = async (req, res) => {
   try {
     const { id } = req.params; // masa id
 
@@ -247,7 +243,7 @@ exports.book = async (req, res) => {
       message: "Bir hata oluştu"
     });
   }
-};
+}; */
 exports.createOrder = async (req, res) => {
   try {
     const { tableId, basket, total,  } = req.body;
@@ -256,7 +252,7 @@ exports.createOrder = async (req, res) => {
     const newOrder = new Order({
       tableId,
       total,
-      isClosed: false,
+      status: "hazirlaniyor",
       orderItems: [],
       waiterId: userId
     });
@@ -265,11 +261,11 @@ exports.createOrder = async (req, res) => {
 
     // 2) Basket -> OrderItems kaydet
     const itemsToSave = basket.map((b) => ({
-      name: b.name,
       foodId: b._id,
       orderId: savedOrder._id,
       qty: b.qty,
-      price: b.price
+      unitprice: b.price,
+      total:b.qty * b.price
     }));
 
     const createdItems = await OrderItems.insertMany(itemsToSave);
@@ -317,11 +313,11 @@ exports.editOrder = async (req, res) => {
 
     for (const item of basket) {
       const created = await OrderItems.create({
-        name: item.name,
         foodId: item._id,          // frontend item._id = foodId
         orderId,
         qty: item.qty,
-        price: item.price,
+        unitprice: item.price,
+        total:item.qty * item.price
       });
       newItems.push(created._id);
     }
@@ -392,27 +388,11 @@ exports.getPaid = async (req, res) => {
     }
 
     // 2) Eğer zaten kapatılmışsa uyar
-    if (order.isClosed) {
-      return res.status(204).json({ success: false, message: "Bu sipariş zaten kapatılmış." });
+    if (order.status =="tamamlandi") {
+      return res.status(400).json({ success: false, message: "Bu sipariş zaten kapatılmış." });
     }
 
-    // 3) Basketten gerçek OrderItems oluştur
-    /*     const createdItems = await Promise.all(
-          basket.map(async (b) => {
-            const newItem = await OrderItems.create({
-              name: b.name,
-              foodId: b._id,
-              orderId: order._id,
-              qty: b.qty,
-              price: b.price,
-            });
-            return newItem._id;
-          })
-        ); */
-
-    // 4) Order’ı güncelle → kapat
-    //  order.total = total;
-    order.isClosed = true;
+    order.status = "tamamlandi";
     // order.orderItems = createdItems;
     await order.save();
 

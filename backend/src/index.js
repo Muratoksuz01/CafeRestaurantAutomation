@@ -15,11 +15,11 @@ require("./models/Category")
 require("./models/Order")
 require("./models/OrderItem")
 require("./models/Role")
-require("./models/RoleAction")
+// require("./models/RoleAction")
 require("./models/Table")
 require("./models/User")
 require("./models/UserRole")
-require("./models/action")
+// require("./models/action")
 require("./models/foods")
 
 
