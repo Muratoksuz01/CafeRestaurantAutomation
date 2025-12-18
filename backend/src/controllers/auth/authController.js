@@ -1,5 +1,10 @@
 const User = require('../../models/User');
 const { generateToken } = require('../../middleware/auth');
+const redis = require("../../redis");
+const UserRole = require("../../models/UserRole");
+const RoleAction = require("../../models/RoleAction");
+const Role = require("../../models/Role");
+const { log } = require('console');
 
 // Kullanıcı kayıt
 const register = async (req, res) => {
@@ -65,6 +70,7 @@ const register = async (req, res) => {
 
 // Kullanıcı giriş
 const login = async (req, res) => {
+
   try {
     const { email, password } = req.body;
 
@@ -87,14 +93,21 @@ const login = async (req, res) => {
     }
 
     // Hesap aktif mi?
-    if (!user.isActive) {
-      return res.status(201).json({
-        success: true,
-        message: "Your account is pending admin approval.",
-      });
-    }
+    /*   if (!user.isActive) {
+        return res.status(403).json({
+          success: true,
+          message: "Your account is pending admin approval.",
+        });
+      } */
 
-    const token = generateToken(user._id,user.role);
+    const userRole = await UserRole
+      .findOne({ userId:user._id })
+      .populate("roleId", "name");
+
+    const roleName = userRole?.roleId?.name;
+    console.log(roleName);
+
+    const token = generateToken(user._id, roleName);
 
     res.json({
       success: true,
@@ -105,7 +118,7 @@ const login = async (req, res) => {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-       //   role: user.role,
+          //   role: user.role,
           phoneNumber: user.phoneNumber,
         },
         token,
@@ -118,7 +131,7 @@ const login = async (req, res) => {
 };
 
 // Profil bilgilerini getir
-const getProfile = async (req, res) => {
+/* const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("+password");
 
@@ -139,9 +152,37 @@ const getProfile = async (req, res) => {
     console.error("Get profile error:", error);
     res.status(500).json({ success: false, message: "Internal server error" });
   }
-};
+}; */
 
 
+const permissions = async (req, res) => {
+  const userId = req.user.id;
+
+  // Redis varsa direkt dön
+  const cached = await redis.get(`perm:list:${userId}`);
+  if (cached) {
+    return res.json(JSON.parse(cached));
+  }
+
+  // DB’den çek
+  const roles = await UserRole.find({ userId }).select("roleId");
+
+  const roleActions = await RoleAction.find({
+    roleId: { $in: roles.map(r => r.roleId) }
+  }).populate("actionId");
+
+  const permissions = [
+    ...new Set(roleActions.map(ra => ra.actionId.code))
+  ];
+
+  await redis.setEx(
+    `perm:list:${userId}`,
+    600,
+    JSON.stringify(permissions)
+  );
+
+  res.json({ success: true, data: permissions });
+}
 
 // Profil güncelleme
 const updateProfile = async (req, res) => {
@@ -174,8 +215,6 @@ const updateProfile = async (req, res) => {
     res.status(500).json({ success: false, message: "Internal server error" });
   }
 };
-
-
 // Şifre değiştirme
 const changePassword = async (req, res) => {
   try {
@@ -203,12 +242,12 @@ const changePassword = async (req, res) => {
 
 
 
-
 module.exports = {
   register,
   login,
-  getProfile,
+  // getProfile,
   updateProfile,
   changePassword,
+  permissions,
 
 };

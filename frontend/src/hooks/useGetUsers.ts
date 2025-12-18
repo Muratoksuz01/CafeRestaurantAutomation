@@ -1,5 +1,5 @@
 import axiosInstance from '@/lib/axiosInstance';
-import { User } from '../models/User';
+import { Users } from '../models/User';
 import { useState } from 'react';
 import { API_PATHS } from '@/lib/api';
 // src/hooks/useProducts.ts
@@ -8,7 +8,7 @@ import { API_PATHS } from '@/lib/api';
 
 
 export function useGetUsers() {
-  const [users, setUsers] = useState<User[]>([]);
+  const [users, setUsers] = useState<Users[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 

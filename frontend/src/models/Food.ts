@@ -35,7 +35,11 @@ export const foodEditSchema = z.object({
 
 
 });
-export const categoryCreateSchema = z.object({
+
+
+
+
+export const categoryCreateEditSchema = z.object({
     name: z.string()
 })
 export const categorySchema = z.object({

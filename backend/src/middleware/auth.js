@@ -33,12 +33,12 @@ const authenticateToken = async (req, res, next) => {
       });
     }
 
-    if (!user.isActive) {
+    /* if (!user.isActive) {
       return res.status(401).json({
         success: false,
         message: 'Account is deactivated'
       });
-    }
+    } */
 
     // Kullanıcı bilgilerini request'e ekle
     req.user = {

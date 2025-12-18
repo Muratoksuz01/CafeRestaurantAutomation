@@ -5,13 +5,20 @@ export const API_PATHS = {
   //auth
   login: `${API_BASE_URL}/auth/login`,
   register: `${API_BASE_URL}/auth/register`,
-  getUser: `${API_BASE_URL}/auth/profile`,
+  //getUser: `${API_BASE_URL}/auth/profile`,
+  permission: `${API_BASE_URL}/auth/me/permissions`,
   // admin
   getUsers: `${API_BASE_URL}/admin/getUsers`,
+  getRoles: `${API_BASE_URL}/admin/getRoles`,
+  getUser:(id:string)=> `${API_BASE_URL}/admin/getUser/`+id,
   giveApproach: (id: string) => `${API_BASE_URL}/admin/giveAproach/` + id,
   deleteUser: (id: string) => `${API_BASE_URL}/admin/deleteUser/` + id,
   giveReject: (id: string) => `${API_BASE_URL}/admin/giveReject/` + id,
   getAdminStats: `${API_BASE_URL}/admin/getAdminStats`,
+  getPermissions: `${API_BASE_URL}/admin/getPermissions`,
+  updatePermission:(id:string)=>`${API_BASE_URL}/admin/updatePermission/`+id,
+  updateUser:(id:string)=>`${API_BASE_URL}/admin/updateUser/`+id,
+  
 
   getFoods: `${API_BASE_URL}/admin/foods`,
   createFood: `${API_BASE_URL}/admin/food`,

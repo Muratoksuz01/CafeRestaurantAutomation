@@ -1,6 +1,5 @@
 import { useAuthControl } from "@/hooks/useAuthControl";
 import Sidebar from "@/pages/Dashboard/components/Sidebar";
-import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
 function DashboardLayout() {

@@ -6,44 +6,57 @@ import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useDispatch, useSelector } from "react-redux"
 import type { AppDispatch, RootState } from "@/store"
-import { loginUser } from "@/store/slices/authSlice"
+import { getPermission, loginUser } from "@/store/slices/authSlice"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
 import { loginSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { getRole } from "@/lib/utils"
 import { useAuthControl } from "@/hooks/useAuthControl"
+import CustomFormField from "@/components/CustomFormField"
 
 export default function Login() {
   const { loading, error } = useSelector((state: RootState) => state.auth)
   const [showPassword, setShowPassword] = useState(false)
   const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-useAuthControl()
+  useEffect(() => {
+    const role = getRole();
+
+    if (role === "Yonetici") {
+      navigate("/admin/overview");
+    } else if (role === "Kasiyer" || role === "Garson") {
+      navigate("/user/overview");
+    }
+  }, []);
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      email: "admin@example.com",
-      password: "12345678",
+      email: "admin@kafe.com",
+      password: "123456",
     },
   })
 
-const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     console.log("Login data:", data);
     // Burada API çağrısı yapılabilir
     const res = await dispatch(loginUser(data));
-   
     if (res.payload.success && res.payload.data) {
-      if (getRole() == "admin") {
-        navigate("/admin")
+      if (getRole() == "Yonetici") {
+        navigate("/admin/overview")
         toast.success("Yönetici olarak Giriş yapıldı", successStyle)
       }
-      if (getRole() == "user") {
-        navigate("/user")
-        toast.success("Calışan olarak Giriş yapıldı", successStyle)
+      else if (getRole() == "Kasiyer" || getRole() == "Garson") {
+        navigate("/user/overview")
+        toast.success(`${getRole()} olarak Giriş yapıldı`, successStyle)
+      } else {
+        toast.warning(`get role :${getRole()}`, warningStyle)
+        console.log(getRole())
       }
+      await dispatch(getPermission())
+
 
     } else {
       console.log(res.payload);
@@ -64,7 +77,7 @@ const onSubmit = async (data: z.infer<typeof loginSchema>) => {
         <div className="bg-white rounded-2xl shadow-2xl p-8 space-y-6">
           {/* Logo and branding */}
           <div className="flex flex-col items-center space-y-4">
-           
+
             <div className="text-center">
               <h1 className="text-3xl font-bold text-slate-900">Cafe System</h1>
               <p className="text-sm text-slate-600 mt-2">Kahve dükkanınızı yönetin</p>
@@ -74,52 +87,39 @@ const onSubmit = async (data: z.infer<typeof loginSchema>) => {
           {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700 font-medium">E-posta</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        type="email"
-                        placeholder="ornek@email.com"
-                        className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg"
-                      />
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
+              <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "kasiyer@kafe.com") }}>kasiyer@kafe.com</p>
+              <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "garson@kafe.com") }}>garson@kafe.com</p>
+              <CustomFormField control={form.control} name={"email"} title="Email" >
+                {(field: any) => (
+                  <Input
+                    {...field}
+                    type="email"
+                    placeholder="ornek@email.com"
+                    className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg"
+                  />
                 )}
-              />
+              </CustomFormField>
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel className="text-slate-700 font-medium">Şifre</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Input
-                          {...field}
-                          type={showPassword ? "text" : "password"}
-                          placeholder="••••••••"
-                          className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg pr-10"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
-                        >
-                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                        </button>
-                      </div>
-                    </FormControl>
-                    <FormMessage className="text-red-500" />
-                  </FormItem>
+              <CustomFormField control={form.control} name={"password"}title="Sifre"  >
+                {(field: any) => (
+                  <div className="relative">
+                    <Input
+                      {...field}
+                      type={showPassword ? "text" : "password"}
+                      placeholder="••••••••"
+                      className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg pr-10"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                    >
+                      {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                    </button>
+                  </div>
                 )}
-              />
+              </CustomFormField>
+
 
               <Button
                 type="submit"

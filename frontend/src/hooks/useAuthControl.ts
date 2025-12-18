@@ -1,24 +1,21 @@
-import { jwtDecode } from "jwt-decode";
+import { getRole } from "@/lib/utils";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-
-interface TokenPayload {
-  userId: string;
-  role: string;
-}
 
 export function useAuthControl() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      const decoded = jwtDecode<TokenPayload>(token);
+    const role = getRole();
 
-      if (decoded.role === "admin") navigate("/admin/overview");
-      else if (decoded.role === "user") navigate("/user/overview");
-      else navigate("/login")
+    if (!role) {
+      navigate("/login");
       return;
     }
+
+    if (role === "Yonetici") navigate("/admin/overview");
+    else if (role === "Kasiyer" || role === "Garson")
+      navigate("/user/overview");
+    else navigate("/login");
   }, []);
 }

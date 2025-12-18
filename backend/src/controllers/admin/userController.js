@@ -1,7 +1,12 @@
 const User = require('../../models/User');
 const Order = require('../../models/Order');
 const Food = require('../../models/foods');
+const Role = require('../../models/Role');
+const Action = require('../../models/action');
 const OrderItems = require('../../models/OrderItem');
+const UserRole = require('../../models/UserRole');
+const RoleAction = require('../../models/RoleAction');
+const { ok } = require('assert');
 
 
 
@@ -147,20 +152,175 @@ const deleteUser = async (req, res) => {
 
   return res.json({ success: true, message: "User deleted" });
 };
-const getUsers = async (req, res) => {
+const getUser = async (req, res) => {
   try {
-    const users = await User.find({
-      isActive: { $in: [false, null, true] }
-    }).select("-password");
-    res.json({ success: true, data: users });
+    const id = req.params.id;
+
+    const user = await User.findById(id).select("-password");
+    if (!user) return res.status(404).json({ success: false });
+
+    // user -> role
+    const userRole = await UserRole
+      .findOne({ userId: user._id })
+      .populate("roleId", "name");
+
+    const roleName = userRole?.roleId?.name;
+
+    // role -> permissions
+    const roleActions = await RoleAction
+      .find({ roleId: userRole?.roleId?._id })
+      .populate("actionId", "code");
+
+    const permissions = roleActions.map(r => ({
+      id: r.actionId._id,
+      //   code: r.actionId.code,
+    }));
+    res.json({
+      success: true,
+      data: {
+        ...user.toObject(),
+        roleName,
+        permissions
+      }
+    });
+
   } catch (err) {
-    res.status(500).json({ success: false, message: "Server error" });
+    console.log(err)
+    res.status(500).json({ success: false });
   }
 };
+
+const getUsers = async (req, res) => {
+  console.log("burada")
+  try {
+    const users = await User.find().select("-password");
+
+    const result = await Promise.all(
+      users.map(async (user) => {
+        const userRole = await UserRole
+          .findOne({ userId: user._id })
+          .populate("roleId", "name");
+
+        return {
+          ...user.toObject(),
+          roleName: userRole?.roleId?.name
+        };
+      })
+    );
+
+    res.json({ success: true, data: result });
+
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ success: false });
+  }
+};
+const getRoles = async (req, res) => {
+  try {
+    const actions = await Role.find().select("_id name");
+
+    res.status(200).json({
+      success: true,
+      data: actions
+    });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ success: false });
+  }
+}
+
+const getPermissions = async (req, res) => {
+  try {
+    const actions = await Action.find().select("_id code description");
+
+    res.status(200).json({
+      success: true,
+      data: actions
+    });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ success: false });
+  }
+};
+const updatePermission = async (req, res) => {
+  try {
+    const userId = req.params.id;       // kullanıcı id
+    const { ids } = req.body;           // actionId[] (string)
+
+    // kullanıcının rolü
+    const userRole = await UserRole.findOne({ userId });
+    if (!userRole) {
+      return res.status(404).json({ success: false, message: "Role bulunamadı" });
+    }
+
+    const roleId = userRole.roleId;
+
+    // role ait tüm actionları sil
+    await RoleAction.deleteMany({ roleId });
+
+    // yeni actionları ekle
+    const roleActions = ids.map(actionId => ({
+      roleId,
+      actionId
+    }));
+
+    await RoleAction.insertMany(roleActions);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false });
+  }
+};
+
+const updateUser = async (req, res) => {
+  try {
+    const userId = req.params.id
+    const { email, firstName, lastName, phoneNumber, roleName, isActive } = req.body
+
+    // 1️⃣ Kullanıcıyı bul
+    const user = await User.findById(userId)
+    if (!user) {
+      return res.status(404).json({ success: false, message: "Kullanıcı bulunamadı" })
+    }
+
+    // 2️⃣ User alanlarını güncelle
+    user.firstName = firstName
+    user.lastName = lastName
+    user.email = email
+    user.phoneNumber = phoneNumber
+    user.isActive = isActive
+
+    await user.save()
+
+    // 3️⃣ RoleName → RoleId
+    const role = await Role.findOne({ name: roleName })
+    if (!role) {
+      return res.status(400).json({ success: false, message: "Rol bulunamadı" })
+    }
+
+    // 4️⃣ UserRole tablosunda role güncelle
+    await UserRole.findOneAndUpdate(
+      { userId: user._id },
+      { roleId: role._id },
+      { new: true }// bu foks her turlu bir doc donuyor burası true olursa update sonrası doc doner false olsursa before update olur
+    )
+
+    return res.json({ success: true, message: "Kullanıcı güncellendi" })
+  } catch (err) {
+    return res.status(500).json({ success: false, message: "Sunucu hatası" })
+  }
+}
+
 module.exports = {
+  getUser,
+  getRoles,
   getUsers,
   giveAproach,
   deleteUser,
   giveReject,
-  getAdminStats
+  getAdminStats,
+  getPermissions,
+  updatePermission,
+  updateUser
 };

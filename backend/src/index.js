@@ -11,17 +11,16 @@ const uploadDir = path.join(__dirname, "assets/foods");
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir, { recursive: true });
 }
-/* 
-// Multer ayarı (tek dosya)
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => cb(null, uploadDir),
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        const name = file.fieldname + "-" + Date.now() + ext;
-        cb(null, name);
-    },
-}); */
-
+require("./models/Category")
+require("./models/Order")
+require("./models/OrderItem")
+require("./models/Role")
+require("./models/RoleAction")
+require("./models/Table")
+require("./models/User")
+require("./models/UserRole")
+require("./models/action")
+require("./models/foods")
 
 
 const PORT = process.env.PORT || 5000;
@@ -42,10 +41,7 @@ async function startServer() {
         app.get('/health', (req, res) => {
             res.status(200).json({ status: 'ok' });
         });
-        /* app.post("/single", upload.single("imgs"), (req, res) => {
-            console.log("Dosya geldi mi?", req.file);
-            res.json({ success: true, file: req.file });
-        }); */
+       
         app.get("/file", (req, res) => {
             const filePath = req.query.path;
             if (!filePath) return res.status(400).send("path gerekli");
@@ -58,6 +54,9 @@ async function startServer() {
 
             res.sendFile(absolutePath);
         });
+        app.get("/istek",(req,res) => {
+
+        })
         // API routes
         app.use('/api', apiRoutes);
 

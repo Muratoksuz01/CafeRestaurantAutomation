@@ -9,10 +9,12 @@ import { API_PATHS } from "@/lib/api";
 import { foodCreateSchema } from "@/models/Food";
 import { useGetCategory } from "@/hooks/useGetCategory";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
+import { Form } from "@/components/ui/form";
+import CustomFormField from "@/components/CustomFormField";
 export default function CreateFoodForm({ onUpdate }: any) {
     const [loading, setLoading] = useState(false);
     const { categories, getCategories } = useGetCategory()
-    const { register, handleSubmit, control, reset, formState: { errors } } = useForm({
+    const form = useForm({
         resolver: zodResolver(foodCreateSchema),
     });
     useEffect(() => {
@@ -38,7 +40,7 @@ export default function CreateFoodForm({ onUpdate }: any) {
                     "Content-Type": "multipart/form-data",
                 },
             });
-            reset();
+            form.reset();
             console.log("Yemek oluşturuldu");
             onUpdate?.(); // üst componentte listeyi güncelle
         } catch (err) {
@@ -49,50 +51,66 @@ export default function CreateFoodForm({ onUpdate }: any) {
     };
 
     return (
-        <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 p-2">
-            <div>
-                <Input placeholder="Yemek Adı" {...register("name")} />
-                {errors.name && <p className="text-red-600 text-sm mt-1">{errors.name.message}</p>}
-            </div>
-            <div>
-                <Input type="number" placeholder="Fiyat" {...register("price", { valueAsNumber: true })} />
-                {errors.price && <p className="text-red-600 text-sm mt-1">{errors.price.message}</p>}
-            </div>
-            <div>
-                <Textarea placeholder="Açıklama" {...register("description")} />
-                {errors.description && <p className="text-red-600 text-sm mt-1">{errors.description.message}</p>}
-            </div>
-            <div>
-                <Input type="file"   {...register("imgs")} multiple accept="image/*" />
-                {errors.imgs && (errors.imgs as any)?.message && (
-                    <p className="text-red-600 text-sm mt-1">{(errors.imgs as any).message}</p>
-                )}
-            </div>
-            <div>
-                <Controller
-                    control={control}
-                    name="categoryId"
-                    rules={{ required: "Kategori seçmelisiniz" }}
-                    render={({ field }) => (
-                        <Select
-                            onValueChange={field.onChange}
-                            value={field.value}
-                        >
-                            <SelectTrigger className="w-[180px]">
-                                <SelectValue placeholder="Select a category" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectGroup>
-                                    {categories.map(cat => (
-                                        <SelectItem key={cat._id} value={cat._id}>{cat.name}</SelectItem>
-                                    ))}
-                                </SelectGroup>
-                            </SelectContent>
-                        </Select>
-                    )}
-                />
-            </div>
-            <Button type="submit" disabled={loading}>{loading ? "Yükleniyor..." : "Oluştur"}</Button>
-        </form>
+      <Form {...form}>
+  <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-2">
+
+    <CustomFormField control={form.control} name="name">
+      {(field: any) => (
+        <Input placeholder="Yemek Adı" {...field} />
+      )}
+    </CustomFormField>
+
+    <CustomFormField control={form.control} name="price">
+      {(field: any) => (
+        <Input
+          type="number"
+          placeholder="Fiyat"
+          {...field}
+          onChange={(e) => field.onChange(Number(e.target.value))}
+        />
+      )}
+    </CustomFormField>
+
+    <CustomFormField control={form.control} name="description">
+      {(field: any) => (
+        <Textarea placeholder="Açıklama" {...field} />
+      )}
+    </CustomFormField>
+
+    <CustomFormField control={form.control} name="imgs">
+      {(field: any) => (
+        <Input
+          type="file"
+          multiple
+          accept="image/*"
+          onChange={(e) => field.onChange(e.target.files)}
+        />
+      )}
+    </CustomFormField>
+
+    <CustomFormField control={form.control} name="categoryId">
+      {(field: any) => (
+        <Select value={field.value} onValueChange={field.onChange}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Kategori seç" />
+          </SelectTrigger>
+          <SelectContent>
+            {categories.map((cat) => (
+              <SelectItem key={cat._id} value={cat._id}>
+                {cat.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )}
+    </CustomFormField>
+
+    <Button type="submit" disabled={loading}>
+      {loading ? "Yükleniyor..." : "Oluştur"}
+    </Button>
+
+  </form>
+</Form>
+
     );
 }

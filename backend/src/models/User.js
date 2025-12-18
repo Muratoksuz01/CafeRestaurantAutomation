@@ -11,7 +11,7 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true, select: false },
     phoneNumber: { type: String },
     isActive: { type: Boolean, default: null },
-    role: { type: String, enum: ["admin", "user"], default: "user" },
+  //  role: { type: String, enum: ["admin", "user"], default: "user" },
    
   },
   { timestamps: true }

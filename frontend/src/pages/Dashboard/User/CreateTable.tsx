@@ -1,46 +1,33 @@
-"use client"
-
+import CustomFormField from "@/components/CustomFormField"
 import { Button } from "@/components/ui/button"
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { Form } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { API_PATHS } from "@/lib/api"
 import axiosInstance from "@/lib/axiosInstance"
 import { successStyle } from "@/lib/toastStyle"
-import { cn } from "@/lib/utils"
 import { tableCreateEditSchema } from "@/models/Tables"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { Check, ChevronsUpDown, Plus } from "lucide-react"
-import { useState } from "react"
-import { Controller, useForm } from "react-hook-form"
+import {  useForm } from "react-hook-form"
 import { toast } from "sonner"
 
-function CreateTable({ createOpen, setCreateOpen, onCreate, locations }: any) {
-  const [open, setOpen] = useState(false)
-  const [searchValue, setSearchValue] = useState("")
+function CreateTable({ createOpen, setCreateOpen, onCreate }: any) {
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    formState: { errors },
-  } = useForm({
+  const form = useForm({
     resolver: zodResolver(tableCreateEditSchema),
   })
 
 
 
 
- 
+
   const onsubmit = async (data: any) => {
     const res = await axiosInstance.post(API_PATHS.createTable, data)
     if (res.data.success) {
       toast.success("Masa eklendi", successStyle)
       if (onCreate) onCreate()
     }
-    reset()
+   form. reset()
     setCreateOpen(false)
   }
 
@@ -51,18 +38,18 @@ function CreateTable({ createOpen, setCreateOpen, onCreate, locations }: any) {
         <DialogHeader>
           <DialogTitle>Yeni Masa Ekle</DialogTitle>
         </DialogHeader>
-
-        <form onSubmit={handleSubmit(onsubmit)} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <Label>Masa Adı</Label>
-            <Input {...register("name")} />
-            {errors.name && <span className="text-red-500 text-sm">{errors.name.message as string}</span>}
-          </div>
-
-         
-
-          <Button type="submit">Ekle</Button>
-        </form>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onsubmit)} className="flex flex-col gap-4">
+            <CustomFormField control={form.control} name={"name"}>
+              {(field: any) => (
+                  <Input
+                    {...field}
+                  />
+                )}
+            </CustomFormField>
+            <Button type="submit">Ekle</Button>
+          </form>
+        </Form>
       </DialogContent>
     </Dialog>
   )

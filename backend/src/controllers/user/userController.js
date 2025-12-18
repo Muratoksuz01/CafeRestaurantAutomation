@@ -1,7 +1,6 @@
 const Tables = require("../../models/Table");
 const Order = require("../../models/Order");
 const OrderItems = require("../../models/OrderItem");
-const Table = require("../../models/Table");
 const User = require("../../models/User")
 // MASA LİSTELE
 exports.getTables = async (req, res) => {
@@ -142,13 +141,12 @@ exports.createTable = async (req, res) => {
 // MASA GÜNCELLE
 exports.editTable = async (req, res) => {
   try {
-    const { name, locationId} = req.body;
+    const { name} = req.body;
 
     const updated = await Tables.findByIdAndUpdate(
       req.params.id,
       {
         name,
-        locationId
       },
       { new: true }
     );
@@ -176,6 +174,78 @@ exports.deleteTable = async (req, res) => {
 
   } catch (err) {
     res.status(500).json({ success: false, message: err.message });
+  }
+};
+exports.reassignTables = async (req, res) => {
+  try {
+    const { oldTableId, newTableId, orderId } = req.body;
+
+    if (!oldTableId || !newTableId || !orderId) {
+      return res.status(204).json({ success: false, message: "Eksik parametre" });
+    }
+
+    const oldTable = await Tables.findById(oldTableId);
+    const newTable = await Tables.findById(newTableId);
+
+    if (!oldTable || !newTable) {
+      return res.status(204).json({ success: false, message: "Masalardan biri bulunamadı" });
+    }
+
+    // Order'ın masaId'sini güncelle
+    await Order.findByIdAndUpdate(orderId, {
+      tableId: newTableId
+    });
+
+    // Eski masa boşalt
+    await Tables.findByIdAndUpdate(oldTableId, {
+      status: "bos",
+      currentOrderId: null
+    });
+
+    // Yeni masayı doldur
+    await Tables.findByIdAndUpdate(newTableId, {
+      status: "dolu",
+      currentOrderId: orderId
+    });
+
+    return res.json({ success: true, message: "Masa başarılı şekilde değiştirildi" });
+
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ success: false, message: "Sunucu hatası" });
+  }
+};
+exports.book = async (req, res) => {
+  try {
+    const { id } = req.params; // masa id
+
+    const table = await Table.findById(id);
+    if (!table) {
+      return res.status(200).json({
+        success: false,
+        message: "Masa bulunamadı"
+      });
+    }
+
+    const newStatus = table.status === "rezerve" ? "bos" : "rezerve";
+
+    await Table.findByIdAndUpdate(id, {
+      status: newStatus
+    });
+
+    return res.status(200).json({
+      success: true,
+      message:
+        newStatus === "rezerve"
+          ? "Masa rezerve edildi"
+          : "Rezervasyon iptal edildi"
+    });
+
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Bir hata oluştu"
+    });
   }
 };
 exports.createOrder = async (req, res) => {
@@ -362,75 +432,4 @@ exports.getPaid = async (req, res) => {
     return res.status(500).json({ success: false, message: "Sunucu hatası" });
   }
 };
-exports.reassignTables = async (req, res) => {
-  try {
-    const { oldTableId, newTableId, orderId } = req.body;
 
-    if (!oldTableId || !newTableId || !orderId) {
-      return res.status(204).json({ success: false, message: "Eksik parametre" });
-    }
-
-    const oldTable = await Tables.findById(oldTableId);
-    const newTable = await Tables.findById(newTableId);
-
-    if (!oldTable || !newTable) {
-      return res.status(204).json({ success: false, message: "Masalardan biri bulunamadı" });
-    }
-
-    // Order'ın masaId'sini güncelle
-    await Order.findByIdAndUpdate(orderId, {
-      tableId: newTableId
-    });
-
-    // Eski masa boşalt
-    await Tables.findByIdAndUpdate(oldTableId, {
-      status: "bos",
-      currentOrderId: null
-    });
-
-    // Yeni masayı doldur
-    await Tables.findByIdAndUpdate(newTableId, {
-      status: "dolu",
-      currentOrderId: orderId
-    });
-
-    return res.json({ success: true, message: "Masa başarılı şekilde değiştirildi" });
-
-  } catch (err) {
-    console.log(err);
-    return res.status(500).json({ success: false, message: "Sunucu hatası" });
-  }
-};
-exports.book = async (req, res) => {
-  try {
-    const { id } = req.params; // masa id
-
-    const table = await Table.findById(id);
-    if (!table) {
-      return res.status(200).json({
-        success: false,
-        message: "Masa bulunamadı"
-      });
-    }
-
-    const newStatus = table.status === "rezerve" ? "bos" : "rezerve";
-
-    await Table.findByIdAndUpdate(id, {
-      status: newStatus
-    });
-
-    return res.status(200).json({
-      success: true,
-      message:
-        newStatus === "rezerve"
-          ? "Masa rezerve edildi"
-          : "Rezervasyon iptal edildi"
-    });
-
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Bir hata oluştu"
-    });
-  }
-};
