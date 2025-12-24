@@ -1,4 +1,4 @@
-import {HiBookOpen,HiMiniQueueList,} from "react-icons/hi2";
+import { HiBookOpen, HiMiniQueueList, } from "react-icons/hi2";
 import { LuChevronRight } from "react-icons/lu";
 import { Link, useLocation } from "react-router-dom";
 
@@ -15,7 +15,7 @@ const links = [
     description: "temiz bir baslangoc icin başa git.",
     icon: HiMiniQueueList,
   },
-  
+
 ];
 
 export default function NotFound() {
@@ -51,28 +51,31 @@ export default function NotFound() {
                   return (
                     <li
                       key={idx}
-                      className="relative flex gap-x-6 py-4 hover:bg-sky-100 px-4 rounded-md transition-colors"
+                      className="relative flex gap-x-6 py-4 px-4 rounded-md hover:bg-sky-100 transition-colors"
                     >
+                      <Link
+                        to={link.href}
+                        className="absolute inset-0 z-10"
+                      />
+
                       <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg shadow-sm ring-1 ring-gray-200">
-                        <Icon className="h-6 w-6 text-sky-600" aria-hidden="true" />
+                        <Icon className="h-6 w-6 text-sky-600" />
                       </div>
 
                       <div className="flex-auto">
-                        <h3 className="text-sm font-semibold leading-6 text-gray-900">
-                          <Link to={link.href} className="inline-block relative">
-                            <span className="absolute inset-0" aria-hidden="true" />
-                            {link.name}
-                          </Link>
+                        <h3 className="text-sm font-semibold text-gray-900">
+                          {link.name}
                         </h3>
-                        <p className="mt-2 text-sm leading-6 text-gray-600">
+                        <p className="mt-2 text-sm text-gray-600">
                           {link.description}
                         </p>
                       </div>
 
                       <div className="flex-none self-center">
-                        <LuChevronRight className="h-5 w-5 text-gray-400" aria-hidden="true" />
+                        <LuChevronRight className="h-5 w-5 text-gray-400" />
                       </div>
                     </li>
+
                   );
                 })}
               </ul>

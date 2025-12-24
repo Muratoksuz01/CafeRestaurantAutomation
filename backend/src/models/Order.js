@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const OrderSchema = new mongoose.Schema(
   {
     tableId:{type:mongoose.Schema.Types.ObjectId,
-      ref:"Table",
+      ref:"Tables",
       required:true
     },
     total: { type: Number, required: true }, //  

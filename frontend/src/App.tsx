@@ -9,9 +9,13 @@ import AdminOverview from "./pages/Dashboard/Admin/AdminOverview";
 import AdminUsers from "./pages/Dashboard/Admin/AdminUsers";
 import AdminFoods from "./pages/Dashboard/Admin/AdminFoods";
 import AdminCategory from "./pages/Dashboard/Admin/AdminCategory";
-import { useAuthControl } from "./hooks/useAuthControl";
 import ProtectedRoute from "./lib/ProtectedRoute";
-import { getRole } from "./lib/utils";
+import { useSelector } from "react-redux";
+import { RootState } from "./store";
+import AdminOrders from "./pages/Dashboard/Admin/AdminOrders";
+import AdminRoles from "./pages/Dashboard/Admin/AdminRoles";
+import { DataTableDemo } from "./components/DataTableDemo";
+import AsciOrders from "./pages/Dashboard/User/AsciOrders";
 
 
 
@@ -19,34 +23,46 @@ import { getRole } from "./lib/utils";
 
 
 function App() {
-  const role = getRole()
+  const { user, } = useSelector((state: RootState) => state.auth);
+
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<Navigate to={"/login"} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        {role == "Yonetici" && (
+        {user?.role == "Yonetici" && (
           <Route element={<ProtectedRoute allow={["Yonetici"]} />}>
             <Route path="/admin" element={<DashboardLayout />}>
-                  <Route index element={<AdminOverview />} />
-                  <Route path="overview" element={<AdminOverview />} />
-                  <Route path="users" element={<AdminUsers />} />
-                  <Route path="foods" element={<AdminFoods />} />
-                  <Route path="category" element={<AdminCategory />} />
+              <Route index element={<AdminOverview />} />
+              <Route path="overview" element={<AdminOverview />} />
+              <Route path="users" element={<AdminUsers />} />
+              <Route path="foods" element={<AdminFoods />} />
+              <Route path="category" element={<AdminCategory />} />
+              <Route path="orders" element={<AdminOrders />} />
+              <Route path="roles" element={<AdminRoles />} />
+              <Route path="gereksiz" element={<DataTableDemo />} />
             </Route>
           </Route>
         )}
-        {role && ["Kasiyer", "Garson"].includes(role) && (
-            <Route element={<ProtectedRoute allow={["Kasiyer", "Garson"]} />}>
+        {user?.role && ["Kasiyer", "Garson", ].includes(user?.role) && (
+          <Route element={<ProtectedRoute allow={["Kasiyer", "Garson"]} />}>
             <Route path="/user" element={<DashboardLayout />}>
-                <Route index element={<UserOverview />} />
-                <Route path="overview" element={<UserOverview />} />
-                <Route path="userList" element={<UserList />} />
+              <Route index element={<UserOverview />} />
+              <Route path="overview" element={<UserOverview />} />
+              <Route path="userList" element={<UserList />} />
+            </Route>
           </Route>
-        </Route>
-          )}
+        )}
 
+        {user?.role && ["Asci"].includes(user?.role) && (
+          <Route element={<ProtectedRoute allow={["Asci"]} />}>
+            <Route path="/user" element={<DashboardLayout />}>
+              <Route index element={<AsciOrders />} />
+              <Route path="overview" element={<AsciOrders />} />
+            </Route>
+          </Route>
+        )}
 
 
 

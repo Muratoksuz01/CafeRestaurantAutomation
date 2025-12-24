@@ -1,10 +1,10 @@
-const User = require('../../models/User');
-const Order = require('../../models/Order');
-const Food = require('../../models/foods');
-const Role = require('../../models/Role');
+const User = require('../models/User');
+const Order = require('../models/Order');
+const Food = require('../models/foods');
+const Role = require('../models/Role');
 // const Action = require('../../models/action');
-const OrderItems = require('../../models/OrderItem');
-const UserRole = require('../../models/UserRole');
+const OrderItems = require('../models/OrderItem');
+const UserRole = require('../models/UserRole');
 // const RoleAction = require('../../models/RoleAction');
 
 
@@ -188,6 +188,38 @@ exports.getUser = async (req, res) => {
     res.status(500).json({ success: false });
   }
 };
+exports.createUser = async (req, res) => {
+  try {
+     const {firstName,lastName,email,phoneNumber,password,roleName,isActive} = req.body;
+    if (!roleName) {
+      return res.status(400).json({ success: false, message: "Rol seçilmelidir" });
+    }
+
+    const role = await Role.findOne({ name: roleName });
+    if (!role) {
+      return res.status(400).json({ success: false, message: "Geçersiz rol" });
+    }
+
+    const user = await User.create({
+      firstName,
+      lastName,
+      email,
+      password,
+      phoneNumber,
+      isActive
+    });
+
+    await UserRole.create({
+      userId: user._id,
+      roleId: role._id
+    });
+
+    res.status(201).json({ success: true });
+  } catch (err) {
+    console.log(err)
+    res.status(500).json({ success: false, message: "kullanıcı olusturlamdı" });
+  }
+};
 
 exports.getUsers = async (req, res) => {
   console.log("burada")
@@ -228,7 +260,7 @@ exports.getRoles = async (req, res) => {
   }
 }
 
-exports.getPermissions = async (req, res) => {
+/* exports.getPermissions = async (req, res) => {
   try {
     const actions = await Action.find().select("_id code description");
 
@@ -240,8 +272,8 @@ exports.getPermissions = async (req, res) => {
     console.log(err)
     res.status(500).json({ success: false });
   }
-};
-exports.updatePermission = async (req, res) => {
+}; */
+/* exports.updatePermission = async (req, res) => {
   try {
     const userId = req.params.id;       // kullanıcı id
     const { ids } = req.body;           // actionId[] (string)
@@ -270,7 +302,7 @@ exports.updatePermission = async (req, res) => {
     console.error(err);
     res.status(500).json({ success: false });
   }
-};
+}; */
 
 exports.updateUser = async (req, res) => {
   try {
@@ -311,6 +343,6 @@ exports.updateUser = async (req, res) => {
   }
 }
 
-exports.totallydelete =async (req,res) => {
-  
+exports.totallydelete = async (req, res) => {
+
 }

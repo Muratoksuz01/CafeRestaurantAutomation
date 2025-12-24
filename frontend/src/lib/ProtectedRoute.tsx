@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router-dom";
 import { getRole } from "@/lib/utils";
 
-export default function ProtectedRoute({ allow }: { allow: ("Yonetici" | "Kasiyer" | "Garson")[] }) {
+export default function ProtectedRoute({ allow }: { allow: ("Yonetici" | "Kasiyer" | "Garson" | "Asci")[] }) {
   const role = getRole();
 
   if (!role) return <Navigate to="/login" replace />;

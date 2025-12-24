@@ -33,18 +33,36 @@ export const userEditSchema = z.object({
   firstName: z.string().min(1, "Ad zorunlu").min(2, "Ad en az 2 karakter olmalı"),
   lastName: z.string().min(1, "Soyad zorunlu").min(2, "Soyad en az 2 karakter olmalı"),
   email: z.string().min(1, "E-posta zorunlu").email("Geçersiz e-posta formatı"),
-  phoneNumber: z
-    .string()
-    .min(1, "Telefon zorunlu")
+  phoneNumber: z.string().min(1, "Telefon zorunlu")
 .regex(/^[0-9]{3}[0-9]{3}[0-9]{4}$/, "Telefon formatı 555 555 5555 şeklinde olmalıdır")
-,  roleName: z.enum(["Asci", "Yonetici", "Garson", "Kasiyer"]),
+,  roleName: z.enum(["Asci", "Yonetici", "Garson", "Kasiyer"],{"error":"bir rol secmelisiniz "}),
   isActive: z.boolean(),
 })
-
+export const userCreateSchema = z.object({
+  firstName: z.string().min(1, "Ad zorunlu").min(2, "Ad en az 2 karakter olmalı"),
+  lastName: z.string().min(1, "Soyad zorunlu").min(2, "Soyad en az 2 karakter olmalı"),
+  email: z.string().min(1, "E-posta zorunlu").email("Geçersiz e-posta formatı"),
+  password: z.string().min(6, "en az 6 haneli Sifre zorunlu"),
+  phoneNumber: z.string().min(1, "Telefon zorunlu")
+    .regex(/^[0-9]{3}[0-9]{3}[0-9]{4}$/, "Telefon formatı 555 555 5555 şeklinde olmalıdır")
+,  roleName: z.enum(["Asci", "Yonetici", "Garson", "Kasiyer"],{"error":"bir rol secmelisiniz "}),
+  isActive: z.boolean(),
+})
 export const loginSchema = z.object({
   email: z.string().email("Geçerli bir email girin"),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
 });
+/* export const rezerveSchema = z.object({
+  firstName: z.string().min(1, "Zorunlu"),
+  lastName: z.string().min(1, "Zorunlu"),
+  phoneNumber: z.string().min(10, "Geçersiz numara"),
+  untilTime: z.date().refine((date) => {
+    const now = new Date();
+    return date >= now;
+  }, {
+    message: "Geçmiş tarih/saat seçilemez",
+  }),
+}); */
 export type RegisterForm = z.infer<typeof registerSchema>;
 export type LoginForm = z.infer<typeof loginSchema>;
 export type Users = z.infer<typeof usersSchema>;

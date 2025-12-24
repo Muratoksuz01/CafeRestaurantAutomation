@@ -1,7 +1,7 @@
 
-const Foods = require('../../models/foods');
-const { saveLocalImage, deleteImage } = require("../../utils/saveImage");
-const createFood = async (req, res) => {
+const Foods = require('../models/foods');
+const { saveLocalImage, deleteImage } = require("../utils/saveImage");
+exports.createFood = async (req, res) => {
     console.log("geldi")
     try {
         const { name, price, description, categoryId } = req.body;
@@ -26,7 +26,7 @@ const createFood = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
-const updateFood = async (req, res) => {
+exports.updateFood = async (req, res) => {
     try {
         const id = req.params.id;
         const { name, price, description, categoryId } = req.body;
@@ -67,7 +67,7 @@ const updateFood = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
-const deleteFood = async (req, res) => {
+exports.deleteFood = async (req, res) => {
     try {
         const id = req.params.id;
 
@@ -90,7 +90,7 @@ const deleteFood = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 };
-const getFoods = async (req, res) => {
+exports.getFoods = async (req, res) => {
     try {
         const foods = await Foods.find({isDeleted:false});
         res.json({ success: true, data: foods });
@@ -98,11 +98,3 @@ const getFoods = async (req, res) => {
         res.status(500).json({ success: false, message: "Server error" });
     }
 }
-module.exports = {
-
-    createFood,
-    deleteFood,
-    updateFood,
-    getFoods,
-
-};

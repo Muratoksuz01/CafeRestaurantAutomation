@@ -1,9 +1,9 @@
-const User = require('../../models/User');
-const { generateToken } = require('../../middleware/auth');
-const redis = require("../../redis");
-const UserRole = require("../../models/UserRole");
+const User = require('../models/User');
+const { generateToken } = require('../middleware/auth');
+const redis = require("../redis");
+const UserRole = require("../models/UserRole");
 // const RoleAction = require("../../models/RoleAction");
-const Role = require("../../models/Role");
+const Role = require("../models/Role");
 
 // Kullanıcı kayıt
 exports.register = async (req, res) => {
@@ -92,15 +92,15 @@ exports.login = async (req, res) => {
     }
 
     // Hesap aktif mi?
-     if (!user.isActive) {
-        return res.status(403).json({
-          success: true,
-          message: "Your account is pending admin approval.",
-        });
-      } 
+    if (!user.isActive) {
+      return res.status(403).json({
+        success: true,
+        message: "Your account is pending admin approval.",
+      });
+    }
 
     const userRole = await UserRole
-      .findOne({ userId:user._id })
+      .findOne({ userId: user._id })
       .populate("roleId", "name");
 
     const roleName = userRole?.roleId?.name;
@@ -117,7 +117,7 @@ exports.login = async (req, res) => {
           firstName: user.firstName,
           lastName: user.lastName,
           email: user.email,
-          //   role: user.role,
+          role: roleName,
           phoneNumber: user.phoneNumber,
         },
         token,

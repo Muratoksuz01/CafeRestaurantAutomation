@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import { useGetFoods } from "@/hooks/useGetFoods";
 import { Button } from "@/components/ui/button";
-import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
 import CreateFoodForm from "./CreateFoodForm";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue, } from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 
 import EditFoodForm from "./EditFoodForm";
 import axiosInstance from "@/lib/axiosInstance";
@@ -23,7 +21,7 @@ export default function AdminFoods() {
   const [showCreate, setShowCreate] = useState(false)
   const [filterCategory, setFilterCategory] = useState("all");
   const [search, setSearch] = useState("");
-  const { getFoods, foods, setFoods } = useGetFoods();
+  const { getFoods, foods } = useGetFoods();
   const { categories, getCategories } = useGetCategory();
   useEffect(() => {
     getFoods();
@@ -51,15 +49,15 @@ export default function AdminFoods() {
      ); */
     getFoods()
   };
-const filteredFoods = foods.filter(f => {
-  const matchCategory = filterCategory === "all" || f.categoryId === filterCategory;
-  const matchSearch =
-    f.name.toLowerCase().includes(search) ||
-    f.description.toLowerCase().includes(search) ||
-    f.price.toString().includes(search);
+  const filteredFoods = foods.filter(f => {
+    const matchCategory = filterCategory === "all" || f.categoryId === filterCategory;
+    const matchSearch =
+      f.name.toLowerCase().includes(search) ||
+      f.description.toLowerCase().includes(search) ||
+      f.price.toString().includes(search);
 
-  return matchCategory && matchSearch;
-});
+    return matchCategory && matchSearch;
+  });
   return (
     <div className="p-6 space-y-6">
       <div className="flex items-center gap-4 mt-4">
@@ -95,6 +93,7 @@ const filteredFoods = foods.filter(f => {
       <div className="flex justify-between items-center">
         <h2 className="text-xl font-semibold">Yemekler</h2>
         <Button onClick={() => {
+          console.log("tıklanı")
           setShowCreate(true)
         }}>
           Yemek Ekle
@@ -164,24 +163,12 @@ const filteredFoods = foods.filter(f => {
       </div>
 
       {/* Edit Dialog */}
-      <Dialog open={showEdit} onOpenChange={setShowEdit}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Yemeği Düzenle</DialogTitle>
-          </DialogHeader>
-          {selectedFood && <EditFoodForm food={selectedFood} onClose={() => setShowEdit(false)} onUpdate={onUpdate} />}
-        </DialogContent>
-      </Dialog>
+      {selectedFood && <EditFoodForm food={selectedFood} onUpdate={onUpdate} open={showEdit} setOpen={setShowEdit} />}
+
 
       {/* Create Dialog */}
-      <Dialog open={showCreate} onOpenChange={setShowCreate}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Yeni Yemek Ekle</DialogTitle>
-          </DialogHeader>
-          <CreateFoodForm                     onUpdate={onUpdate}      />
-        </DialogContent>
-      </Dialog>
+      <CreateFoodForm open={showCreate} setOpen={setShowCreate} onUpdate={onUpdate} />
+
 
       {/* Delete AlertDialog */}
       <AlertDialog open={showDelete} onOpenChange={setShowDelete}>

@@ -15,19 +15,22 @@ import { AllTable } from "@/models/Tables";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store";
 import { getRole } from "@/lib/utils";
+import RezerveDialog from "./RezerveDialog";
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
   const [deleteAlert, setDeleteAlert] = useState(false)
   const [showTableDialog, setShowTableDialog] = useState(false)
+  const [showRezerveDialog, setShowRezerveDialog] = useState(false)
   const [search, setSearch] = useState("");
   const [selectedCat, setSelectedCat] = useState("all");
   const [originalBasket, setOriginalBasket] = useState<any[]>([]);
   const [basket, setBasket] = useState<Basket[]>([]);
   const total = basket && basket.reduce((sum, f) => sum + f.price * f.qty, 0);
   const resetBasket = () => setBasket([]);
-  const { user } = useSelector((state: RootState) => state.auth); const addFood = (food: Food) => {
+  const { user } = useSelector((state: RootState) => state.auth);
+  const addFood = (food: Food) => {
     if (!basket) {
       setBasket([{ ...food, qty: 1 }]);
       return;
@@ -170,7 +173,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
       console.log(selectedTable);
       getCategories()
       getFoods();
-      fetchTable(selectedTable?._id || "")
+      selectedTable?._id  && fetchTable(selectedTable?._id)
     }
   }, [selectedTable]);
 
@@ -197,20 +200,20 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     console.log(table);
 
   }
-  const handleBook = async (id: string) => {
-    console.log("rezrve edilen masa id:", id);
-    // burada orderd varsa baska işlemler yapılmalı bu işi kontrol edilmeli
-    const res = await axiosInstance.put(API_PATHS.handleBook(id))
-    if (res.data.success) {
-      toast.success(res.data.message || "işlem basarılı", successStyle)
-      setOpen(false);
-      onChange && onChange()
-
-    } else {
-      toast.success(res.data.message || "işlem basarısız", warningStyle)
-
-    }
-  }
+ const handleBook = async (id: string) => {
+       console.log("rezrve edilen masa id:", id);
+       // burada orderd varsa baska işlemler yapılmalı bu işi kontrol edilmeli
+       const res = await axiosInstance.put(API_PATHS.handleBook(id))
+       if (res.data.success) {
+         toast.success(res.data.message || "işlem basarılı", successStyle)
+         setOpen(false);
+         onChange && onChange()
+   
+       } else {
+         toast.success(res.data.message || "işlem basarısız", warningStyle)
+   
+       }
+     }
   return (
     <>
 
@@ -299,18 +302,21 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
                 </span>
                 <div>
                   {/* buraya kosullar ekle sipariş ıd varsa gosterilesin ve zaten rezerve ise gosterilmesin */}
-                  {selectedTable.currentOrderId == null && (
+                 {/*  {selectedTable.currentOrderId == null && (
                     <Button
                       size="sm"
                       variant={selectedTable.status === "rezerve" ? "destructive" : "default"}
-                      onClick={() => handleBook(selectedTable._id)}
+                      onClick={() => {
+                        handleBook(selectedTable._id)
+                        // setShowRezerveDialog(true)
+                      }}
                     >
                       {selectedTable.status === "rezerve"
                         ? "Rezervasyonu İptal Et"
                         : "Rezerve Et"}
                     </Button>
 
-                  )}
+                  )} */}
 
                 </div>
               </DialogTitle>
@@ -377,7 +383,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
               </Button>
             </div>
 
-            <div className="text-lg font-semibold border-t pt-3">
+            <div className="text-lg  font-semibold border-t pt-3">
               Toplam: {total} TL
             </div>
           </div>
@@ -417,7 +423,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
         </DialogContent>
       </Dialog>
-
+     {/* <RezerveDialog showRezerveDialog={showRezerveDialog}  setShowRezerveDialog={setShowRezerveDialog} onChange={onChange}/> */}
       <CustomAlertDialog
         open={deleteAlert}
         onOpenChange={setDeleteAlert}

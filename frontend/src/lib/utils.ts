@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from "clsx"
 import { jwtDecode } from "jwt-decode";
 import { twMerge } from "tailwind-merge"
-type UserRole = "Yonetici" | "Kasiyer" |  "Garson";
+type UserRole = "Yonetici" | "Kasiyer" |  "Garson" | "Asci";
 
 interface TokenPayload {
   userId: string;

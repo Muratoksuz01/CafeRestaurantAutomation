@@ -21,8 +21,15 @@ require("./models/User")
 require("./models/UserRole")
 // require("./models/action")
 require("./models/foods")
+// require("./models/Employee")
+// require("./models/Reservation")
 
-
+/**   the .env file like this 
+  MONGO_URI=mongodb+srv://_user:8U1whkV@users.mongodb.net/?appName=users
+PORT=5000
+JWT_SECRET=mysecret12345698
+ADMIN_CODE=123
+ */
 const PORT = process.env.PORT || 5000;
 
 async function startServer() {

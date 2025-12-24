@@ -1,4 +1,3 @@
-import { getUser } from './../store/slices/authSlice';
 import axiosInstance from '@/lib/axiosInstance';
 import { User } from '../models/User';
 import { useState } from 'react';

@@ -15,14 +15,16 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { foodEditSchema } from "@/models/Food"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 
 interface EditFoodFormProps {
   food: any
-  onClose: () => void
   onUpdate?: () => void
+  open:any
+  setOpen:any
 }
 
-export default function EditFoodForm({ food, onClose, onUpdate }: EditFoodFormProps) {
+export default function EditFoodForm({ food, onUpdate ,open,setOpen}: EditFoodFormProps) {
   const { categories, getCategories } = useGetCategory()
 
   useEffect(() => {
@@ -74,16 +76,20 @@ export default function EditFoodForm({ food, onClose, onUpdate }: EditFoodFormPr
       if (res.data.success) {
         toast.success("Yemek güncellendi", successStyle)
         onUpdate?.()
-        onClose()
+        setOpen(false)
         form.reset()
       }
     } catch (err: any) {
       toast.warning(err.message || "Hata", warningStyle)
     }
   }
-
   return (
-    <Form {...form}>
+ <Dialog open={open} onOpenChange={setOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Yemeği Düzenle</DialogTitle>
+          </DialogHeader>
+  <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
         <CustomFormField control={form.control} name="name" title="Yemek Adı">
@@ -117,24 +123,34 @@ export default function EditFoodForm({ food, onClose, onUpdate }: EditFoodFormPr
         </CustomFormField>
 
         <CustomFormField control={form.control} name="categoryId" title="Yemegin kategorisi">
-          {(field: any) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="w-[180px]">
-                <SelectValue placeholder="Kategori seç" />
-              </SelectTrigger>
-              <SelectContent>
-                {categories.map((cat) => (
-                  <SelectItem key={cat._id} value={cat._id}>
-                    {cat.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
+          {(field: any) => {
+            console.log(field.value)
+            const selectedCategory = categories.find((c) => c._id === field.value);
+            return (
+
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue>
+                    {selectedCategory ? selectedCategory.name : "Kategori seç"}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {categories.map((cat) => (
+                    <SelectItem key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )
+          }
+
+          }
         </CustomFormField>
 
         <div className="flex justify-end gap-2">
-          <Button variant="outline" type="button" onClick={onClose}>
+          <Button variant="outline" type="button" onClick={() => {
+           setOpen(false)}}>
             İptal
           </Button>
           <Button type="submit">Kaydet</Button>
@@ -142,5 +158,11 @@ export default function EditFoodForm({ food, onClose, onUpdate }: EditFoodFormPr
 
       </form>
     </Form>
+        </DialogContent>
+      </Dialog>
+
+
+
+  
   )
 }

@@ -16,6 +16,7 @@ import { PermissionDialog } from "@/components/permission-dialog"
 import { API_PATHS } from "@/lib/api"
 import type { Users } from "@/models/User"
 import EditDialog from "../components/EditDialog"
+import CreateUserDialog from "./CreateUserDialog"
 
 function TableSkeleton() {
   return (
@@ -68,6 +69,7 @@ export default function AdminUsers() {
   const [searchQuery, setSearchQuery] = useState("")
   const [openDialog, setOpenDialog] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
+  const [createDialog, setCreateDialog] = useState(false)
 
   useEffect(() => {
     getUsers()
@@ -115,40 +117,40 @@ export default function AdminUsers() {
     setSelectedUser(user)
     setOpenEdit(true)
   }
-const badgePrinter = (roleName: "Asci" | "Yonetici" | "Garson" | "Kasiyer") => {
-  switch (roleName) {
-    case "Yonetici":
-      return (
-        <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
-          Yönetici
-        </Badge>
-      )
+  const badgePrinter = (roleName: "Asci" | "Yonetici" | "Garson" | "Kasiyer") => {
+    switch (roleName) {
+      case "Yonetici":
+        return (
+          <Badge className="bg-blue-500/10 text-blue-600 border-blue-500/20">
+            Yönetici
+          </Badge>
+        )
 
-    case "Asci":
-      return (
-        <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">
-          Aşçı
-        </Badge>
-      )
+      case "Asci":
+        return (
+          <Badge className="bg-orange-500/10 text-orange-600 border-orange-500/20">
+            Aşçı
+          </Badge>
+        )
 
-    case "Garson":
-      return (
-        <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
-          Garson
-        </Badge>
-      )
+      case "Garson":
+        return (
+          <Badge className="bg-green-500/10 text-green-600 border-green-500/20">
+            Garson
+          </Badge>
+        )
 
-    case "Kasiyer":
-      return (
-        <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">
-          Kasiyer
-        </Badge>
-      )
+      case "Kasiyer":
+        return (
+          <Badge className="bg-purple-500/10 text-purple-600 border-purple-500/20">
+            Kasiyer
+          </Badge>
+        )
 
-    default:
-      return <Badge variant="secondary">{roleName}</Badge>
+      default:
+        return <Badge variant="secondary">{roleName}</Badge>
+    }
   }
-}
   return (
     <div className="container mx-auto p-6 space-y-6">
       <div className="space-y-2">
@@ -180,19 +182,22 @@ const badgePrinter = (roleName: "Asci" | "Yonetici" | "Garson" | "Kasiyer") => {
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">Kullanıcılar</CardTitle>
-          <CardDescription>Kullanıcı izinlerini düzenlemek için satıra tıklayın</CardDescription>
+          <CardDescription>Kullanıcı izinlerini bilgilerini için butona tıklayın</CardDescription>
+          <div className="flex items-center justify-between">
+            <div className="relative w-82">
+              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+              <Input
+                placeholder="Ad, soyad, e-posta veya telefon ile ara..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                disabled={userLoading}
+                className="pl-9"
+              />
+            </div>
 
-          {/* Search Input */}
-          <div className="relative mt-4">
-            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-            <Input
-              placeholder="Ad, soyad, e-posta veya telefon ile ara..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="pl-9"
-              disabled={userLoading}
-            />
+            <Button onClick={() => { setCreateDialog(true)}}>Yeni Eleman</Button>
           </div>
+
         </CardHeader>
         <CardContent>
           {userLoading ? (
@@ -276,10 +281,8 @@ const badgePrinter = (roleName: "Asci" | "Yonetici" | "Garson" | "Kasiyer") => {
         onClose={handleCloseDialog}
         onSuccess={onSuccess}
       />
-
-
       <EditDialog open={openEdit} setOpenEdit={setOpenEdit} user={selectedUser} onSuccess={onSuccess} />
-
+<CreateUserDialog  open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess}   />
     </div>
   )
 }

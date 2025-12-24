@@ -1,5 +1,5 @@
-const Foods = require('../../models/foods');
-const Category = require("../../models/Category");
+const Foods = require('../models/foods');
+const Category = require("../models/Category");
 
 
 const getCategories = async (req, res) => {

@@ -3,15 +3,15 @@ sipariş olusturldan sonra masaya ait sipeişler gelmiyor tip hatası
 
 
 - rezerve durumunu kontrol et bir sekilde yap ve garson icin sakla onu 
-- admin user eklemesi 
-- yapılan siparişler icin bir sayfa 
-- ascı girisi sadece order gorecek ve statusu guncelleyecek  (suanlık statik gelecek weobsocet siz yap )
-- loginden yonlendirirken sayfa bulunamadı hatası var galiba protect oluuyor redux hemen guncellenmiyor 
 
 
-
-
-
+projeye devam edilirse 
+    - patron kişiye rol yukler bu rolun degiştirlemez ozellikleri ve insiyatif alınarak verilen izinler olmalı  
+        birini yukseltirken/ alcaltırken onun rolunu degistirmeli
+    - gider tablosu ,malzeme tablosu patron dashboard sayfasında filtreleme yapabilmeli son 3 ay gibi 
+    - kasiyer sipariş alırken musteri ismi vs girebilmeli ama bos da bırakabilmeli 
+    - rezerve btn tıklanıgında musteri bilgilerini ister isim soyisim tlelefon gibi untilTime  
+    - login yanlıs olursa password bunu kullanıcıya bilgilendirmeliyiz 
 
 satarken 
     - modem sunucu pc ye statik ıp veriyor mesela 192.168.1.20 bu static oluyor 
@@ -27,19 +27,6 @@ satarken
     bir exe dosyası olusturuyourm bu dosya tarayıcıda 192.168.1.20:5173/login adresine gidecek 
 
 
-
-projeye devam edilirse 
-    - food create ve edit icin kontorl yap resim alanı icin 
-    - user role sistemi olmalı                                                                      4 iş gunu
-        patron canım sıkıldı mudur bu kısma erismesin artık demeli  
-    - garson ile kasiyeri ayır                                                                         2 iş gunu
-    - gider tablosu ,malzeme tablosu                                                                    giderleri belirlerdikten sonra .5 iş gunu 
-    - patron icin gun raporu                                                                            .5 iş gunu
-    - e ticaret sistemi oradan da siparis gelebilir                                                 apıleri vs arastırmak gerekir 
-    - mutfak bolumu eklenir siparis gelir gelmez bir fis cıkarılır  websocet                        4iş gunu
-    kasiyer ve garsonu ayrsammi acaba  chatt ayır diyor bunu rol kısmında bakacagım 
-
-    yonetisi kişisi  diger kişisleri yaratsın  kullanıcılar panelinde yaratsın ve role action tanımlasın 
 
 
 
@@ -109,53 +96,3 @@ arastirma konular
 
                     1 aralık                                        mukemmel
 
-
-yapılanlar 
-    - giris sayfası biraz tasrlandı                                     tamam
-    - user logi n auth işlemleri yapıldı                                tamam
-    - mongoose baglantısı yapıld                                        tamam
-    - redux kuruldu                                                     tamam
-    - zod yapıldı                                                       tamam
-                    2 aralık                                            4/7 tamamlanmıs
-    - toast ekle ortala ve stil ekle                                    tamam
-    - app yonlendirme                                                   tamam
-    - mongoose yemek tablosu                                            tamam
-    - dashboard layout ekle sidebar ve page                             tamam
-    - admin icin kullanıcı onaylama silme vs ekle 
-    - admin yemek ekleme duzenleme
-    - navbar duzenleme tasrım olarak 
-                    3 aralık                                                        4/6 tamamlanmıs
-    - admin icin kullanıcı onaylama silme vs ekle  x yada tık icnou                                 tamam
-    - kategori eklendi edit delete create                                                           tamam
-    - admin yemek ekleme duzenlemecard formunda                                                     tamam
-    - yemegı kategirye gore ekle                                                                    tamam
-    - navbar duzenleme tasrım olarak 
-    - admin owerlow icin basit istatistikler 
-                        4 aralık                                                                        mukekmel
-    - categor yemege eklendi ama edit e eklenmdi ve gosterilmedi ekle                                   tamam
-    - yemegi category gore filtrele                                                                     tamam
-    - yemek search ekle                                                                                 tamam
-    - categot silindiginde varsa altında yemek sorulacak                                                tamam
-    - user dashboard tanımla masa tsarımı ve dialog tanımla                                             tamam
-                        5 aralık cuma                                                                   2/3
-    - masa tablosu ekle                                                                             tamam
-    - masa controller ekle                                                                          tamam
-    - sipariş tablosu ekle buraya tamamlanan siaprşleri koyalım                                             
-                    8 aralık pazartesi
-    - useroverview dialogu width height ayarla 1024px gore ayarla                                           tamam
-    - oncelikle useroverview de dilaogu ayrı dosyaya al                                                     tamam
-    - siparis onayla birdaha tıklanırsa bir guncelleme varsa o zaman gonderelim istegi ve                   tamam
-        bunu back de yazalım 
-    - masa degistir btn gelmeli                                                                             
-    - sipariş sil butonuunu aktiflestir bu zaten tableId alıp buna ait orderi cancalled ayarla              tamam
-                                                                    15 aralık pazartesi
-    table rezerve gelecek                                                    rezrve edilirken kime ait oldugu ve zaman bilgisi yok sadece 
-    acılan panelde rezerve et ve iptal  diye bir butonlar olacak ager edildi ise                tamam
-    ordera garson Name gelsin                                                                   tamam
-    redis ve docker kurulumu yapıldı                                                            tamam
-                                16 aralık salı 
-    user role tamamla                                               tamam
-                            17 aralık yapılanlar
-    user mnager sayfası tasarlandı bunun update yazıldı 
-    admin users edit sayfası tasrlandı ve endpoint yapıldı 
-    back de rol tanımlamaları gereceklesti 

@@ -12,7 +12,7 @@ interface User {
   lastName?: string;
   phoneNumber?: string;
   // permissions: string[]
-  // role?: string
+  role: string
 
 }
 
@@ -117,6 +117,7 @@ const authSlice = createSlice({
       })
       .addCase(loginUser.fulfilled, (state, action: PayloadAction<any>) => {
         state.loading = false;
+        console.log("sliceda")
         // console.log("slice:", action);
         state.user = action.payload.data?.user || null;
         state.token = action.payload.data.token;

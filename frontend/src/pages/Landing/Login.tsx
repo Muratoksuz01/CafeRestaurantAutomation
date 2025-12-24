@@ -43,7 +43,10 @@ export default function Login() {
     console.log("Login data:", data);
     // Burada API çağrısı yapılabilir
     const res = await dispatch(loginUser(data));
+    console.log("login if disindaki")
     if (res.payload.success && res.payload.data) {
+    console.log("login if icineki")
+
       if (getRole() == "Yonetici") {
         navigate("/admin")
         toast.success("Yönetici olarak Giriş yapıldı", successStyle)
@@ -51,7 +54,7 @@ export default function Login() {
       else if (getRole() == "Kasiyer" || getRole() == "Garson") {
         navigate("/user")
         toast.success(`${getRole()} olarak Giriş yapıldı`, successStyle)
-      } else {
+      }else {
         toast.warning(`get role :${getRole()}`, warningStyle)
         console.log(getRole())
       }
@@ -89,6 +92,7 @@ export default function Login() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
               <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "kasiyer@kafe.com") }}>kasiyer@kafe.com</p>
               <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "garson@kafe.com") }}>garson@kafe.com</p>
+              <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "asci@kafe.com") }}>asci@kafe.com</p>
               <CustomFormField control={form.control} name={"email"} title="Email" >
                 {(field: any) => (
                   <Input

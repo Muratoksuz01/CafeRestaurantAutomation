@@ -1,7 +1,8 @@
-const Tables = require("../../models/Table");
-const Order = require("../../models/Order");
-const OrderItems = require("../../models/OrderItem");
-const User = require("../../models/User")
+const Tables = require("../models/Table");
+const Order = require("../models/Order");
+const OrderItems = require("../models/OrderItem");
+const User = require("../models/User")
+
 // MASA LİSTELE
 exports.getTables = async (req, res) => {
   try {
@@ -12,7 +13,7 @@ exports.getTables = async (req, res) => {
 
     for (const table of tables) {
       let orderCreated = null;
-     // let locationName=await Location.findById(table.locationId).select("name").name || "bilinmiyor"
+      // let locationName=await Location.findById(table.locationId).select("name").name || "bilinmiyor"
       let orderTotal = null;
       let waiterName = null
       // Masa doluysa aktif sipariş bilgisini al
@@ -37,7 +38,7 @@ exports.getTables = async (req, res) => {
         name: table.name,
         status: table.status,                // bos / dolu
         currentOrderId: table.currentOrderId || null,
-        locationId:table.locationId,
+        locationId: table.locationId,
         waiterName,
         orderCreated,                        // "19:03"
         orderTotal                           // Örn: 200
@@ -60,6 +61,7 @@ exports.getTable = async (req, res) => {
     if (!table) {
       return res.status(204).json({ success: false, message: "Masa bulunamadı" });
     }
+  
 
     // Masa boşsa direkt dön
     if (!table.currentOrderId) {
@@ -90,12 +92,13 @@ exports.getTable = async (req, res) => {
     }
 
     // OrderItems
-    const orderItems = await OrderItems.find({ _id: { $in: order.orderItems } });
+    const orderItems = await OrderItems.find({ _id: { $in: order.orderItems } }).populate('foodId', 'name price');
 
     const items = orderItems.map((item) => ({
       foodId: item.foodId,
       qty: item.qty,
-      unitprice: item.price
+      price: item.foodId.price,
+      name:item.foodId.name
     }));
 
     return res.json({
@@ -137,7 +140,7 @@ exports.createTable = async (req, res) => {
 // MASA GÜNCELLE
 exports.editTable = async (req, res) => {
   try {
-    const { name} = req.body;
+    const { name } = req.body;
 
     const updated = await Tables.findByIdAndUpdate(
       req.params.id,
@@ -211,6 +214,8 @@ exports.reassignTables = async (req, res) => {
     return res.status(500).json({ success: false, message: "Sunucu hatası" });
   }
 };
+
+
 /* exports.book = async (req, res) => {
   try {
     const { id } = req.params; // masa id
@@ -244,172 +249,7 @@ exports.reassignTables = async (req, res) => {
     });
   }
 }; */
-exports.createOrder = async (req, res) => {
-  try {
-    const { tableId, basket, total,  } = req.body;
-    const userId=req.user.id
-    // 1) Yeni Order oluştur
-    const newOrder = new Order({
-      tableId,
-      total,
-      status: "hazirlaniyor",
-      orderItems: [],
-      waiterId: userId
-    });
 
-    const savedOrder = await newOrder.save();
 
-    // 2) Basket -> OrderItems kaydet
-    const itemsToSave = basket.map((b) => ({
-      foodId: b._id,
-      orderId: savedOrder._id,
-      qty: b.qty,
-      unitprice: b.price,
-      total:b.qty * b.price
-    }));
 
-    const createdItems = await OrderItems.insertMany(itemsToSave);
-
-    // 3) Bu item’ların ID’lerini Order’a ekle
-    savedOrder.orderItems = createdItems.map((i) => i._id);
-    await savedOrder.save();
-
-    // 4) Masayı güncelle (dolu + currentOrderId)
-    await Tables.findByIdAndUpdate(tableId, {
-      status: "dolu",
-      currentOrderId: savedOrder._id
-    });
-
-    res.json({
-      success: true,
-      data: savedOrder,
-      items: createdItems
-    });
-
-  } catch (err) {
-    console.log(err);
-    res.status(500).json({ success: false, message: err.message });
-  }
-};
-exports.editOrder = async (req, res) => {
-  try {
-    const { tableId, basket, total, orderId } = req.body;
-
-    if (!orderId) {
-      return res.status(204).json({ success: false, message: "orderId gerekli" });
-    }
-
-    // 1) Order var mı kontrol
-    const order = await Order.findById(orderId);
-    if (!order) {
-      return res.status(204).json({ success: false, message: "Order bulunamadı" });
-    }
-
-    // 2) Eski OrderItems sil
-    await OrderItems.deleteMany({ orderId });
-
-    // 3) Yeni OrderItems ekle
-    const newItems = [];
-
-    for (const item of basket) {
-      const created = await OrderItems.create({
-        foodId: item._id,          // frontend item._id = foodId
-        orderId,
-        qty: item.qty,
-        unitprice: item.price,
-        total:item.qty * item.price
-      });
-      newItems.push(created._id);
-    }
-
-    // 4) Order güncelle
-    order.total = total;
-    order.orderItems = newItems;
-    await order.save();
-
-    return res.json({
-      success: true,
-      message: "Order başarıyla güncellendi",
-      order
-    });
-
-  } catch (error) {
-    console.log("editOrder error:", error);
-    res.status(500).json({ message: "Sunucu hatası", error });
-  }
-};
-exports.deleteOrder = async (req, res) => {
-  try {
-    const { orderId } = req.body;
-    if (!orderId) {
-      return res.status(200).json({ success: false, message: "orderId gerekli" });
-    }
-
-    // Order var mı?
-    const order = await Order.findById(orderId);
-    if (!order) {
-      return res.status(200).json({ success: false, message: "Adisyon bulunamadı" });
-    }
-    // OrderItems varsa sil
-    if (order.orderItems && order.orderItems.length > 0) {
-      await OrderItems.deleteMany({ _id: { $in: order.orderItems } });
-    }
-    await Tables.findOneAndUpdate(
-      { currentOrderId: orderId },
-      {
-        $set: {
-          status: "bos",
-          currentOrderId: null
-        }
-      }
-    );
-    // Adisyonu sil
-    await Order.findByIdAndDelete(orderId);
-
-    return res.status(200).json({ success: true, message: "Adisyon silindi" });
-
-  } catch (err) {
-    console.error(err);
-    return res.status(500).json({ success: false, message: "Sunucu hatası" });
-  }
-};
-exports.getPaid = async (req, res) => {
-  try {
-    const { tableId, basket, total, orderId } = req.body;
-
-    if (!tableId || !orderId || !basket || !Array.isArray(basket)) {
-      return res.status(204).json({ success: false, message: "Eksik veri gönderildi." });
-    }
-
-    // 1) Order getir
-    const order = await Order.findById(orderId);
-    if (!order) {
-      return res.status(204).json({ success: false, message: "Order bulunamadı." });
-    }
-
-    // 2) Eğer zaten kapatılmışsa uyar
-    if (order.status =="tamamlandi") {
-      return res.status(400).json({ success: false, message: "Bu sipariş zaten kapatılmış." });
-    }
-
-    order.status = "tamamlandi";
-    // order.orderItems = createdItems;
-    await order.save();
-
-    // 5) Masa’yı boşalt
-    await Tables.findByIdAndUpdate(tableId, {
-      status: "bos",
-      currentOrderId: null,
-    });
-
-    return res.json({
-      success: true,
-      message: "Ödeme başarıyla alındı.",
-      orderId: order._id,
-    });
-  } catch (err) {
-    console.error("Ödeme alma hatası:", err);
-    return res.status(500).json({ success: false, message: "Sunucu hatası" });
-  }
-};
 

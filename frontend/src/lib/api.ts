@@ -10,6 +10,7 @@ export const API_PATHS = {
   // admin
   getUsers: `${API_BASE_URL}/admin/getUsers`,
   getRoles: `${API_BASE_URL}/admin/getRoles`,
+  createUser: `${API_BASE_URL}/admin/createUser`,
   getUser:(id:string)=> `${API_BASE_URL}/admin/getUser/`+id,
   giveApproach: (id: string) => `${API_BASE_URL}/admin/giveAproach/` + id,
   deleteUser: (id: string) => `${API_BASE_URL}/admin/deleteUser/` + id,
@@ -20,7 +21,7 @@ export const API_PATHS = {
   updateUser:(id:string)=>`${API_BASE_URL}/admin/updateUser/`+id,
   
 
-  getFoods: `${API_BASE_URL}/admin/foods`,
+  getFoods: `${API_BASE_URL}/admin/food`,
   createFood: `${API_BASE_URL}/admin/food`,
   deleteFood: (id: string) => `${API_BASE_URL}/admin/food/` + id,
   updateFood: (id: string) => `${API_BASE_URL}/admin/food/` + id,
@@ -41,6 +42,9 @@ export const API_PATHS = {
   handleBook: (id: string) => `${API_BASE_URL}/user/book/${id}`,
   // order
   createOrder: `${API_BASE_URL}/user/createOrder`,
+  getOrders:`${API_BASE_URL}/user/getOrders`,
+  getOrder:(id:string)=>`${API_BASE_URL}/user/getOrder/`+id,
+  updateOrder:(id:string)=>`${API_BASE_URL}/user/updateOrder/`+id,
   editOrder: `${API_BASE_URL}/user/editOrder`,
   deleteOrder: `${API_BASE_URL}/user/deleteOrder`,
   paidOrder: `${API_BASE_URL}/user/paidOrder`,

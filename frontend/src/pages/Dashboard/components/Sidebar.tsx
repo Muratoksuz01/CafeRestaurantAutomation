@@ -12,7 +12,9 @@ const yoneticiItems = [
   { path: "/admin/users", label: "Users", icon: LuUsers },
   { path: "/admin/foods", label: "Foods", icon: LuUsers },
   { path: "/admin/category", label: "Kategoriler", icon: LuUsers },
+  { path: "/admin/orders", label: "Siparişler", icon: LuUsers },
   { path: "/admin/roles", label: "Roller", icon: LuUsers },
+  { path: "/admin/gereksiz", label: "gereksiz", icon: LuUsers },
 ];
 const kasiyerItems = [
   { path: "/user/userList", label: "Listeler", icon: LuChrome },
@@ -20,6 +22,9 @@ const kasiyerItems = [
 const garsonItems=[
   { path: "/user/overview", label: "Overview", icon: LuChrome },
 ]
+/* const asciItems=[
+  { path: "/user/overview", label: "Overview", icon: LuChrome },
+] */
 export default function Sidebar() {
   let menuItems: any[] = []
   const dispatch = useDispatch();
@@ -35,6 +40,7 @@ export default function Sidebar() {
     case "Yonetici":
       menuItems = yoneticiItems
       break;
+    
     
   }
   // menuItems = role === "Yonetici" ? adminItems : userItems;
@@ -57,6 +63,8 @@ const panelTitle = (() => {
       return "Kasiyer Panel";
     case "Garson":
       return "Garson Panel";
+      // case "Asci":
+      // return "Aşcı Panel";
     default:
       return "Bilinmiyor";
   }
