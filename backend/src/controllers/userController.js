@@ -16,18 +16,24 @@ exports.getAdminStats = async (req, res) => {
     const now = new Date();
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const currentUserId = req.user.id;
 
-
-    const incomeAgg = await Order.aggregate([{ $match: { createdAt: { $gte: monthStart, $lte: monthEnd }, isClosed: true } },
-    {
-      $group: {
-        _id: null,
-        totalIncome: { $sum: "$total" }
-      }
+    const incomeAgg = await Order.aggregate([
+  {
+    $match: {
+      status: "tamamlandi",
+      createdAt: { $gte: monthStart, $lte: monthEnd }
     }
-    ]);
+  },
+  {
+    $group: {
+      _id: null,
+      totalIncome: { $sum: "$total" }
+    }
+  }
+]);
 
-    const totalIncome = incomeAgg[0]?.totalIncome || 0;
+const totalIncome = incomeAgg.length ? incomeAgg[0].totalIncome : 0;
 
     // -----------------------------------
     // 2) En çok satılan yemek (OrderItems)
@@ -55,30 +61,30 @@ exports.getAdminStats = async (req, res) => {
     // -----------------------------------
     // 3) Aylık günlük kazanç grafiği
     // -----------------------------------
-    const chartAgg = await Order.aggregate([
-      {
-        $match: {
-          createdAt: { $gte: monthStart, $lte: monthEnd },
-          isClosed: true
-        }
-      },
-      {
-        $group: {
-          _id: { $dayOfMonth: "$createdAt" },
-          total: { $sum: "$total" }
-        }
-      },
-      { $sort: { "_id": 1 } }
-    ]);
+   const chartAgg = await Order.aggregate([
+  {
+    $match: {
+      status: "tamamlandi",
+      createdAt: { $gte: monthStart, $lte: monthEnd }
+    }
+  },
+  {
+    $group: {
+      _id: { $dayOfMonth: "$createdAt" },
+      total: { $sum: "$total" }
+    }
+  },
+  { $sort: { _id: 1 } }
+]);
 
-    const monthlySalesChart = chartAgg.map((c) => ({
-      day: c._id.toString().padStart(2, "0"),
-      total: c.total
-    }));
+const monthlySalesChart = chartAgg.map(c => ({
+  day: String(c._id).padStart(2, "0"),
+  total: c.total
+}));
 
 
-    const totalUsers = await User.countDocuments();
-    const totalAdmins = await User.countDocuments({ role: "admin" });
+    const totalUsers = await User.countDocuments({ _id: { $ne: currentUserId } });
+    const totalAdmins = await User.countDocuments({ role: "Yonetici" });
 
     const foodCount = await Food.countDocuments();
 
@@ -190,7 +196,7 @@ exports.getUser = async (req, res) => {
 };
 exports.createUser = async (req, res) => {
   try {
-     const {firstName,lastName,email,phoneNumber,password,roleName,isActive} = req.body;
+    const { firstName, lastName, email, phoneNumber, password, roleName, isActive } = req.body;
     if (!roleName) {
       return res.status(400).json({ success: false, message: "Rol seçilmelidir" });
     }
@@ -222,9 +228,13 @@ exports.createUser = async (req, res) => {
 };
 
 exports.getUsers = async (req, res) => {
-  console.log("burada")
   try {
-    const users = await User.find().select("-password");
+    // 1. İstekte bulunan kullanıcının ID'sini al (Middleware'den gelir)
+    const currentUserId = req.user.id;
+
+    // 2. Veritabanından çekilirken filtreleme yap ($ne: "not equal")
+    // Şifreyi dahil etmiyoruz
+    const users = await User.find({ _id: { $ne: currentUserId } }).select("-password");
 
     const result = await Promise.all(
       users.map(async (user) => {
@@ -234,7 +244,7 @@ exports.getUsers = async (req, res) => {
 
         return {
           ...user.toObject(),
-          roleName: userRole?.roleId?.name
+          roleName: userRole?.roleId?.name || "Rol Atanmamış"
         };
       })
     );
@@ -242,8 +252,8 @@ exports.getUsers = async (req, res) => {
     res.json({ success: true, data: result });
 
   } catch (err) {
-    console.log(err)
-    res.status(500).json({ success: false });
+    console.error("getUsers Hatası:", err);
+    res.status(500).json({ success: false, message: "Kullanıcılar getirilemedi." });
   }
 };
 exports.getRoles = async (req, res) => {

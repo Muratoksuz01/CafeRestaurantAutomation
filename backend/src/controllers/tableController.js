@@ -55,7 +55,7 @@ exports.getTables = async (req, res) => {
 exports.getTable = async (req, res) => {
   try {
     // console.log(req.query.id);
-
+console.log("get table id:",req.query.id)
     const table = await Tables.findById(req.query.id);
 
     if (!table) {
@@ -95,11 +95,13 @@ exports.getTable = async (req, res) => {
     const orderItems = await OrderItems.find({ _id: { $in: order.orderItems } }).populate('foodId', 'name price');
 
     const items = orderItems.map((item) => ({
-      foodId: item.foodId,
+      foodId: item.foodId._id,
       qty: item.qty,
       price: item.foodId.price,
       name:item.foodId.name
     }));
+    console.log(items)
+
 
     return res.json({
       success: true,
@@ -107,11 +109,8 @@ exports.getTable = async (req, res) => {
         _id: table._id,
         name: table.name,
         status: table.status,
-        adisyon: {
-          id: order._id,
-          total: order.total,
-          items
-        }
+        adisyon:items
+        
       }
     });
 

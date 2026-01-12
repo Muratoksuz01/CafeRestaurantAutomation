@@ -5,8 +5,7 @@ const authorize = require("../middleware/authorize");
 
 const router = express.Router();
 const {  getUser,getRoles,getUsers,
-  deleteUser,createUser,
-  getAdminStats,getPermissions,updatePermission,
+  deleteUser,createUser,getAdminStats,
   updateUser
 } = require('../controllers/userController');
 const {

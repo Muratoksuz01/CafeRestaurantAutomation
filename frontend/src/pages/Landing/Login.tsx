@@ -1,12 +1,9 @@
-import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form"
+import { Form, } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "@/store"
-import {  loginUser } from "@/store/slices/authSlice"
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
@@ -14,13 +11,15 @@ import { loginSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useEffect, useState } from "react"
 import { getRole } from "@/lib/utils"
-import { useAuthControl } from "@/hooks/useAuthControl"
 import CustomFormField from "@/components/CustomFormField"
+import useAuthStore from '../../store/useAuthStore';
 
 export default function Login() {
-  const { loading, error } = useSelector((state: RootState) => state.auth)
+  const login = useAuthStore((state) => state.login);
+  const loading = useAuthStore((state) => state.loading);
+
+
   const [showPassword, setShowPassword] = useState(false)
-  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
   useEffect(() => {
     const role = getRole();
@@ -39,33 +38,29 @@ export default function Login() {
     },
   })
 
-  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
-    console.log("Login data:", data);
-    // Burada API çağrısı yapılabilir
-    const res = await dispatch(loginUser(data));
-    console.log("login if disindaki")
-    if (res.payload.success && res.payload.data) {
-    console.log("login if icineki")
+const onSubmit = async (data: z.infer<typeof loginSchema>) => {
+  const res = await login(data);
 
-      if (getRole() == "Yonetici") {
-        navigate("/admin")
-        toast.success("Yönetici olarak Giriş yapıldı", successStyle)
-      }
-      else if (getRole() == "Kasiyer" || getRole() == "Garson") {
-        navigate("/user")
-        toast.success(`${getRole()} olarak Giriş yapıldı`, successStyle)
-      }else {
-        toast.warning(`get role :${getRole()}`, warningStyle)
-        console.log(getRole())
-      }
-     // await dispatch(getPermission())
+  if (res.success && res.user) {
+    // TypeScript artık res.user.role ifadesini tanır
+    const role = res.user.role; 
 
+    const routes: Record<string, string> = {
+      Yonetici: "/admin",
+      Kasiyer: "/user",
+      Garson: "/user",
+      Asci: "/user"
+    };
 
-    } else {
-      console.log(res.payload);
-      toast.warning(error || res.payload || "giris hatası ", warningStyle)
+    const targetPath = routes[role];
+    if (targetPath) {
+      navigate(targetPath);
+      toast.success(`${role} girişi başarılı`, successStyle);
     }
-  };
+  } else {
+    toast.error(res.message || "Giriş başarısız", warningStyle);
+  }
+};
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-50 to-orange-100 flex items-center justify-center p-4">
@@ -90,9 +85,9 @@ export default function Login() {
           {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
-              <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "kasiyer@kafe.com") }}>kasiyer@kafe.com</p>
-              <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "garson@kafe.com") }}>garson@kafe.com</p>
-              <p className="cursor-pointer m-0 p-0" onClick={() => { form.setValue("email", "asci@kafe.com") }}>asci@kafe.com</p>
+              <p className="cursor-pointer m-0 p-0 text-black" onClick={() => { form.setValue("email", "kasiyer@kafe.com") }}>kasiyer@kafe.com</p>
+              <p className="cursor-pointer m-0 p-0 text-black" onClick={() => { form.setValue("email", "garson@kafe.com") }}>garson@kafe.com</p>
+              <p className="cursor-pointer m-0 p-0 text-black" onClick={() => { form.setValue("email", "asci@kafe.com") }}>asci@kafe.com</p>
               <CustomFormField control={form.control} name={"email"} title="Email" >
                 {(field: any) => (
                   <Input
@@ -104,7 +99,7 @@ export default function Login() {
                 )}
               </CustomFormField>
 
-              <CustomFormField control={form.control} name={"password"}title="Sifre"  >
+              <CustomFormField control={form.control} name={"password"} title="Sifre"  >
                 {(field: any) => (
                   <div className="relative">
                     <Input

@@ -96,7 +96,7 @@ function UserList() {
             onChange={(e) => setSearch(e.target.value)}
           />
           <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
-            <SelectTrigger className="w-[160px] rounded-xl bg-white shadow-sm border-gray-300">
+            <SelectTrigger className="w-[160px] rounded-xl bg-background shadow-sm border-gray-300">
               <SelectValue placeholder="Durum seç" />
             </SelectTrigger>
             <SelectContent className="rounded-xl shadow-lg">
@@ -111,10 +111,10 @@ function UserList() {
 
       </div>
 
-      <div className="rounded-xl border bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border bg-background shadow-sm overflow-hidden">
         <Table>
           <TableHeader>
-            <TableRow className="bg-gray-50">
+            <TableRow className="bg-background">
               <TableHead className="py-4 text-gray-700 font-semibold">Sıra</TableHead>
               <TableHead className="py-4 text-gray-700 font-semibold">Masa Adı</TableHead>
               <TableHead className="py-4 text-gray-700 font-semibold">Durum</TableHead>
@@ -128,7 +128,8 @@ function UserList() {
                 key={t._id}
                 className="
               transition-all 
-              hover:bg-gray-100/60
+              hover:bg-background
+              hover:text-background
               border-b
             "
               >
@@ -143,7 +144,7 @@ function UserList() {
                     <span
                       className="
                     inline-flex items-center 
-                    bg-red-600 text-white
+                    bg-red-600 text-foreground
                     text-xs font-semibold 
                     px-3 py-1.5
                     rounded-full shadow-sm

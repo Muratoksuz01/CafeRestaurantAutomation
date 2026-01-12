@@ -12,10 +12,9 @@ import CustomAlertDialog from "@/components/CustomAlertDialog";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { AllTable } from "@/models/Tables";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store";
 import { getRole } from "@/lib/utils";
 import RezerveDialog from "./RezerveDialog";
+import useAuthStore from "@/store/useAuthStore";
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
@@ -29,7 +28,6 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
   const [basket, setBasket] = useState<Basket[]>([]);
   const total = basket && basket.reduce((sum, f) => sum + f.price * f.qty, 0);
   const resetBasket = () => setBasket([]);
-  const { user } = useSelector((state: RootState) => state.auth);
   const addFood = (food: Food) => {
     if (!basket) {
       setBasket([{ ...food, qty: 1 }]);
@@ -151,13 +149,13 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     })
     if (res.data.success) {
       // setTable(res.data.data)
-      setBasket(res.data.data?.adisyon?.items.map((i: any) => ({
+      setBasket(res.data.data?.adisyon?.map((i: any) => ({
         _id: i.foodId,       // foods ile uyumlu olsun
         name: i.name,
         price: i.price,
         qty: i.qty
       })));
-      setOriginalBasket(res.data.data?.adisyon?.items.map((i: any) => ({
+      setOriginalBasket(res.data.data?.adisyon?.map((i: any) => ({
         _id: i.foodId,       // foods ile uyumlu olsun
         name: i.name,
         price: i.price,
@@ -170,10 +168,9 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
   }
   useEffect(() => {
     if (selectedTable) {
-      console.log(selectedTable);
       getCategories()
       getFoods();
-      selectedTable?._id  && fetchTable(selectedTable?._id)
+      selectedTable?._id && fetchTable(selectedTable?._id)
     }
   }, [selectedTable]);
 
@@ -200,29 +197,24 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     console.log(table);
 
   }
- const handleBook = async (id: string) => {
-       console.log("rezrve edilen masa id:", id);
-       // burada orderd varsa baska işlemler yapılmalı bu işi kontrol edilmeli
-       const res = await axiosInstance.put(API_PATHS.handleBook(id))
-       if (res.data.success) {
-         toast.success(res.data.message || "işlem basarılı", successStyle)
-         setOpen(false);
-         onChange && onChange()
-   
-       } else {
-         toast.success(res.data.message || "işlem basarısız", warningStyle)
-   
-       }
-     }
+  const handleBook = async (id: string) => {
+    console.log("rezrve edilen masa id:", id);
+    // burada orderd varsa baska işlemler yapılmalı bu işi kontrol edilmeli
+    const res = await axiosInstance.put(API_PATHS.handleBook(id))
+    if (res.data.success) {
+      toast.success(res.data.message || "işlem basarılı", successStyle)
+      setOpen(false);
+      onChange && onChange()
+
+    } else {
+      toast.success(res.data.message || "işlem basarısız", warningStyle)
+
+    }
+  }
   return (
     <>
 
-      <Dialog open={open} onOpenChange={() => {
-        setSelectedTable({})
-        setBasket([])
-        setOriginalBasket([])
-        setOpen(false)
-      }}>
+      <Dialog open={open} onOpenChange={() => { setOpen(false)}}>
         <DialogContent
           className="w-full max-w-[95vw] h-[85vh] p-0 flex flex-col overflow-hidden md:flex-row md:max-w-[1200px] "
         >
@@ -230,7 +222,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
           <div className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r overflow-hidden">
 
             {/* Sticky Filters */}
-            <div className="p-4 bg-white border-b sticky top-0 z-10 flex gap-2">
+            <div className="p-4 bg-background border-b sticky top-0 z-10 flex gap-2">
               <Input
                 placeholder="Ara..."
                 value={search}
@@ -254,21 +246,21 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
             </div>
 
             {/* FOOD LIST */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-gray-50">
+            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-background">
               {filteredFoods.map((food) => {
+                console.log("food:",food)
+                console.log("basket",basket)
                 const inBasket =
                   basket && basket.some(
-                    (item: any) => item._id === food._id
-                  ) || false;
-
+                    (item: Basket) => item._id == food._id);
                 return (
                   <div
                     key={food._id}
-                    className="bg-white shadow-sm hover:shadow border rounded-lg p-3 flex justify-between items-center"
+                    className="bg-background shadow-sm hover:shadow border rounded-lg p-3 flex justify-between items-center"
                   >
                     <div>
                       <div className="font-medium">{food.name}</div>
-                      <div className="text-sm text-gray-500">{food.price} TL</div>
+                      <div className="text-sm text-foreground">{food.price} TL</div>
                     </div>
 
                     <div className="flex gap-2">
@@ -292,17 +284,17 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
           </div>
 
           {/* RIGHT */}
-          <div className="w-full md:w-1/2 flex flex-col p-4 bg-white">
+          <div className="w-full md:w-1/2 flex flex-col p-4 bg-background">
 
             {/* Sticky Header */}
-            <div className="sticky top-0 bg-white pb-3 border-b z-10">
+            <div className="sticky top-0 bg-background pb-3 border-b z-10">
               <DialogTitle className="flex justify-between">
                 <span>
                   {selectedTable?.name} – Sepet
                 </span>
                 <div>
                   {/* buraya kosullar ekle sipariş ıd varsa gosterilesin ve zaten rezerve ise gosterilmesin */}
-                 {/*  {selectedTable.currentOrderId == null && (
+                  {/*  {selectedTable.currentOrderId == null && (
                     <Button
                       size="sm"
                       variant={selectedTable.status === "rezerve" ? "destructive" : "default"}
@@ -325,7 +317,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
             {/* Basket Items */}
             <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-3">
               {!basket && (
-                <p className="text-gray-500 text-center mt-10">Henüz ürün yok.</p>
+                <p className="text-foreground text-center mt-10">Henüz ürün yok.</p>
               )}
 
               {basket && basket.map((item) => (
@@ -335,7 +327,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
                 >
                   <div>
                     <div className="font-medium">{item.name}</div>
-                    <div className="text-sm text-gray-500">
+                    <div className="text-sm text-foreground">
                       {item.price} TL × {item.qty}
                     </div>
                   </div>
@@ -344,7 +336,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
                     <Button size="sm" variant="outline" onClick={() => removeFood(String(item._id))}>
                       -
                     </Button>
-                    <Button size="sm" onClick={() => addFood(item)}>
+                    <Button className="" size="sm" onClick={() => addFood(item)}>
                       +
                     </Button>
                   </div>
@@ -423,7 +415,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
         </DialogContent>
       </Dialog>
-     {/* <RezerveDialog showRezerveDialog={showRezerveDialog}  setShowRezerveDialog={setShowRezerveDialog} onChange={onChange}/> */}
+      {/* <RezerveDialog showRezerveDialog={showRezerveDialog}  setShowRezerveDialog={setShowRezerveDialog} onChange={onChange}/> */}
       <CustomAlertDialog
         open={deleteAlert}
         onOpenChange={setDeleteAlert}

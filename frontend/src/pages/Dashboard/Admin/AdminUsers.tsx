@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
-import { Search, Trash2, PencilLine } from "lucide-react"
+import { Search, Trash2, PencilLine, Check, X, MoreVertical } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -11,13 +11,17 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useGetUsers } from "@/hooks/useGetUsers"
 import { useSelector } from "react-redux"
-import type { RootState } from "@/store"
-import { PermissionDialog } from "@/components/permission-dialog"
 import { API_PATHS } from "@/lib/api"
 import type { Users } from "@/models/User"
 import EditDialog from "../components/EditDialog"
 import CreateUserDialog from "./CreateUserDialog"
-
+import useAuthStore from "@/store/useAuthStore"
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuItem,
+} from "@/components/ui/dropdown-menu"
 function TableSkeleton() {
   return (
     <div className="rounded-md border">
@@ -62,8 +66,9 @@ function TableSkeleton() {
 }
 
 export default function AdminUsers() {
+  const currentUser = useAuthStore((state) => state.user);
+
   const { users, getUsers, loading: userLoading } = useGetUsers()
-  const { user: currentUser } = useSelector((state: RootState) => state.auth)
   const [selectedUserId, setSelectedUserId] = useState<string>("")
   const [selectedUser, setSelectedUser] = useState<Users>({} as Users)
   const [searchQuery, setSearchQuery] = useState("")
@@ -76,10 +81,10 @@ export default function AdminUsers() {
   }, [])
 
   // Filter only active users (excluding current user)
-  const activeUsers = users.filter((u) => u.isActive === true && u._id?.toString() !== currentUser?.id?.toString())
+  const activeUsers = users.filter((u) => u._id?.toString() !== currentUser?.id?.toString())
 
   // Filter users based on search query
-  const filteredUsers = activeUsers.filter((u) => {
+  const filteredUsers = users.filter((u) => {
     const searchLower = searchQuery.toLowerCase()
     return (
       u.firstName?.toLowerCase().includes(searchLower) ||
@@ -89,15 +94,7 @@ export default function AdminUsers() {
     )
   })
 
-  const handleUserClick = (id: string) => {
-    setSelectedUserId(id)
-    setOpenDialog(true)
-  }
 
-  const handleCloseDialog = () => {
-    setSelectedUserId("")
-    setOpenDialog(false)
-  }
 
   const onSuccess = async () => {
     getUsers()
@@ -195,7 +192,7 @@ export default function AdminUsers() {
               />
             </div>
 
-            <Button onClick={() => { setCreateDialog(true)}}>Yeni Eleman</Button>
+            <Button onClick={() => { setCreateDialog(true) }}>Yeni Eleman</Button>
           </div>
 
         </CardHeader>
@@ -218,6 +215,7 @@ export default function AdminUsers() {
                     <TableHead>E-posta</TableHead>
                     <TableHead>Telefon</TableHead>
                     <TableHead>Rol</TableHead>
+                    <TableHead>Aktif</TableHead>
                     <TableHead className="text-right">İşlemler</TableHead>
                   </TableRow>
                 </TableHeader>
@@ -232,37 +230,40 @@ export default function AdminUsers() {
                       <TableCell>
                         {badgePrinter(u.roleName)}
                       </TableCell>
+                      <TableCell>
+                        {u.isActive ? (
+                          <Check className="text-green-600 w-5 h-5" />
+                        ) : (
+                          <X className="text-red-600 w-5 h-5" />
+                        )}
+                      </TableCell>
                       <TableCell className="text-right">
-                        <div className="flex justify-end gap-2">
-                          {/* <Button
-                            size="sm"
-                            variant="outline"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleUserClick(String(u._id))
-                            }}
-                          >
-                            İzinleri Düzenle
-                          </Button> */}
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="gap-2 border-destructive/50 text-destructive hover:bg-destructive/10 bg-transparent"
-                            onClick={() => deleteUser(String(u._id))}
-                          >
-                            <Trash2 className="h-4 w-4" />
-                            <span className="hidden sm:inline">Sil</span>
-                          </Button>
-                          <Button
-                            size="sm"
-                            variant="outline"
-                            className="px-3 gap-2 border-muted-foreground/30 text-muted-foreground hover:text-primary hover:border-primary hover:bg-primary/10 transition-colors bg-transparent"
-                            onClick={() => editUser(u)}
-                          >
-                            <PencilLine className="h-4 w-4" />
-                            <span className="hidden sm:inline">Düzenle</span>
-                          </Button>
-                        </div>
+                        <DropdownMenu>
+                          <DropdownMenuTrigger asChild>
+                            <Button
+                              size="icon"
+                              variant="ghost"
+                              onClick={(e) => e.stopPropagation()}
+                            >
+                              <MoreVertical className="h-4 w-4" />
+                            </Button>
+                          </DropdownMenuTrigger>
+
+                          <DropdownMenuContent align="end">
+                            <DropdownMenuItem onClick={() => editUser(u)}>
+                              <PencilLine className="mr-2 h-4 w-4" />
+                              Düzenle
+                            </DropdownMenuItem>
+
+                            <DropdownMenuItem
+                              className="text-destructive focus:text-destructive"
+                              onClick={() => deleteUser(String(u._id))}
+                            >
+                              <Trash2 className="mr-2 h-4 w-4" />
+                              Sil
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -274,15 +275,15 @@ export default function AdminUsers() {
       </Card>
 
       {/* Permission Dialog */}
-      <PermissionDialog
+      {/* <PermissionDialog
         open={openDialog}
         setOpen={setOpenDialog}
         userId={selectedUserId}
         onClose={handleCloseDialog}
         onSuccess={onSuccess}
-      />
+      /> */}
       <EditDialog open={openEdit} setOpenEdit={setOpenEdit} user={selectedUser} onSuccess={onSuccess} />
-<CreateUserDialog  open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess}   />
+      <CreateUserDialog open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess} />
     </div>
   )
 }

@@ -25,7 +25,17 @@ function AdminOrders() {
     },
     {
       accessorKey: "tableName",
-      header: "Masa İsmi",
+       header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => { column.toggleSorting(column.getIsSorted() === "asc") }}
+          >
+            Masa İsmi
+            <ArrowUpDown />
+          </Button>
+        )
+      },
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue("tableName")}</div>
       ),
@@ -82,37 +92,7 @@ function AdminOrders() {
     }
 
     return (
-      <>
-      {/*   <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Sıra</TableHead>
-              <TableHead>Masa Adı</TableHead>
-              <TableHead>Oluşturma Tarihi</TableHead>
-              <TableHead>Toplam</TableHead>
-              <TableHead>İşlemler</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {filteredOrders.map((order, index) => (
-              <TableRow key={order.id}>
-                <TableCell className="font-medium">{index + 1}</TableCell>
-                <TableCell>{order.tableName}</TableCell>
-                <TableCell>{new Date(order.orderDate).toLocaleString("tr-TR")}</TableCell>
-                <TableCell>{order.orderTotal.toFixed(2)} ₺</TableCell>
-                <TableCell>
-                  <Button variant="outline" size="sm" onClick={() => handleInfoClick(order.id)}>
-                    <Info className="mr-2 h-4 w-4" />
-                    Detay
-                  </Button>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table> */}
-        {/* <div className="p-1 w-full bg-black my-6"></div> */}
         <CustomDataTable  columns={columns} data={filteredOrders}/>
-      </>
     )
   }
 

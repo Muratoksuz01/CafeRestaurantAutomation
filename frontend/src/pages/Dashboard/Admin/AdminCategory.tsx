@@ -85,7 +85,7 @@ export default function AdminCategory() {
         <div className="p-6">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">Kategori Yönetimi</h1>
-                <Button onClick={() => setShowCreate(true)}>Yeni Kategori</Button>
+                <Button className="bg-foreground text-background" onClick={() => setShowCreate(true)}>Yeni Kategori</Button>
             </div>
 
             {loading ? (
@@ -95,7 +95,7 @@ export default function AdminCategory() {
             ) : (
                 <div className="grid grid-cols-1 lg:grid-cols-6 md:grid-cols-5 sm:grid-cols-3 gap-4">
                     {categories.map(cat => (
-                        <div key={cat._id} className="p-4 border rounded-lg shadow-sm flex flex-col bg-white justify-between">
+                        <div key={cat._id} className="p-4 border rounded-lg shadow-sm flex flex-col bg-background justify-between">
                             <h2 className="font-semibold text-lg mb-2">{cat.name}</h2>
                             <div className="flex gap-2 mt-4">
                                 <Button

@@ -14,8 +14,10 @@ import {
 
 
 
-import { PanelRight } from "lucide-react";
+import { Filter, PanelRight, Search } from "lucide-react";
 import RightSheet from "../components/RightSheet";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 export default function UserOverview() {
   const { tables, getTables } = useGetTables();
@@ -60,64 +62,80 @@ export default function UserOverview() {
   );
 
   return (
-    <div className="p-2 flex flex-col gap-6 relative">
+   <div className="p-4 flex flex-col gap-8 relative min-h-screen bg-transparent animate-in fade-in duration-700">
+    
+    {/* SHEET TRIGGER - SAĞ ÜST DAİRE BUTON */}
+    {/* Sabit beyaz yerine tema rengi ve blur ekledik */}
+    <Button
+      variant="outline"
+      size="icon"
+      className="absolute top-2 right-4 rounded-full shadow-md bg-card/80 backdrop-blur-sm border-border hover:bg-accent transition-all hover:scale-110"
+      onClick={() => setOpenSheet(true)}
+    >
+      <PanelRight size={20} className="text-foreground" />
+    </Button>
 
-      {/* SHEET TRIGGER - SAĞ ÜST DAİRE BUTON */}
-      <button
-        className="absolute top-2 right-4 w-10 h-10 rounded-full bg-white shadow flex items-center justify-center hover:scale-105 transition"
-        onClick={() => setOpenSheet(true)}
-      >
-        <PanelRight size={20} />
-      </button>
-      <RightSheet fullTables={fullTables} openSheet={openSheet} setOpenSheet={setOpenSheet} totalAmount={totalAmount} />
-      {/* ARAMA + FİLTRE */}
-      <div className="flex gap-3 items-center">
-        <input
-          type="text"
+    <RightSheet 
+      fullTables={fullTables} 
+      openSheet={openSheet} 
+      setOpenSheet={setOpenSheet} 
+      totalAmount={totalAmount} 
+    />
+
+    {/* ARAMA + FİLTRE PANELİ */}
+    <div className="flex flex-col sm:flex-row gap-4 items-center bg-card/40 p-3 rounded-2xl border border-border/50 backdrop-blur-md w-fit">
+      <div className="relative w-full sm:w-64">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+        <Input
           placeholder="Masa ara..."
-          className="border px-3 py-2 rounded-md"
+          className="pl-10 bg-background/50 border-none focus-visible:ring-primary/50"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
         />
+      </div>
 
+      <div className="flex items-center gap-2">
+        <Filter className="h-4 w-4 text-muted-foreground ml-2" />
         <Select value={statusFilter} onValueChange={(v) => setStatusFilter(v as any)}>
-          <SelectTrigger className="w-[160px] rounded-xl bg-white shadow-sm border-gray-300">
-            <SelectValue placeholder="Durum seç" />
+          <SelectTrigger className="w-[140px] border-none bg-background/50 shadow-none focus:ring-0">
+            <SelectValue placeholder="Durum" />
           </SelectTrigger>
-          <SelectContent className="rounded-xl shadow-lg">
-            <SelectItem value="all">Hepsi</SelectItem>
+          <SelectContent className="border-border bg-popover">
+            <SelectItem value="all">Tüm Masalar</SelectItem>
             <SelectItem value="dolu">Dolu</SelectItem>
             <SelectItem value="rezerve">Rezerve</SelectItem>
             <SelectItem value="bos">Boş</SelectItem>
           </SelectContent>
         </Select>
       </div>
-
-      {/* MASA LİSTESİ */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 xl:grid-cols-9 gap-6">
-        {filteredTables.map((t) => (
-          <TableCard
-            key={t._id}
-            table={t}
-            onClick={() => {
-              setSelectedTable(t);
-              setOpen(true);
-            }}
-          />
-        ))}
-      </div>
-
-      {/* MASA DİYALOĞU */}
-      {selectedTable && (
-        <UserOwerViewDialog
-          open={open}
-          setOpen={setOpen}
-          selectedTable={selectedTable}
-          onChange={onChange}
-          allTable={tables}
-          setSelectedTable={setSelectedTable}
-        />
-      )}
     </div>
+
+    {/* MASA LİSTESİ */}
+    {/* Grid yapısını biraz daha ferahlattık */}
+    <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-8 gap-6">
+      {filteredTables.map((t) => (
+        <TableCard
+          key={t._id}
+          table={t}
+          onClick={() => {
+            setSelectedTable(t);
+            setOpen(true);
+          }}
+        />
+      ))}
+    </div>
+
+    {/* MASA DİYALOĞU */}
+    {selectedTable && (
+      <UserOwerViewDialog
+        open={open}
+        setOpen={setOpen}
+        selectedTable={selectedTable}
+        onChange={onChange}
+        allTable={tables}
+        setSelectedTable={setSelectedTable}
+      />
+    )}
+  </div>
   );
 }

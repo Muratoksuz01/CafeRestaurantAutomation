@@ -5,8 +5,7 @@ import { useForm } from "react-hook-form"
 import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useDispatch, useSelector } from "react-redux"
-import type { AppDispatch, RootState } from "@/store"
-import { registerUser } from "@/store/slices/authSlice"
+
 import { Link, useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
@@ -14,13 +13,11 @@ import { registerSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
 import { useAuthControl } from "@/hooks/useAuthControl"
-
 export default function Register() {
-  const { loading } = useSelector((state: RootState) => state.auth)
+  useAuthControl()
   const [showPassword, setShowPassword] = useState(false)
-  const dispatch = useDispatch<AppDispatch>()
   const navigate = useNavigate()
-
+const [loading, setLoading] = useState(false)
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -32,21 +29,20 @@ export default function Register() {
       adminCode: "",
     },
   })
-useAuthControl()
+
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
-    const res = await dispatch(registerUser(data))
-    if (res.payload.success) {
-      if (res.payload.data) {
-        toast.success(res.payload.message, successStyle)
-        navigate("/admin")
-      } else {
-        toast.success(res.payload.message, successStyle)
-        navigate("/login")
-      }
-    } else {
-      toast.warning(res.payload.message, warningStyle)
-    }
+    // if (res.payload.success) {
+    //   if (res.payload.data) {
+    //     toast.success(res.payload.message, successStyle)
+    //     navigate("/admin")
+    //   } else {
+    //     toast.success(res.payload.message, successStyle)
+    //     navigate("/login")
+    //   }
+    // } else {
+    //   toast.warning(res.payload.message, warningStyle)
+    // }
   }
 
   return (

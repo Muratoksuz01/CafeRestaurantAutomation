@@ -69,45 +69,34 @@ exports.register = async (req, res) => {
 
 // Kullanıcı giriş
 exports.login = async (req, res) => {
-
   try {
     const { email, password } = req.body;
-
     // Email ile kullanıcı bul
     const user = await User.findOne({ email }).select("+password");
-
     if (!user) {
       return res
-        .status(401)
-        .json({ success: false, message: "Invalid email or password" });
+        .status(200)
+        .json({ success: false, message: "boyle bir kullanıcı bulunmamaktadır " });
     }
-
     // Şifre doğrula
     const isPasswordValid = await user.comparePassword(password);
-
     if (!isPasswordValid) {
       return res
-        .status(401)
-        .json({ success: false, message: "Invalid email or password" });
+        .status(200)
+        .json({ success: false, message: "sifre yanlıs" });
     }
-
     // Hesap aktif mi?
     if (!user.isActive) {
-      return res.status(403).json({
-        success: true,
-        message: "Your account is pending admin approval.",
+      return res.status(200).json({ // veya 403 Forbidden
+        success: false, // false olması daha mantıklı
+        message: "Sisteme giriş izniniz bulunmamaktadır.",
       });
     }
-
     const userRole = await UserRole
       .findOne({ userId: user._id })
       .populate("roleId", "name");
-
     const roleName = userRole?.roleId?.name;
-    console.log(roleName);
-
     const token = generateToken(user._id, roleName);
-
     res.json({
       success: true,
       message: "Login successful",

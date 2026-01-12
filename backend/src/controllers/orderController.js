@@ -133,6 +133,7 @@ exports.deleteOrder = async (req, res) => {
   }
 };
 exports.getPaid = async (req, res) => {
+  console.log("getpaid calişti")
   try {
     const { tableId, basket, total, orderId } = req.body;
 
@@ -148,9 +149,9 @@ exports.getPaid = async (req, res) => {
 
     // 2) Eğer zaten kapatılmışsa uyar
     if (order.status == "tamamlandi") {
-      return res.status(400).json({ success: false, message: "Bu sipariş zaten tamamlanmıs." });
+      return res.status(200).json({ success: false, message: "Bu sipariş zaten tamamlanmıs." });
     }
-
+    order.status = "tamamlandi"
     await order.save();
     // 5) Masa’yı boşalt
     await Tables.findByIdAndUpdate(tableId, {
@@ -257,7 +258,7 @@ exports.updateOrder = async (req, res) => {
     return res.json({
       success: true,
       message: "Sipariş tamamlandı",
-      
+
     });
   } catch (err) {
     console.log(err)

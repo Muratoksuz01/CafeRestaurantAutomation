@@ -1,3 +1,4 @@
+import useAuthStore from "@/store/useAuthStore";
 import { clsx, type ClassValue } from "clsx"
 import { jwtDecode } from "jwt-decode";
 import { twMerge } from "tailwind-merge"
@@ -9,7 +10,7 @@ interface TokenPayload {
 }
 
 export function getRole(){
-  const token=localStorage.getItem("token")
+const token = localStorage.getItem("token") 
   if(token){
     const decoded = jwtDecode<TokenPayload>(token);
     return decoded.role 
@@ -18,8 +19,7 @@ export function getRole(){
     return null
   }
 }
-export const can = (permissions: string[], action: string) =>
-  permissions.includes(action);
+
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }

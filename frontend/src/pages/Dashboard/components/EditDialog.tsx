@@ -133,7 +133,6 @@ function EditDialog({ open, setOpenEdit, user, onSuccess }: EditDialogProps) {
                       <SelectValue placeholder="Rol seçin" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="Asci">Aşçı</SelectItem>
                       <SelectItem value="Yonetici">Yönetici</SelectItem>
                       <SelectItem value="Garson">Garson</SelectItem>
                       <SelectItem value="Kasiyer">Kasiyer</SelectItem>

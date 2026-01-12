@@ -29,9 +29,9 @@ export function useAuthControl() {
     }
 
     // fallback
-    if (role === "Yonetici") navigate("/admin/overview", { replace: true });
+    if (role === "Yonetici") navigate("/admin", { replace: true });
     else if (role === "Kasiyer" || role === "Garson")
-      navigate("/user/overview", { replace: true });
+      navigate("/user", { replace: true });
     else navigate("/login", { replace: true });
 
   }, []);

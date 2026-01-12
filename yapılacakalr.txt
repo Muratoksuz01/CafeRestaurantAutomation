@@ -1,4 +1,3 @@
-authorize guncellenmeli :guncellendi test edilmedi :test edildi
 sipariş olusturldan sonra masaya ait sipeişler gelmiyor tip hatası 
 
 
@@ -6,12 +5,30 @@ sipariş olusturldan sonra masaya ait sipeişler gelmiyor tip hatası
 
 
 projeye devam edilirse 
-    - patron kişiye rol yukler bu rolun degiştirlemez ozellikleri ve insiyatif alınarak verilen izinler olmalı  
-        birini yukseltirken/ alcaltırken onun rolunu degistirmeli
-    - gider tablosu ,malzeme tablosu patron dashboard sayfasında filtreleme yapabilmeli son 3 ay gibi 
+    
     - kasiyer sipariş alırken musteri ismi vs girebilmeli ama bos da bırakabilmeli 
     - rezerve btn tıklanıgında musteri bilgilerini ister isim soyisim tlelefon gibi untilTime  
-    - login yanlıs olursa password bunu kullanıcıya bilgilendirmeliyiz 
+    - admin orders son 3 ay son 6 ay gibi degerler olsun 
+    - admin users datatable kullan export olsun  işlemleri basa alalım 
+    - sipariş sayfasında basketteki verilre sol tarafta gosterilmiyor 
+    -  getorders gettable istetistikler  admin users e redis kurmalıyız 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 satarken 
     - modem sunucu pc ye statik ıp veriyor mesela 192.168.1.20 bu static oluyor 
@@ -29,6 +46,23 @@ satarken
 
 
 
+useDebounce:search input da her vurustan sonra istak atılmasını engeller yazma biter 300ms sonra istek atar 
+
+prop drilling: gereksiz com gecirip altaki com kullanmak bunun cozumu context apı ,zuntand,redux 
+
+useeffect 3 bagımlıık ekledin sadece birisi yeterli yeniden calişması icin 
+    [] yaparsan sadece ilk render da calişir 
+    [] koymassan ilk render da calişir ama 
+
+SOAP → kurumsal, eski sistem => XML zorunlu ,WSDL ile servis tanımı(Şema zorunlu)
+REST → modern, hafif
+GraphQL → client odaklı =>api icn query dili ,yani clinet ne istiyrousa onu gonderir,query {user {id name }} seklinde semasi vardır ,backend semaya gore calişir,back de tek enpoint vardır 
+
+ref ve state farklı: ref de UI degişmez re-render olmaz state de olur ikiside veri tutmak icin vardır 
+
+Lazy loading:ilk acılısı hızlandırmak icin 
+Data lazy loading:Veri parça parça gelir ,Scroll oldukça yeni veri çekilir
+Code lazy loading:Kod (JS dosyası) geç yüklenir,o sayfaya gidinde o kod yuklenir 
 
 arastirma konular
 
@@ -70,7 +104,7 @@ arastirma konular
 
     usequery nedir 
 
-    ?? vs && arsındaki fark 
+    ?? vs &&  ve || arsındaki fark 
 
 
 
@@ -94,5 +128,5 @@ arastirma konular
 
 
 
-                    1 aralık                                        mukemmel
+    
 

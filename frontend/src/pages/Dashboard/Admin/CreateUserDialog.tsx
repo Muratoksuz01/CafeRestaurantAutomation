@@ -27,7 +27,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
             email: "",
             phoneNumber: "",
             roleName: undefined,
-            isActive: false,
+            isActive: true,
             password: ""
         },
     })
@@ -40,15 +40,25 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
             toast.success("kullanıcı basarlılı olusturuldu", successStyle)
             setOpen(false)
             return
-        }else {
+        } else {
             toast.warning(res.data.message || "işlem hatası ", warningStyle)
         }
     }
 
     return (
-        <Dialog open={open} onOpenChange={() => {
-            setOpen(false)
-            form.reset()
+        <Dialog open={open} onOpenChange={(v) => {
+            setOpen(v)
+            if (!v) {
+                form.reset({
+                    firstName: "",
+                    lastName: "",
+                    email: "",
+                    phoneNumber: "",
+                    roleName: undefined,
+                    isActive: true,
+                    password: ""
+                })
+            }
         }}>
             <DialogContent className="sm:max-w-[480px]">
                 <DialogHeader>
@@ -82,17 +92,23 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                 </div>
                             )}
                         </CustomFormField>
+
+                        {/* Phone Field with formatting */}
                         <div className="grid grid-cols-2 gap-4">
-                            {/* Phone Field with formatting */}
                             <CustomFormField control={form.control} name="phoneNumber" title="Telefon Numarası">
                                 {(field: any) => (
                                     <div className="relative">
                                         <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                         <Input
                                             {...field}
-                                            placeholder="555-555-5555"
+                                            placeholder="555 555 5555"
                                             className="pl-9"
-
+                                            onChange={(e) => {
+                                                const value = e.target.value.replace(/\D/g, "") // sadece rakam
+                                                if (/^\d{0,10}$/.test(value)) {
+                                                    field.onChange(value)
+                                                }
+                                            }}
                                             maxLength={13}
                                         />
                                     </div>
@@ -146,15 +162,15 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                     <div className="flex items-center gap-2">
                                         <Power className="h-4 w-4 text-muted-foreground" />
                                         <div className="space-y-0.5">
-                                            <Label className="text-sm font-medium">{field.value ? "Aktif" : "Pasif"}</Label>
+                                            {/* <Label className="text-sm font-medium">{field.value ? "Aktif" : "Pasif"}</Label> */}
                                             <p className="text-xs text-muted-foreground">
                                                 {field.value ? "Kullanıcı sisteme giriş yapabilir" : "Kullanıcı sisteme giriş yapamaz"}
                                             </p>
                                         </div>
                                     </div>
                                     <Switch
-                                        checked={!!field.value}
-                                        onCheckedChange={field.onChange}
+                                        checked={field.value}
+                                        onCheckedChange={(val) => field.onChange(val)}
                                         className="data-[state=unchecked]:bg-red-200 data-[state=checked]:bg-green-500"
                                     />
                                 </div>
