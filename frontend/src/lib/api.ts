@@ -44,6 +44,7 @@ export const API_PATHS = {
   createOrder: `${API_BASE_URL}/user/createOrder`,
   getOrders:`${API_BASE_URL}/user/getOrders`,
   getOrder:(id:string)=>`${API_BASE_URL}/user/getOrder/`+id,
+  orderbydate:`${API_BASE_URL}/user/getOrders/by-date`,
   updateOrder:(id:string)=>`${API_BASE_URL}/user/updateOrder/`+id,
   editOrder: `${API_BASE_URL}/user/editOrder`,
   deleteOrder: `${API_BASE_URL}/user/deleteOrder`,

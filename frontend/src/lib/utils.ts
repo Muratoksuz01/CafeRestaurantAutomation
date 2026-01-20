@@ -1,20 +1,22 @@
-import useAuthStore from "@/store/useAuthStore";
+import { UserRole } from "@/models/User";
 import { clsx, type ClassValue } from "clsx"
 import { jwtDecode } from "jwt-decode";
 import { twMerge } from "tailwind-merge"
-type UserRole = "Yonetici" | "Kasiyer" |  "Garson" | "Asci";
+import { DateRange } from 'react-day-picker'
+import axios from "axios";
+import { API_PATHS } from "./api";
 
 interface TokenPayload {
   userId: string;
   role: UserRole;
 }
 
-export function getRole(){
-const token = localStorage.getItem("token") 
-  if(token){
+export function getRole() {
+  const token = localStorage.getItem("token")
+  if (token) {
     const decoded = jwtDecode<TokenPayload>(token);
-    return decoded.role 
-  }else{
+    return decoded.role
+  } else {
     console.log("getrole token undefind");
     return null
   }
@@ -23,6 +25,7 @@ const token = localStorage.getItem("token")
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
 
 
 

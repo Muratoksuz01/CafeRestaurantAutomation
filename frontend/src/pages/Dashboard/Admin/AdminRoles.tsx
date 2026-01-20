@@ -1,7 +1,10 @@
+import DataTableWithExportDemo from "@/components/datatableexportDemo"
 
 function AdminRoles() {
   return (
-    <div>AdminRoles</div>
+    <div className="flex flex-col">
+      <DataTableWithExportDemo/>
+      </div>
   )
 }
 

@@ -1,6 +1,7 @@
 const Tables = require("../models/Table");
 const Order = require("../models/Order");
 const OrderItems = require("../models/OrderItem");
+const { ok } = require("node:assert");
 
 
 exports.createOrder = async (req, res) => {
@@ -268,3 +269,34 @@ exports.updateOrder = async (req, res) => {
     });
   }
 };
+
+exports.getOrdersByDate = async (req, res) => {
+  try {
+    const { from, to } = req.body
+
+    if (!from || !to) {
+      return res.status(400).json({ message: "from ve to zorunlu" })
+    }
+
+    const startDate = new Date(from)
+    const endDate = new Date(to)
+
+    // gün sonunu kapsasın
+    endDate.setHours(23, 59, 59, 999)
+
+    const orders = await Orders.find({
+      createdAt: {
+        $gte: startDate,
+        $lte: endDate,
+      },
+    })
+      .populate("waiterId", "firstName lastName")
+      .populate("tableId", "tableName")
+      .sort({ createdAt: -1 })
+
+    return res.status(200).json(orders)
+  } catch (error) {
+    console.error(error)
+    return res.status(500).json({ message: "Server error" })
+  }
+}

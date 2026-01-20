@@ -2,13 +2,16 @@ import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFiltered
 import * as React from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
 import { Button } from './ui/button'
+import { DataTablePagination } from './data-table-paginition'
 type Props<T> = {
     columns: ColumnDef<T, any>[]
     data: T[]
     pageSize?: number
+      header?: (table: any) => React.ReactNode
+  footer?: (table: any) => React.ReactNode
 
 }
-function CustomDataTable<T>({ columns, data, pageSize }: Props<T>) {
+function CustomDataTable<T>({ columns, data, pageSize, header,  footer, }: Props<T>) {
     const [pagination, setPagination] = React.useState({
         pageIndex: 0, //initial page index
         pageSize: pageSize || 10, //default page size
@@ -35,6 +38,7 @@ function CustomDataTable<T>({ columns, data, pageSize }: Props<T>) {
     return (
         <div className='w-full'>
             <div className="w-full overflow-x-auto">
+                {header?.(table)}
                 <Table className="min-w-[700px] rounded-xl border">
                     <TableHeader>
                         {table.getHeaderGroups().map((headerGroup) => (
@@ -83,38 +87,10 @@ function CustomDataTable<T>({ columns, data, pageSize }: Props<T>) {
                         )}
                     </TableBody>
                 </Table>
-                {
-                    data.length > pagination.pageSize && (
-                        <div className="
-                                flex flex-col gap-3
-                                sm:flex-row sm:items-center sm:justify-between
-                                p-4
-                                ">
-                            <span className="text-sm text-center sm:text-left">
-                                Sayfa {table.getState().pagination.pageIndex + 1} / {table.getPageCount()}
-                            </span>
+                {footer?.(table)}
+                
 
-                            <div className="flex justify-center sm:justify-end space-x-2">
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => table.previousPage()}
-                                    disabled={!table.getCanPreviousPage()}
-                                >
-                                    Previous
-                                </Button>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    onClick={() => table.nextPage()}
-                                    disabled={!table.getCanNextPage()}
-                                >
-                                    Next
-                                </Button>
-                            </div>
-                        </div>
-                    )
-                }
+                
 
 
             </div>

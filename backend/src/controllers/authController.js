@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const { generateToken } = require('../middleware/auth');
-const redis = require("../redis");
+// const redis = require("../redis");
 const UserRole = require("../models/UserRole");
 // const RoleAction = require("../../models/RoleAction");
 const Role = require("../models/Role");

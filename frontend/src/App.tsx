@@ -16,7 +16,11 @@ import { DataTableDemo } from "./components/DataTableDemo";
 import useAuthStore from "./store/useAuthStore";
 
 
-
+/*
+burada hem user hem protct route gereksiz 
+user yoksa burda return yap 
+local storae da ise token kisimini kaldır hepsi zuntand dan alsın tokenini 
+*/
 
 
 

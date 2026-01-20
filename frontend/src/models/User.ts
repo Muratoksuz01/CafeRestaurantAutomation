@@ -63,6 +63,9 @@ export const loginSchema = z.object({
     message: "Geçmiş tarih/saat seçilemez",
   }),
 }); */
+
+export type UserRole = "Yonetici" | "Kasiyer" |  "Garson" | "Asci";
+
 export type RegisterForm = z.infer<typeof registerSchema>;
 export type LoginForm = z.infer<typeof loginSchema>;
 export type Users = z.infer<typeof usersSchema>;

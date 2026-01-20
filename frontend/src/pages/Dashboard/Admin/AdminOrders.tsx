@@ -6,11 +6,16 @@ import { ArrowUpDown, Info, Loader2 } from "lucide-react"
 import { useGetOrders } from "@/hooks/usegetOrders"
 import { Order } from "@/models/Order"
 import { OrderDetailsDialog } from "./OrderDetailsDialog"
-import { ColumnDef } from "@tanstack/react-table"
+import { ColumnDef, Row } from "@tanstack/react-table"
+import { DateRange } from 'react-day-picker'
 import CustomDataTable from "@/components/CustomDataTable"
+import { DataTableColumnHeader } from "@/components/data-table-column-header"
+import { DataTablePagination } from "@/components/data-table-paginition"
+import * as XLSX from "xlsx"
+import DatePickerRangeDemo from "@/components/shadcn-studio/date-picker/date-picker-02"
 
 function AdminOrders() {
-  const { orders, loading, error, getOrders } = useGetOrders()
+  const { orders, loading, error, getOrders, getOrdersByDate } = useGetOrders()
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
 
@@ -25,7 +30,7 @@ function AdminOrders() {
     },
     {
       accessorKey: "tableName",
-       header: ({ column }) => {
+      header: ({ column }) => {
         return (
           <Button
             variant={"ghost"}
@@ -57,14 +62,16 @@ function AdminOrders() {
     },
     {
       accessorKey: "orderTotal",
-      header: "Toplam",
+      header: ({ column }) => (<DataTableColumnHeader column={column} title="Toplam" />),
+      // header: "Toplam",
       cell: ({ row }) => (
         <div className="capitalize">{row.getValue<number>("orderTotal").toFixed(2)} ₺</div>
       ),
     },
     {
       id: "İşlemler",
-      header: "İşlemler",
+      header: ({ column }) => (< DataTableColumnHeader column={column} title="İşlemler" />),
+      // header: "İşlemler",
       cell: ({ row }) => (
         <Button variant="outline" size="sm"
           onClick={() => { handleInfoClick(row.original.id) }}>
@@ -80,6 +87,15 @@ function AdminOrders() {
     setDialogOpen(true)
   }
 
+
+
+  function exportToExcel<T>(rows: T[], fileName = "data.xlsx") {
+    const ws = XLSX.utils.json_to_sheet(rows)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
+    XLSX.writeFile(wb, fileName)
+  }
+
   const filterOrdersByStatus = (status: Order["status"]) => {
     return orders.filter((order) => order.status === status)
   }
@@ -92,7 +108,37 @@ function AdminOrders() {
     }
 
     return (
-        <CustomDataTable  columns={columns} data={filteredOrders}/>
+      <CustomDataTable
+        columns={columns}
+        data={filteredOrders}
+        header={(table) => (
+          <div className="mb-3 flex justify-between">
+            <DatePickerRangeDemo onChange={getOrdersByDate}/>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const rows = table
+                  .getFilteredRowModel()
+                  .rows
+                  .map((r: Row<Order>, index: number) => ({
+                    "Sıra": index + 1,
+                    "Masa İsmi": r.original.tableName,
+                    "Sipariş Tarihi": new Date(r.original.orderDate).toLocaleString("tr-TR"),
+                    "Toplam": `${r.original.orderTotal.toFixed(2)} ₺`,
+                    "Durum": r.original.status,
+                    "Garson": r.original.waiterName,
+                  }))
+
+                exportToExcel(rows, "orders.xlsx")
+              }}
+            >
+              Excel Export
+            </Button>
+          </div>
+        )}
+
+      // footer={(table)=>(<DataTablePagination table={table} />)}
+      />
     )
   }
 

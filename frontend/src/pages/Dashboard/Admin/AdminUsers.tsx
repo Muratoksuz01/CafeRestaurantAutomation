@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
-import { Search, Trash2, PencilLine, Check, X, MoreVertical } from "lucide-react"
+import { Search, Trash2, PencilLine, Check, X, MoreVertical, ArrowUpDown, Info } from "lucide-react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -10,18 +10,23 @@ import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useGetUsers } from "@/hooks/useGetUsers"
-import { useSelector } from "react-redux"
 import { API_PATHS } from "@/lib/api"
 import type { Users } from "@/models/User"
 import EditDialog from "../components/EditDialog"
 import CreateUserDialog from "./CreateUserDialog"
-import useAuthStore from "@/store/useAuthStore"
 import {
   DropdownMenu,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu"
+
+
+
+import { ColumnDef } from "@tanstack/react-table"
+import { DataTableColumnHeader } from "@/components/data-table-column-header"
+import CustomDataTable from "@/components/CustomDataTable"
+
 function TableSkeleton() {
   return (
     <div className="rounded-md border">
@@ -66,22 +71,119 @@ function TableSkeleton() {
 }
 
 export default function AdminUsers() {
-  const currentUser = useAuthStore((state) => state.user);
 
   const { users, getUsers, loading: userLoading } = useGetUsers()
-  const [selectedUserId, setSelectedUserId] = useState<string>("")
   const [selectedUser, setSelectedUser] = useState<Users>({} as Users)
   const [searchQuery, setSearchQuery] = useState("")
-  const [openDialog, setOpenDialog] = useState(false)
   const [openEdit, setOpenEdit] = useState(false)
   const [createDialog, setCreateDialog] = useState(false)
+  const columns: ColumnDef<Users>[] = [
+    {
+      id: "Sıra",
+      header: "Sıra",
+      cell: ({ row }) => row.index + 1
+    },
+    {
+      accessorKey: "firstName",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => { column.toggleSorting(column.getIsSorted() === "asc") }}
+          >
+            Ad Soyad
+            <ArrowUpDown />
+          </Button>
+        )
+      },
+      cell: ({ row }) => (
+        <div className="capitalize">{row.getValue("firstName")} {row.getValue("lastName")}</div>
+      ),
+    },
+    {
+      accessorKey: "email",
+      header: ({ column }) => {
+        return (
+          <Button
+            variant={"ghost"}
+            onClick={() => { column.toggleSorting(column.getIsSorted() === "asc") }}
+          >
+            E-Posta
+            <ArrowUpDown />
+          </Button>
+        )
+      },//new Date(order.orderDate).toLocaleString("tr-TR")
+      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+    },
+    {
+      accessorKey: "phoneNumber",
+      header: "Telefon Numarası",
+      cell: ({ row }) => (
+        <div>{row.getValue("phoneNumber")}</div>
+      ),
+    },
+    {
+      accessorKey: "roleName",
+      header: "Rol",
+      cell: ({ row }) => (
+        <div>{badgePrinter(row.original.roleName)}</div>
+      ),
+    },
+    {
+      accessorKey: "isActive",
+      header: "Aktif",
+      cell: ({ row }) => (
+        <div>
+          {row.original.isActive ? (
+            <Check className="text-green-600 w-5 h-5" />
+          ) : (
+            <X className="text-red-600 w-5 h-5" />
+          )}
+        </div>
+
+      ),
+    },
+    {
+      id: "İşlemler",
+      header: ({ column }) => (< DataTableColumnHeader column={column} title="İşlemler" />),
+      // header: "İşlemler",
+      cell: ({ row }) => (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              size="icon"
+              variant="ghost"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <MoreVertical className="h-4 w-4" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => editUser(row.original)}>
+              <PencilLine className="mr-2 h-4 w-4" />
+              Düzenle
+            </DropdownMenuItem>
+
+            <DropdownMenuItem
+              className="text-destructive focus:text-destructive"
+              onClick={() => deleteUser(String(row.original._id))}
+            >
+              <Trash2 className="mr-2 h-4 w-4" />
+              Sil
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      )
+    }
+
+  ]
+
 
   useEffect(() => {
     getUsers()
   }, [])
 
-  // Filter only active users (excluding current user)
-  const activeUsers = users.filter((u) => u._id?.toString() !== currentUser?.id?.toString())
 
   // Filter users based on search query
   const filteredUsers = users.filter((u) => {
@@ -98,7 +200,6 @@ export default function AdminUsers() {
 
   const onSuccess = async () => {
     getUsers()
-    setSelectedUserId("")
   }
 
   const deleteUser = async (id: string) => {
@@ -168,7 +269,7 @@ export default function AdminUsers() {
             </>
           ) : (
             <>
-              <div className="text-2xl font-bold">{activeUsers.length}</div>
+              <div className="text-2xl font-bold">{users.length}</div>
               <p className="text-xs text-muted-foreground">Aktif sistem kullanıcıları</p>
             </>
           )}
@@ -208,67 +309,8 @@ export default function AdminUsers() {
             </div>
           ) : (
             <div className="rounded-md border">
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>Ad Soyad</TableHead>
-                    <TableHead>E-posta</TableHead>
-                    <TableHead>Telefon</TableHead>
-                    <TableHead>Rol</TableHead>
-                    <TableHead>Aktif</TableHead>
-                    <TableHead className="text-right">İşlemler</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {filteredUsers.map((u) => (
-                    <TableRow key={u._id} className="cursor-pointer hover:bg-muted/50">
-                      <TableCell className="font-medium">
-                        {u.firstName} {u.lastName}
-                      </TableCell>
-                      <TableCell className="text-muted-foreground">{u.email}</TableCell>
-                      <TableCell className="text-muted-foreground">{u.phoneNumber}</TableCell>
-                      <TableCell>
-                        {badgePrinter(u.roleName)}
-                      </TableCell>
-                      <TableCell>
-                        {u.isActive ? (
-                          <Check className="text-green-600 w-5 h-5" />
-                        ) : (
-                          <X className="text-red-600 w-5 h-5" />
-                        )}
-                      </TableCell>
-                      <TableCell className="text-right">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <Button
-                              size="icon"
-                              variant="ghost"
-                              onClick={(e) => e.stopPropagation()}
-                            >
-                              <MoreVertical className="h-4 w-4" />
-                            </Button>
-                          </DropdownMenuTrigger>
-
-                          <DropdownMenuContent align="end">
-                            <DropdownMenuItem onClick={() => editUser(u)}>
-                              <PencilLine className="mr-2 h-4 w-4" />
-                              Düzenle
-                            </DropdownMenuItem>
-
-                            <DropdownMenuItem
-                              className="text-destructive focus:text-destructive"
-                              onClick={() => deleteUser(String(u._id))}
-                            >
-                              <Trash2 className="mr-2 h-4 w-4" />
-                              Sil
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </TableCell>
-                    </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
+          
+              <CustomDataTable columns={columns} data={filteredUsers} />
             </div>
           )}
         </CardContent>
