@@ -10,20 +10,20 @@ import { successStyle, warningStyle } from "@/lib/toastStyle"
 import { loginSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useEffect, useState } from "react"
-import { getRole } from "@/lib/utils"
 import CustomFormField from "@/components/CustomFormField"
 import useAuthStore from '../../store/useAuthStore';
 
 export default function Login() {
   const login = useAuthStore((state) => state.login);
   const loading = useAuthStore((state) => state.loading);
+  const user = useAuthStore((state) => state.user);
 
 
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
   useEffect(() => {
-    const role = getRole();
-
+    const role = user ? user.role : null;
+    if(role ==null)return
     if (role === "Yonetici") {
       navigate("/admin");
     } else if (role === "Kasiyer" || role === "Garson") {

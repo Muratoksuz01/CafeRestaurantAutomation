@@ -11,7 +11,7 @@ interface TokenPayload {
   role: UserRole;
 }
 
-export function getRole() {
+/* export function getRole() {
   const token = localStorage.getItem("token")
   if (token) {
     const decoded = jwtDecode<TokenPayload>(token);
@@ -20,7 +20,7 @@ export function getRole() {
     console.log("getrole token undefind");
     return null
   }
-}
+} */
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))

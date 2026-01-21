@@ -24,7 +24,6 @@ import {
 } from "react-icons/lu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "@/store/useAuthStore";
-import { getRole } from "@/lib/utils";
 const MENU_CONFIG = {
   Yonetici: {
     title: "Yönetici Paneli",
@@ -58,7 +57,7 @@ function AppSidebar({settitle}:any) {
   const logout = useAuthStore((state) => state.logout);
   const user = useAuthStore((state) => state.user); // Store'dan user'ı çekiyoruz
 
-  const role = getRole() as keyof typeof MENU_CONFIG;
+  const role = user!.role as keyof typeof MENU_CONFIG;
   const config = MENU_CONFIG[role] || { title: "Panel", items: [] };
 
   const handleLogout = () => {

@@ -284,17 +284,27 @@ exports.getOrdersByDate = async (req, res) => {
     // gün sonunu kapsasın
     endDate.setHours(23, 59, 59, 999)
 
-    const orders = await Orders.find({
+    const orders = await Order.find({
       createdAt: {
         $gte: startDate,
         $lte: endDate,
       },
     })
       .populate("waiterId", "firstName lastName")
-      .populate("tableId", "tableName")
+      .populate("tableId", "name")
       .sort({ createdAt: -1 })
+      const result = orders.map(o => ({
+      id: o._id,
+      tableName: o.tableId?.name || null,
+      orderTotal: o.total,
+      status: o.status,
+      waiterName: o.waiterId
+        ? `${o.waiterId.firstName} ${o.waiterId.lastName}`
+        : null,
+      orderDate: o.createdAt
+    }));
 
-    return res.status(200).json(orders)
+    return res.status(200).json({ success: true, data: result })
   } catch (error) {
     console.error(error)
     return res.status(500).json({ message: "Server error" })

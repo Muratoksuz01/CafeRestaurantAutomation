@@ -7,7 +7,7 @@ const {getTables,getTable,editTable,deleteTable,reassignTables,createTable
  } =require("../controllers/tableController")
 
 const {createOrder,deleteOrder,updateOrder,
-    editOrder,getOrder,getOrders,getPaid,
+    editOrder,getOrder,getOrders,getPaid,getOrdersByDate,
 } =require("../controllers/orderController")
 
 router.get("/getTables", authenticateToken, getTables);
@@ -18,6 +18,7 @@ router.post("/createTable", authenticateToken, createTable);
 router.put('/reassign', authenticateToken, reassignTables);
 
 router.post("/createOrder", authenticateToken, createOrder);
+router.post("/getOrders/by-date",  getOrdersByDate);
 router.get("/getOrders", authenticateToken, getOrders);
 router.get("/getOrder/:id", authenticateToken, getOrder);
 router.get("/updateOrder/:id", authenticateToken, updateOrder);
@@ -25,6 +26,6 @@ router.post("/editOrder", authenticateToken, editOrder);
 router.delete("/deleteOrder", authenticateToken,authorize("Kasiyer"), deleteOrder);
 router.post("/paidOrder", authenticateToken,authorize("Kasiyer"), getPaid);
 // router.put("/book/:id", book);
-
+//getOrders/by-date
 
 module.exports = router;

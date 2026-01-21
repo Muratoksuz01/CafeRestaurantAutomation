@@ -18,6 +18,8 @@ function AdminOrders() {
   const { orders, loading, error, getOrders, getOrdersByDate } = useGetOrders()
   const [selectedOrderId, setSelectedOrderId] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [dateRange, setDateRange] = useState<DateRange | undefined>()
+
 
   useEffect(() => {
     getOrders()
@@ -101,44 +103,56 @@ function AdminOrders() {
   }
 
   const renderOrdersTable = (filteredOrders: Order[]) => {
-    if (filteredOrders.length === 0) {
-      return (
-        <div className="flex items-center justify-center py-8 text-muted-foreground">Bu durumda sipariş bulunmuyor</div>
-      )
-    }
+    
 
     return (
-      <CustomDataTable
-        columns={columns}
-        data={filteredOrders}
-        header={(table) => (
-          <div className="mb-3 flex justify-between">
-            <DatePickerRangeDemo onChange={getOrdersByDate}/>
-            <Button
-              variant="outline"
-              onClick={() => {
-                const rows = table
-                  .getFilteredRowModel()
-                  .rows
-                  .map((r: Row<Order>, index: number) => ({
-                    "Sıra": index + 1,
-                    "Masa İsmi": r.original.tableName,
-                    "Sipariş Tarihi": new Date(r.original.orderDate).toLocaleString("tr-TR"),
-                    "Toplam": `${r.original.orderTotal.toFixed(2)} ₺`,
-                    "Durum": r.original.status,
-                    "Garson": r.original.waiterName,
-                  }))
+      <div>
+        <div className="flex gap-3">
 
-                exportToExcel(rows, "orders.xlsx")
-              }}
-            >
-              Excel Export
-            </Button>
-          </div>
-        )}
+          <DatePickerRangeDemo
+            onChange={setDateRange}
+          />
+          <Button
+            className="mt-6"
+            onClick={() => {
+              if (!dateRange?.from || !dateRange?.to) return
+              getOrdersByDate(dateRange)
+            }}
+          >
+            Getir
+          </Button>
+        </div>
+        <CustomDataTable
+          columns={columns}
+          data={filteredOrders}
+          header={(table) => (
+            <div className="mb-3 flex justify-end">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  const rows = table
+                    .getFilteredRowModel()
+                    .rows
+                    .map((r: Row<Order>, index: number) => ({
+                      "Sıra": index + 1,
+                      "Masa İsmi": r.original.tableName,
+                      "Sipariş Tarihi": new Date(r.original.orderDate).toLocaleString("tr-TR"),
+                      "Toplam": `${r.original.orderTotal.toFixed(2)} ₺`,
+                      "Durum": r.original.status,
+                      "Garson": r.original.waiterName,
+                    }))
 
-      // footer={(table)=>(<DataTablePagination table={table} />)}
-      />
+                  exportToExcel(rows, "orders.xlsx")
+                }}
+              >
+                Excel Export
+              </Button>
+            </div>
+          )}
+
+        // footer={(table)=>(<DataTablePagination table={table} />)}
+        />
+      </div>
     )
   }
 

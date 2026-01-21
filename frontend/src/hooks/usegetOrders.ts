@@ -9,6 +9,7 @@ export function useGetOrders() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
+
   async function getOrders() {
     try {
       const res = await axiosInstance.get(API_PATHS.getOrders)
@@ -22,13 +23,25 @@ export function useGetOrders() {
       setLoading(false)
     }
   }
-  
+
   async function getOrdersByDate(range?: DateRange) {
-  if (!range?.from || !range?.to) return
-  await axiosInstance.post(API_PATHS.orderbydate, {
-    from: range.from.toISOString(),
-    to: range.to.toISOString(),
-  })
-}
-  return { orders, loading, error, setOrders, getOrders ,getOrdersByDate}
+    console.log("caliştir")
+    if (!range?.from || !range?.to) return
+    try {
+      const res = await axiosInstance.post(API_PATHS.orderbydate, {
+        from: range.from.toISOString(),
+        to: range.to.toISOString(),
+      })
+      if (res.data.success && res.data.data) {
+        setOrders(res.data.data)
+      }
+
+    } catch (error: any) {
+      setError(error.message || "Veri alınamadı")
+      setOrders([])
+    } finally {
+      setLoading(false)
+    }
+  }
+  return { orders, loading, error, setOrders, getOrders, getOrdersByDate }
 }

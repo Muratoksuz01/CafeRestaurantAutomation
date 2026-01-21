@@ -5,10 +5,7 @@ sipariş olusturldan sonra masaya ait sipeişler gelmiyor tip hatası
 
 
 projeye devam edilirse 
-    - bydate işlemini hooke koydum simid set etme işi back yazması kaldı 
-    - admin orders son 3 ay son 6 ay gibi degerler olsun   https://shadcnstudio.com/docs/components/date-picker   2 ve 3 un karişmiş hali 
     -  getorders gettable istetistikler  admin users e redis kurmalıyız  bunu soralım 
-
 
     - kasiyer sipariş alırken musteri ismi vs girebilmeli ama bos da bırakabilmeli 
     - rezerve btn tıklanıgında musteri bilgilerini ister isim soyisim tlelefon gibi untilTime  

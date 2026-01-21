@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import Login from "./pages/Landing/Login";
 import Register from "./pages/Landing/Register";
 import NotFound from "./pages/NotFound";
@@ -14,6 +14,7 @@ import AdminOrders from "./pages/Dashboard/Admin/AdminOrders";
 import AdminRoles from "./pages/Dashboard/Admin/AdminRoles";
 import { DataTableDemo } from "./components/DataTableDemo";
 import useAuthStore from "./store/useAuthStore";
+import { useEffect } from "react";
 
 
 /*
@@ -22,24 +23,34 @@ user yoksa burda return yap
 local storae da ise token kisimini kaldır hepsi zuntand dan alsın tokenini 
 */
 
-
-
 function App() {
-  const user = useAuthStore((state) => state.user);
-
   return (
     <BrowserRouter>
+      <AppRoutes />
+    </BrowserRouter>
+  );
+}
+
+function AppRoutes() {
+  const user = useAuthStore((state) => state.user);
+const navigate=useNavigate()
+  useEffect(()=>{
+  if(!user)navigate("/login")
+  else if( user.role=="Yonetici") navigate("/admin")
+  else if( user.role=="Kasiyer"  || user.role=="Garson") navigate("/user")
+},[])
+  return (
+   
       <Routes>
         <Route path="/" element={<Navigate to={"/login"} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         {/* Yönetici Route Grubu */}
         {user?.role === "Yonetici" && (
-          <Route element={<ProtectedRoute allow={["Yonetici"]} />}>
+         
             <Route path="/admin" element={<DashboardLayout />}>
               {/* /admin yazıldığında otomatik olarak genel-bakis'a yönlendirir */}
               <Route index element={<Navigate to="genel-bakis" />} />
-
               <Route path="genel-bakis" element={<AdminOverview />} />
               <Route path="kullanicilar" element={<AdminUsers />} />
               <Route path="yemekler" element={<AdminFoods />} />
@@ -48,12 +59,11 @@ function App() {
               <Route path="roller" element={<AdminRoles />} />
               <Route path="gereksiz" element={<DataTableDemo />} />
             </Route>
-          </Route>
+        
         )}
 
         {/* Kasiyer ve Garson Route Grubu */}
         {user?.role && ["Kasiyer", "Garson"].includes(user.role) && (
-          <Route element={<ProtectedRoute allow={["Kasiyer", "Garson"]} />}>
             <Route path="/user" element={<DashboardLayout />}>
               {/* Kullanıcının rolüne göre ana sayfayı belirle */}
               <Route index element={
@@ -65,11 +75,10 @@ function App() {
               {/* Kasiyer Özel */}
               <Route path="satis-ekrani" element={<UserOverview />} />
               <Route path="islem-listesi" element={<UserList />} />
-
               {/* Garson Özel (veya ortak) */}
               <Route path="masalar" element={<UserOverview />} />
             </Route>
-          </Route>
+      
         )}
 
 
@@ -79,7 +88,7 @@ function App() {
 
         <Route path="*" element={<NotFound />} />
       </Routes>
-    </BrowserRouter>
+   
   );
 }
 

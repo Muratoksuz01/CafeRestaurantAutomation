@@ -51,7 +51,7 @@ export const useAuthStore = create<AuthState>()(
           if (result.success) {
             const { user, token } = result.data;
             set({ user, token, loading: false });
-            localStorage.setItem("token",token)
+           // localStorage.setItem("token",token)
             // Buradaki yapı LoginResponse interface'ine tam uymalı
             return {
               success: true,
@@ -68,7 +68,7 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-        localStorage.clear()
+     //   localStorage.clear()
         set({ user: null, token: null })
       }
     }),

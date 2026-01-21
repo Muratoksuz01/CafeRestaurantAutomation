@@ -12,13 +12,14 @@ import CustomAlertDialog from "@/components/CustomAlertDialog";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { AllTable } from "@/models/Tables";
-import { getRole } from "@/lib/utils";
 import RezerveDialog from "./RezerveDialog";
 import useAuthStore from "@/store/useAuthStore";
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
+    const user = useAuthStore((state) => state.user);
+  
   const [deleteAlert, setDeleteAlert] = useState(false)
   const [showTableDialog, setShowTableDialog] = useState(false)
   const [showRezerveDialog, setShowRezerveDialog] = useState(false)
@@ -353,7 +354,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
                 Reset
               </Button>
               {
-                getRole() != "Garson" && (
+                user!.role != "Garson" && (
                   <Button onClick={odemeAl} variant="destructive" className="flex-1">
                     Ödeme Al
                   </Button>
@@ -365,7 +366,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
               <Button onClick={onClose} variant="outline" className="flex-1">
                 Kapat
               </Button>
-              {getRole() != "Garson" && (
+              {user!.role != "Garson" && (
                 <Button onClick={() => setDeleteAlert(true)} variant="destructive" className="flex-1">
                   Siparişi Sil
                 </Button>

@@ -1,8 +1,7 @@
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from '@tanstack/react-table'
 import * as React from "react"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
-import { Button } from './ui/button'
-import { DataTablePagination } from './data-table-paginition'
+
 type Props<T> = {
     columns: ColumnDef<T, any>[]
     data: T[]
@@ -81,7 +80,7 @@ function CustomDataTable<T>({ columns, data, pageSize, header,  footer, }: Props
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    No results.
+                                    gösterilecek sonuç yok
                                 </TableCell>
                             </TableRow>
                         )}

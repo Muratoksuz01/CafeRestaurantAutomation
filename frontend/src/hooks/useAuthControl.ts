@@ -1,14 +1,16 @@
-import { getRole } from "@/lib/utils";
+import useAuthStore from "@/store/useAuthStore";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export function useAuthControl() {
+    const user = useAuthStore((state) => state.user);
+  
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
-    const role = getRole();
-
+    const role = user!.role
+    console.log("useauthcontrol:",location)
     if (!role) {
       navigate("/login", { replace: true });
       return;
