@@ -122,7 +122,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                             {...field}
                                             type={showPassword ? "text" : "password"}
                                             placeholder="••••••••"
-                                            className="bg-slate-50 border-slate-200 text-slate-900 placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg pr-10"
+                                            className="bg-slate-50 border-slate-200  placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg pr-10"
                                         />
                                         <button
                                             type="button"

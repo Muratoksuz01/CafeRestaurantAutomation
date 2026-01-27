@@ -27,9 +27,9 @@ export const API_PATHS = {
   updateFood: (id: string) => `${API_BASE_URL}/admin/food/` + id,
 
   getCategories: `${API_BASE_URL}/admin/categories`,
-  createCategory: `${API_BASE_URL}/admin/category`,
-  deleteCategory: (id: string) => `${API_BASE_URL}/admin/category/${id}`,
-  updateCategory: (id: string) => `${API_BASE_URL}/admin/category/${id}`,
+  createCategory: `${API_BASE_URL}/admin/categories`,
+  deleteCategory: (id: string) => `${API_BASE_URL}/admin/categories/${id}`,
+  updateCategory: (id: string) => `${API_BASE_URL}/admin/categories/${id}`,
   reassignFoods: (id: string) => `${API_BASE_URL}/admin/categories/${id}/reassign`,// categori silinirse yemekler icin yeni kategori belirlemek icin 
 
   //user

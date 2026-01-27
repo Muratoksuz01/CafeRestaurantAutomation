@@ -1,5 +1,5 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from 'react'
 import { Input } from "@/components/ui/input";
@@ -14,12 +14,13 @@ import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { AllTable } from "@/models/Tables";
 import RezerveDialog from "./RezerveDialog";
 import useAuthStore from "@/store/useAuthStore";
+import { CalendarCheck, CalendarX, X } from "lucide-react";
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
-    const user = useAuthStore((state) => state.user);
-  
+  const user = useAuthStore((state) => state.user);
+
   const [deleteAlert, setDeleteAlert] = useState(false)
   const [showTableDialog, setShowTableDialog] = useState(false)
   const [showRezerveDialog, setShowRezerveDialog] = useState(false)
@@ -215,12 +216,16 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
   return (
     <>
 
-      <Dialog open={open} onOpenChange={() => { setOpen(false)}}>
+      <Dialog open={open} onOpenChange={() => {
+        setOriginalBasket([])
+        setBasket([])
+        setOpen(false)
+      }}>
         <DialogContent
           className="w-full max-w-[95vw] h-[85vh] p-0 flex flex-col overflow-hidden md:flex-row md:max-w-[1200px] "
         >
           {/* LEFT */}
-          <div className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r overflow-hidden">
+          <div className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r overflow-auto">
 
             {/* Sticky Filters */}
             <div className="p-4 bg-background border-b sticky top-0 z-10 flex gap-2">
@@ -249,8 +254,8 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
             {/* FOOD LIST */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-background">
               {filteredFoods.map((food) => {
-                console.log("food:",food)
-                console.log("basket",basket)
+                console.log("food:", food)
+                console.log("basket", basket)
                 const inBasket =
                   basket && basket.some(
                     (item: Basket) => item._id == food._id);
@@ -289,28 +294,40 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
             {/* Sticky Header */}
             <div className="sticky top-0 bg-background pb-3 border-b z-10">
-              <DialogTitle className="flex justify-between">
+              <DialogTitle className="flex justify-between items-center">
                 <span>
                   {selectedTable?.name} – Sepet
                 </span>
-                <div>
-                  {/* buraya kosullar ekle sipariş ıd varsa gosterilesin ve zaten rezerve ise gosterilmesin */}
-                  {/*  {selectedTable.currentOrderId == null && (
+
+                <div className="flex items-center gap-2">
+                  {/* Rezerve Butonu Buraya Gelebilir */}
+                  {selectedTable?.currentOrderId == null && (
                     <Button
                       size="sm"
-                      variant={selectedTable.status === "rezerve" ? "destructive" : "default"}
-                      onClick={() => {
-                        handleBook(selectedTable._id)
-                        // setShowRezerveDialog(true)
-                      }}
+                      variant={selectedTable.status === "rezerve" ? "destructive" : "outline"}
+                      className="flex gap-2 items-center" // İkon ve metni hizalar
+                      onClick={() => handleBook(selectedTable._id)}
                     >
-                      {selectedTable.status === "rezerve"
-                        ? "Rezervasyonu İptal Et"
-                        : "Rezerve Et"}
+                      {selectedTable.status === "rezerve" ? (
+                        <>
+                          <CalendarX className="h-4 w-4" /> {/* İptal İkonu */}
+                          <span className="hidden sm:inline">Rezervasyonu İptal Et</span>
+                        </>
+                      ) : (
+                        <>
+                          <CalendarCheck className="h-4 w-4" /> {/* Rezerve Et İkonu */}
+                          <span className="hidden sm:inline">Rezerve Et</span>
+                        </>
+                      )}
                     </Button>
-
-                  )} */}
-
+                  )}
+                  {/* KAPATMA BUTONU */}
+                  <DialogClose>
+                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8">
+                      <X className="h-4 w-4" />
+                      <span className="sr-only">Kapat</span>
+                    </Button>
+                  </DialogClose>
                 </div>
               </DialogTitle>
             </div>
@@ -345,36 +362,67 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
               ))}
             </div>
 
-            {/* Buttons */}
-            <div className="flex flex-wrap gap-2 mb-3">
-              <Button onClick={confirmBasket} className="flex-1">
-                Sepeti Onayla
-              </Button>
-              <Button onClick={resetBasket} variant="secondary" className="flex-1">
-                Reset
-              </Button>
-              {
-                user!.role != "Garson" && (
-                  <Button onClick={odemeAl} variant="destructive" className="flex-1">
-                    Ödeme Al
-                  </Button>
-                )
-              }
-            </div>
+           {/* SEPET AKSİYONLARI KONTEYNERİ */}
+<div className="flex flex-col gap-4 mt-4 border-t pt-4">
+  
+  {/* GRUP 1: ANA İŞLEMLER (Büyük ve Odaklı) */}
+  <div className="flex gap-2">
+    <Button
+      onClick={confirmBasket}
+      variant="default"
+      className="flex-[2] h-12 text-base font-bold" // Daha geniş ve yüksek
+    >
+      Sepeti Onayla
+    </Button>
+    
+    {user!.role !== "Garson" && (
+      <Button
+        onClick={odemeAl}
+        className="flex-[3] h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
+      >
+        Ödeme Al
+      </Button>
+    )}
+  </div>
 
-            <div className="flex flex-wrap gap-2 mb-2">
-              <Button onClick={onClose} variant="outline" className="flex-1">
-                Kapat
-              </Button>
-              {user!.role != "Garson" && (
-                <Button onClick={() => setDeleteAlert(true)} variant="destructive" className="flex-1">
-                  Siparişi Sil
-                </Button>
-              )}
-              <Button variant="secondary" onClick={() => setShowTableDialog(true)}>
-                Masa Değiştir
-              </Button>
-            </div>
+  {/* GRUP 2: YÖNETİMSEL İŞLEMLER (Daha küçük ve yardımcı) */}
+  <div className="grid grid-cols-3 gap-2">
+    <Button 
+      variant="secondary" 
+      size="sm"
+      onClick={resetBasket} 
+      className="text-xs"
+    >
+      Sıfırla
+    </Button>
+    
+    <Button 
+      variant="secondary" 
+      size="sm"
+      onClick={() => setShowTableDialog(true)}
+      className="text-xs"
+    >
+      Masa Değiştir
+    </Button>
+
+    <DialogClose asChild>
+      <Button variant="outline" size="sm" className="text-xs">
+        Kapat
+      </Button>
+    </DialogClose>
+  </div>
+
+  {/* GRUP 3: TEHLİKELİ İŞLEM (Ayrı ve Belirgin) */}
+  {user!.role !== "Garson" && (
+    <Button
+      onClick={() => setDeleteAlert(true)}
+      variant="ghost"
+      className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 text-xs font-semibold uppercase tracking-widest"
+    >
+      Siparişi Tamamen Sil
+    </Button>
+  )}
+</div>
 
             <div className="text-lg  font-semibold border-t pt-3">
               Toplam: {total} TL

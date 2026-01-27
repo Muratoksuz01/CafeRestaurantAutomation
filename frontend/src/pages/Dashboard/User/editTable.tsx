@@ -51,7 +51,7 @@ function EditTable({ editOpen, setEditOpen, onEdit, selectetTable }: any) {
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onsubmit)} className="flex flex-col gap-4">
-            <CustomFormField control={form.control} name="name">
+            <CustomFormField title="Masa İsmi" control={form.control} name="name">
               {(field: any) => (
                 <Input {...field} />
               )}

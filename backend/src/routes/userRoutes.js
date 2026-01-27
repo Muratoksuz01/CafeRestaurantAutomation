@@ -23,8 +23,8 @@ router.get("/getOrders", authenticateToken, getOrders);
 router.get("/getOrder/:id", authenticateToken, getOrder);
 router.get("/updateOrder/:id", authenticateToken, updateOrder);
 router.post("/editOrder", authenticateToken, editOrder);
-router.delete("/deleteOrder", authenticateToken,authorize("Kasiyer"), deleteOrder);
-router.post("/paidOrder", authenticateToken,authorize("Kasiyer"), getPaid);
+router.delete("/deleteOrder", authenticateToken, deleteOrder);
+router.post("/paidOrder", authenticateToken, getPaid);
 // router.put("/book/:id", book);
 //getOrders/by-date
 

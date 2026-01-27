@@ -12,16 +12,16 @@ import { Eye, EyeOff } from "lucide-react"
 import { useEffect, useState } from "react"
 import CustomFormField from "@/components/CustomFormField"
 import useAuthStore from '../../store/useAuthStore';
-
+import { useAuthControl } from "@/hooks/useAuthControl";
 export default function Login() {
-  const login = useAuthStore((state) => state.login);
-  const loading = useAuthStore((state) => state.loading);
-  const user = useAuthStore((state) => state.user);
-
-
+  // const login = useAuthStore((state) => state.login);
+  // const loading = useAuthStore((state) => state.loading);
+  // const user = useAuthStore((state) => state.user);
+const {login,loading,user} =useAuthStore((state)=>state)
+useAuthControl();
   const [showPassword, setShowPassword] = useState(false)
   const navigate = useNavigate()
-  useEffect(() => {
+ /*  useEffect(() => {
     const role = user ? user.role : null;
     if(role ==null)return
     if (role === "Yonetici") {
@@ -29,7 +29,7 @@ export default function Login() {
     } else if (role === "Kasiyer" || role === "Garson") {
       navigate("/user");
     }
-  }, []);
+  }, []); */
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
@@ -85,6 +85,7 @@ const onSubmit = async (data: z.infer<typeof loginSchema>) => {
           {/* Form */}
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+              <p className="cursor-pointer m-0 p-0 text-black" onClick={() => { form.setValue("email", "admin@kafe.com") }}>admin@kafe.com</p>
               <p className="cursor-pointer m-0 p-0 text-black" onClick={() => { form.setValue("email", "kasiyer@kafe.com") }}>kasiyer@kafe.com</p>
               <p className="cursor-pointer m-0 p-0 text-black" onClick={() => { form.setValue("email", "garson@kafe.com") }}>garson@kafe.com</p>
               <p className="cursor-pointer m-0 p-0 text-black" onClick={() => { form.setValue("email", "asci@kafe.com") }}>asci@kafe.com</p>

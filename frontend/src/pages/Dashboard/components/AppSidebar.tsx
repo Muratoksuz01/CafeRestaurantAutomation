@@ -50,7 +50,7 @@ const MENU_CONFIG = {
     ]
   }
 };
-function AppSidebar({settitle}:any) {
+function AppSidebar({ settitle }: any) {
   const { open } = useSidebar(); // Sidebar'ın açık/kapalı durumunu alıyoruz
   const navigate = useNavigate();
   const location = useLocation();
@@ -97,7 +97,7 @@ function AppSidebar({settitle}:any) {
                   isActive={location.pathname === item.url}
                   tooltip={item.title}
                 >
-                  <Link  onClick={() => {
+                  <Link onClick={() => {
                     settitle(item.title)
                   }} to={item.url} className="flex items-center gap-3">
                     <item.icon className="text-foreground" />
@@ -117,10 +117,13 @@ function AppSidebar({settitle}:any) {
               onClick={handleLogout}
               tooltip="Çıkış Yap"
               className={`group transition-all duration-300 ease-in-out ${open
-                ? "hover: bg-destructive/2 bg-destructive text-muted-foreground hover:text-destructive"
-                : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"}  `}
+                  ? "bg-transparent hover:bg-destructive/20 text-muted-foreground hover:text-destructive"
+                  : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                } border border-transparent hover:border-destructive/30`}
             >
-              <LuLogOut className={`${open ? "mr-2" : "mx-auto"} h-5 w-5 transition-colors duration-300 group-hover:text-destructive`}
+              <LuLogOut
+                className={`${open ? "mr-2" : "mx-auto"
+                  } h-5 w-5 transition-colors duration-300 text-muted-foreground group-hover:text-destructive`}
               />
               {open && (
                 <span className="font-medium transition-opacity duration-300">

@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CalendarIcon, ChevronDownIcon } from 'lucide-react'
+import { CalendarIcon, ChevronDownIcon, X } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
 
 import { Button } from '@/components/ui/button'
@@ -26,8 +26,34 @@ const DatePickerRangeDemo = ({
                         variant="outline"
                         className="w-full justify-between font-normal"
                     >
-                        <span className="flex items-center">
-                            <CalendarIcon className="mr-2 h-4 w-4" />
+                        <span className="flex items-center gap-2">
+                           {/*  {range?.from && range?.to && (
+                                <X
+                                    className="h-4 w-4 cursor-pointer"
+                                    onMouseDown={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+                                    }}
+                                    onClick={(e) => {
+                                        e.preventDefault()
+                                        e.stopPropagation()
+
+                                        setRange(undefined)
+
+                                        const start = new Date()
+                                        start.setHours(0, 0, 0, 0)
+
+                                        const end = new Date()
+                                        end.setHours(23, 59, 59, 999)
+
+                                        onChange?.({ from: start, to: end })
+                                    }}
+                                />
+
+                            )} */}
+
+                            <CalendarIcon className="h-4 w-4" />
+
                             {range?.from && range?.to
                                 ? `${range.from.toLocaleDateString()} - ${range.to.toLocaleDateString()}`
                                 : 'Tarih seç'}
@@ -35,6 +61,7 @@ const DatePickerRangeDemo = ({
 
                         <ChevronDownIcon className="h-4 w-4" />
                     </Button>
+
                 </PopoverTrigger>
 
 

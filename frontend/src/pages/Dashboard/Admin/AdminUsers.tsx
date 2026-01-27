@@ -14,18 +14,14 @@ import { API_PATHS } from "@/lib/api"
 import type { Users } from "@/models/User"
 import EditDialog from "../components/EditDialog"
 import CreateUserDialog from "./CreateUserDialog"
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu"
+import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem,} from "@/components/ui/dropdown-menu"
 
 
 
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTableColumnHeader } from "@/components/data-table-column-header"
 import CustomDataTable from "@/components/CustomDataTable"
+import CustomDialog from "@/components/CustomDialog"
 
 function TableSkeleton() {
   return (
@@ -74,7 +70,6 @@ export default function AdminUsers() {
 
   const { users, getUsers, loading: userLoading } = useGetUsers()
   const [selectedUser, setSelectedUser] = useState<Users>({} as Users)
-  const [searchQuery, setSearchQuery] = useState("")
   const [openEdit, setOpenEdit] = useState(false)
   const [createDialog, setCreateDialog] = useState(false)
   const columns: ColumnDef<Users>[] = [
@@ -185,16 +180,6 @@ export default function AdminUsers() {
   }, [])
 
 
-  // Filter users based on search query
-  const filteredUsers = users.filter((u) => {
-    const searchLower = searchQuery.toLowerCase()
-    return (
-      u.firstName?.toLowerCase().includes(searchLower) ||
-      u.lastName?.toLowerCase().includes(searchLower) ||
-      u.email?.toLowerCase().includes(searchLower) ||
-      u.phoneNumber?.includes(searchQuery)
-    )
-  })
 
 
 
@@ -253,7 +238,7 @@ export default function AdminUsers() {
     <div className="container mx-auto p-6 space-y-6">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Kullanıcı İzin Yönetimi</h1>
-        <p className="text-muted-foreground">Kullanıcı izinlerini görüntüleyin ve yönetin</p>
+        <p className="text-foreground text-xl">Kullanıcı izinlerini görüntüleyin ve yönetin</p>
       </div>
 
       {/* Stats Card */}
@@ -275,44 +260,33 @@ export default function AdminUsers() {
           )}
         </CardContent>
       </Card>
-
       {/* Users Table */}
       <Card>
         <CardHeader>
           <CardTitle className="text-xl">Kullanıcılar</CardTitle>
-          <CardDescription>Kullanıcı izinlerini bilgilerini için butona tıklayın</CardDescription>
-          <div className="flex items-center justify-between">
-            <div className="relative w-82">
-              <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Ad, soyad, e-posta veya telefon ile ara..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                disabled={userLoading}
-                className="pl-9"
-              />
-            </div>
-
-            <Button onClick={() => { setCreateDialog(true) }}>Yeni Eleman</Button>
-          </div>
-
         </CardHeader>
         <CardContent>
-          {userLoading ? (
-            <TableSkeleton />
-          ) : filteredUsers.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-12 text-center">
-              <p className="text-lg font-medium">Kullanıcı bulunamadı</p>
-              <p className="text-sm text-muted-foreground">
-                {searchQuery ? "Arama kriterlerinize uygun kullanıcı yok" : "Henüz aktif kullanıcı bulunmuyor"}
-              </p>
-            </div>
-          ) : (
             <div className="rounded-md border">
-          
-              <CustomDataTable columns={columns} data={filteredUsers} />
+              <CustomDataTable
+                columns={columns} data={users}
+                header={(table) => (
+                  <div className="flex items-center justify-between mb-5 p-3 border-b">
+                    <div className="relative w-82">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        placeholder="Ad, soyad, e-posta veya telefon ile ara..."
+                        value={table.getState().globalFilter ?? ""}
+                        onChange={(e) => table.setGlobalFilter(e.target.value)}
+                        disabled={userLoading}
+                        className="pl-9"
+                      />
+                    </div>
+
+                    <Button onClick={() => { setCreateDialog(true) }}>Yeni Eleman</Button>
+                  </div>
+                )}
+              />
             </div>
-          )}
         </CardContent>
       </Card>
 
@@ -324,6 +298,7 @@ export default function AdminUsers() {
         onClose={handleCloseDialog}
         onSuccess={onSuccess}
       /> */}
+     
       <EditDialog open={openEdit} setOpenEdit={setOpenEdit} user={selectedUser} onSuccess={onSuccess} />
       <CreateUserDialog open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess} />
     </div>

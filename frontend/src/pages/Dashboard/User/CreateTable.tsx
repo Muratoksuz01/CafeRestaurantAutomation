@@ -40,7 +40,7 @@ function CreateTable({ createOpen, setCreateOpen, onCreate }: any) {
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onsubmit)} className="flex flex-col gap-4">
-            <CustomFormField control={form.control} name={"name"}>
+            <CustomFormField title="Masa İsmi" control={form.control} name={"name"}>
               {(field: any) => (
                   <Input
                     {...field}

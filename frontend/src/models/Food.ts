@@ -10,16 +10,16 @@ export const foodSchema = z.object({
 });
 
 export const foodCreateSchema = z.object({
-    name: z.string().min(1, { message: "Yemek adı boş olamaz" }),
+    name: z.string("yemek adı giriniz ").min(1, { message: "Yemek adı boş olamaz" }),
     price: z.number("Fiyat sayı olmalıdır").min(1, { message: "Fiyat 1'den küçük olamaz" }),
-    description: z.string().min(1, { message: "Açıklama boş olamaz" }),
+    description: z.string().optional(),
     categoryId: z.string("kategory secmelisiniz "),
     imgs: z.any().refine(files => files instanceof FileList && files.length <= 2 && files.length != 0, { message: "Tam olarak 1 yada 2 resim seçilmelidir" })
 });
 export const foodEditSchema = z.object({
     name: z.string().min(1, { message: "Yemek adı boş olamaz" }),
     price: z.number("Fiyat sayı olmalıdır").min(1, { message: "Fiyat 1'den küçük olamaz" }),
-    description: z.string().min(1, { message: "Açıklama boş olamaz" }),
+    description: z.string().optional(),
     categoryId: z.string("kategory secmelisiniz "),
     imgs: z
         .any()
@@ -43,7 +43,7 @@ export const categoryCreateEditSchema = z.object({
     name: z.string()
 })
 export const categorySchema = z.object({
-    _id:z.number(),
+    _id:z.string(),
     name: z.string()
 })
 export type Food = z.infer<typeof foodSchema>;

@@ -54,7 +54,10 @@ export default function CreateFoodForm({ onUpdate ,open, setOpen }: any) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
+    <Dialog open={open} onOpenChange={() => {
+      form.reset()
+      setOpen(false)
+    }}>
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Yeni Yemek Ekle</DialogTitle>

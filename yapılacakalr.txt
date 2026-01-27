@@ -1,7 +1,3 @@
-sipariş olusturldan sonra masaya ait sipeişler gelmiyor tip hatası 
-
-
-- rezerve durumunu kontrol et bir sekilde yap ve garson icin sakla onu 
 
 
 projeye devam edilirse 
@@ -10,17 +6,18 @@ projeye devam edilirse
     - kasiyer sipariş alırken musteri ismi vs girebilmeli ama bos da bırakabilmeli 
     - rezerve btn tıklanıgında musteri bilgilerini ister isim soyisim tlelefon gibi untilTime  
     - sipariş sayfasında basketteki verilre sol tarafta gosterilmiyor 
+    - admin istatie o aylık olmalı order saayfasına ise o gunluk olmalı 
+    - sayfa acıldıgında dunden kalma tamamlanmamıs order varsa bunlar gostereilmeli 
+    - order geldiginde bir pdf dosyası olusmalı hatta cıktı alınmalı bunu ayarla ve olursa cıktı alabilmeli 
+    - role kontrolu yap odeme alırken ve silerken 
+    - redis koyulacaklar 
+        tum get istekleri 
+        bydate  
 
 
-
-
-
-
-
-
-
-
-
+    - adminover grafik dark tema
+    - admin sipariş tarih secildiinde birde carpı iconu olsun 
+   
 
 
 
@@ -63,7 +60,7 @@ Code lazy loading:Kod (JS dosyası) geç yüklenir,o sayfaya gidinde o kod yukle
 
 arastirma konular
 
-    chrome is 
+   
     search işleminde her vurusta istek atılması =>  usedebus  
     react memo nedir 
 
@@ -80,20 +77,6 @@ arastirma konular
     useeffecet tam nasıl calişiri 
 
     [] koyulmassa ne olur 
-
-
-
-    react 17 18 arasındak fark 
-
-    graft quel nedir 
-    reste nedir  graft quel 1 tane enppoint vardır 
-
-    ref ile state farklı 
-
-
-    react dongusunu anlat 
-
-    laszy loading nedir 
 
     include filter farkı 
 

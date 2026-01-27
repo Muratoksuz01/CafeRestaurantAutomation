@@ -1,7 +1,7 @@
 const Tables = require("../models/Table");
 const Order = require("../models/Order");
 const OrderItems = require("../models/OrderItem");
-const { ok } = require("node:assert");
+
 
 
 exports.createOrder = async (req, res) => {
@@ -173,7 +173,21 @@ exports.getPaid = async (req, res) => {
 //tableName, orderTotal, status, waiterName, orderDate
 exports.getOrders = async (req, res) => {
   try {
-    const orders = await Order.find()
+     const startOfDay = new Date()
+    startOfDay.setHours(0, 0, 0, 0)
+
+    const endOfDay = new Date()
+    endOfDay.setHours(23, 59, 59, 999)
+    const orders = await Order.find({
+      createdAt: {
+        $gte: startOfDay,
+        $lte: endOfDay,
+      },
+  //     $or: [
+  //   { status: "hazirlaniyor" },
+    
+  // ]
+    })
       .populate("tableId", "name")
       .populate("waiterId", "firstName lastName")
       .sort({ createdAt: -1 });

@@ -1,27 +1,21 @@
-import { BrowserRouter, Routes, Route, Navigate, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate,} from "react-router-dom";
 import Login from "./pages/Landing/Login";
 import Register from "./pages/Landing/Register";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./pages/Dashboard/DashboardLayout";
 import UserOverview from "./pages/Dashboard/User/UserOverview";
-import UserList from "./pages/Dashboard/User/UserList";
 import AdminOverview from "./pages/Dashboard/Admin/AdminOverview";
 import AdminUsers from "./pages/Dashboard/Admin/AdminUsers";
 import AdminFoods from "./pages/Dashboard/Admin/AdminFoods";
 import AdminCategory from "./pages/Dashboard/Admin/AdminCategory";
-import ProtectedRoute from "./lib/ProtectedRoute";
 import AdminOrders from "./pages/Dashboard/Admin/AdminOrders";
 import AdminRoles from "./pages/Dashboard/Admin/AdminRoles";
 import { DataTableDemo } from "./components/DataTableDemo";
 import useAuthStore from "./store/useAuthStore";
-import { useEffect } from "react";
+import TableList from "./pages/Dashboard/User/TableList";
 
 
-/*
-burada hem user hem protct route gereksiz 
-user yoksa burda return yap 
-local storae da ise token kisimini kaldır hepsi zuntand dan alsın tokenini 
-*/
+
 
 function App() {
   return (
@@ -33,12 +27,7 @@ function App() {
 
 function AppRoutes() {
   const user = useAuthStore((state) => state.user);
-const navigate=useNavigate()
-  useEffect(()=>{
-  if(!user)navigate("/login")
-  else if( user.role=="Yonetici") navigate("/admin")
-  else if( user.role=="Kasiyer"  || user.role=="Garson") navigate("/user")
-},[])
+
   return (
    
       <Routes>
@@ -74,7 +63,7 @@ const navigate=useNavigate()
 
               {/* Kasiyer Özel */}
               <Route path="satis-ekrani" element={<UserOverview />} />
-              <Route path="islem-listesi" element={<UserList />} />
+              <Route path="islem-listesi" element={<TableList />} />
               {/* Garson Özel (veya ortak) */}
               <Route path="masalar" element={<UserOverview />} />
             </Route>
