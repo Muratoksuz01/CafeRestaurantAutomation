@@ -13,6 +13,7 @@ exports.getTables = async (req, res) => {
 
     for (const table of tables) {
       let orderCreated = null;
+      let createdAt=null
       // let locationName=await Location.findById(table.locationId).select("name").name || "bilinmiyor"
       let orderTotal = null;
       let waiterName = null
@@ -22,7 +23,7 @@ exports.getTables = async (req, res) => {
 
         if (order) {
           // Sipariş oluşma saati (HH:MM formatında)
-          const createdAt = new Date(order.createdAt);
+           createdAt = new Date(order.createdAt);
           const hours = createdAt.getHours().toString().padStart(2, "0");
           const minutes = createdAt.getMinutes().toString().padStart(2, "0");
 
@@ -55,8 +56,8 @@ exports.getTables = async (req, res) => {
 exports.getTable = async (req, res) => {
   try {
     // console.log(req.query.id);
-console.log("get table id:",req.query.id)
-    const table = await Tables.findById(req.query.id);
+console.log("get table id:",req.params.id)
+    const table = await Tables.findById(req.params.id);
 
     if (!table) {
       return res.status(204).json({ success: false, message: "Masa bulunamadı" });

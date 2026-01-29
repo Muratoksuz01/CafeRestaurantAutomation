@@ -1,22 +1,19 @@
 
 
 projeye devam edilirse 
-    -  getorders gettable istetistikler  admin users e redis kurmalıyız  bunu soralım 
-
     - kasiyer sipariş alırken musteri ismi vs girebilmeli ama bos da bırakabilmeli 
     - rezerve btn tıklanıgında musteri bilgilerini ister isim soyisim tlelefon gibi untilTime  
-    - sipariş sayfasında basketteki verilre sol tarafta gosterilmiyor 
-    - admin istatie o aylık olmalı order saayfasına ise o gunluk olmalı 
-    - sayfa acıldıgında dunden kalma tamamlanmamıs order varsa bunlar gostereilmeli 
-    - order geldiginde bir pdf dosyası olusmalı hatta cıktı alınmalı bunu ayarla ve olursa cıktı alabilmeli 
-    - role kontrolu yap odeme alırken ve silerken 
+    - order createOrder geldiginde bir pdf dosyası olusmalı hatta cıktı alınmalı bunu ayarla ve olursa cıktı alabilmeli 
+    
     - redis koyulacaklar 
         tum get istekleri 
-        bydate  
+        bydate 
+    
+    - admin sipariş sayfası  tarih secildiinde birde carpı iconu olsun 
+    
+    - kasiyer giriş yaptıgında sayfa acıldıgında dunden kalma tamamlanmamıs order varsa bunlar gostereilmeli     bunu tekrar dusunelim
 
 
-    - adminover grafik dark tema
-    - admin sipariş tarih secildiinde birde carpı iconu olsun 
    
 
 

@@ -20,11 +20,11 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 interface EditFoodFormProps {
   food: any
   onUpdate?: () => void
-  open:any
-  setOpen:any
+  open: any
+  setOpen: any
 }
 
-export default function EditFoodForm({ food, onUpdate ,open,setOpen}: EditFoodFormProps) {
+export default function EditFoodForm({ food, onUpdate, open, setOpen }: EditFoodFormProps) {
   const { categories, getCategories } = useGetCategory()
 
   useEffect(() => {
@@ -34,24 +34,14 @@ export default function EditFoodForm({ food, onUpdate ,open,setOpen}: EditFoodFo
   const form = useForm({
     resolver: zodResolver(foodEditSchema),
     defaultValues: {
-      name: "",
-      price: 0,
-      description: "",
-      categoryId: "",
-      imgs: undefined,
+      name: food.name,
+      price: food.price,
+      description: food.description,
+      categoryId: food.categoryId,
     },
   })
 
-  useEffect(() => {
-    if (food) {
-      form.reset({
-        name: food.name,
-        price: food.price,
-        description: food.description,
-        categoryId: food.categoryId,
-      })
-    }
-  }, [food])
+
 
   const onSubmit = async (data: any) => {
     try {
@@ -84,85 +74,86 @@ export default function EditFoodForm({ food, onUpdate ,open,setOpen}: EditFoodFo
     }
   }
   return (
- <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle>Yemeği Düzenle</DialogTitle>
-          </DialogHeader>
-  <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogContent className="sm:max-w-[500px]">
+        <DialogHeader>
+          <DialogTitle>Yemeği Düzenle</DialogTitle>
+        </DialogHeader>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
-        <CustomFormField control={form.control} name="name" title="Yemek Adı">
-          {(field: any) => <Input placeholder="Yemek Adı" {...field} />}
-        </CustomFormField>
+            <CustomFormField control={form.control} name="name" title="Yemek Adı">
+              {(field: any) => <Input placeholder="Yemek Adı" {...field} />}
+            </CustomFormField>
 
-        <CustomFormField control={form.control} name="price" title="Yemek Fiyatı">
-          {(field: any) => (
-            <Input
-              type="number"
-              placeholder="Fiyat"
-              {...field}
-              onChange={(e) => field.onChange(Number(e.target.value))}
-            />
-          )}
-        </CustomFormField>
+            <CustomFormField control={form.control} name="price" title="Yemek Fiyatı">
+              {(field: any) => (
+                <Input
+                  type="number"
+                  placeholder="Fiyat"
+                  {...field}
+                  onChange={(e) => field.onChange(Number(e.target.value))}
+                />
+              )}
+            </CustomFormField>
 
-        <CustomFormField control={form.control} name="description" title="Yemek Acıklaması">
-          {(field: any) => <Textarea placeholder="Açıklama" {...field} />}
-        </CustomFormField>
+            <CustomFormField control={form.control} name="description" title="Yemek Acıklaması">
+              {(field: any) => <Textarea placeholder="Açıklama" {...field} />}
+            </CustomFormField>
 
-        <CustomFormField control={form.control} name="imgs" title="Yemege ait resimler">
-          {(field: any) => (
-            <Input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(e) => field.onChange(e.target.files)}
-            />
-          )}
-        </CustomFormField>
+            <CustomFormField control={form.control} name="imgs" title="Yemege ait resimler">
+              {(field: any) => (
+                <Input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={(e) => field.onChange(e.target.files)}
+                />
+              )}
+            </CustomFormField>
 
-        <CustomFormField control={form.control} name="categoryId" title="Yemegin kategorisi">
-          {(field: any) => {
-            console.log(field.value)
-            const selectedCategory = categories.find((c) => c._id === field.value);
-            return (
+            <CustomFormField control={form.control} name="categoryId" title="Yemegin kategorisi">
+              {(field: any) => {
+                console.log(field.value)
+                const selectedCategory = categories.find((c) => c._id === field.value);
+                return (
 
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="w-[180px]">
-                  <SelectValue>
-                    {selectedCategory ? selectedCategory.name : "Kategori seç"}
-                  </SelectValue>
-                </SelectTrigger>
-                <SelectContent>
-                  {categories.map((cat) => (
-                    <SelectItem key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )
-          }
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger className="w-[180px]">
+                      <SelectValue>
+                        {selectedCategory ? selectedCategory.name : "Kategori seç"}
+                      </SelectValue>
+                    </SelectTrigger>
+                    <SelectContent>
+                      {categories.map((cat) => (
+                        <SelectItem key={cat._id} value={cat._id}>
+                          {cat.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )
+              }
 
-          }
-        </CustomFormField>
+              }
+            </CustomFormField>
 
-        <div className="flex justify-end gap-2">
-          <Button variant="outline" type="button" onClick={() => {
-           setOpen(false)}}>
-            İptal
-          </Button>
-          <Button type="submit">Kaydet</Button>
-        </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" type="button" onClick={() => {
+                setOpen(false)
+              }}>
+                İptal
+              </Button>
+              <Button type="submit">Kaydet</Button>
+            </div>
 
-      </form>
-    </Form>
-        </DialogContent>
-      </Dialog>
+          </form>
+        </Form>
+      </DialogContent>
+    </Dialog>
 
 
 
-  
+
   )
 }

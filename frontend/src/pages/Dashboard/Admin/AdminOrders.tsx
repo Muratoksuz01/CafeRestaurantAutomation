@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ArrowUpDown, Info, Loader2 } from "lucide-react"
 import { useGetOrders } from "@/hooks/usegetOrders"
 import { Order } from "@/models/Order"
@@ -11,10 +10,9 @@ import { DateRange } from 'react-day-picker'
 import CustomDataTable from "@/components/CustomDataTable"
 import { DataTableColumnHeader } from "@/components/data-table-column-header"
 import { DataTablePagination } from "@/components/data-table-paginition"
-import * as XLSX from "xlsx"
 import DatePickerRangeDemo from "@/components/shadcn-studio/date-picker/date-picker-02"
 import { Badge } from "@/components/ui/badge"
-import { cn } from "@/lib/utils"
+import { cn, exportToExcel } from "@/lib/utils"
 import Filter from "@/components/Filter"
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -128,12 +126,7 @@ function AdminOrders() {
 
 
 
-  function exportToExcel<T>(rows: T[], fileName = "data.xlsx") {
-    const ws = XLSX.utils.json_to_sheet(rows)
-    const wb = XLSX.utils.book_new()
-    XLSX.utils.book_append_sheet(wb, ws, "Sheet1")
-    XLSX.writeFile(wb, fileName)
-  }
+
 
 
 

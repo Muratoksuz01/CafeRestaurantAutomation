@@ -15,6 +15,7 @@ function CreateTable({ createOpen, setCreateOpen, onCreate }: any) {
 
   const form = useForm({
     resolver: zodResolver(tableCreateEditSchema),
+    
   })
 
 

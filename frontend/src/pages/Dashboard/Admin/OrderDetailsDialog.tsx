@@ -8,6 +8,7 @@ import axiosInstance from "@/lib/axiosInstance"
 import { API_PATHS } from "@/lib/api"
 import { toast } from "sonner"
 import { warningStyle } from "@/lib/toastStyle"
+import CustomDialog from "@/components/CustomDialog"
 
 interface OrderDetailsDialogProps {
     orderId: string | null
@@ -24,12 +25,12 @@ export function OrderDetailsDialog({ orderId, open, onOpenChange }: OrderDetails
             const res = await axiosInstance.get(API_PATHS.getOrder(id))
             if (res.data.success) {
                 setOrder(res.data.data)
-            }else{
-                toast.warning(res.data.message || " sipariş getirilirken bir hata olustu",warningStyle)
+            } else {
+                toast.warning(res.data.message || " sipariş getirilirken bir hata olustu", warningStyle)
             }
         } catch (error) {
             console.log(error)
-        }finally{
+        } finally {
             setLoading(false)
         }
     }
@@ -39,23 +40,24 @@ export function OrderDetailsDialog({ orderId, open, onOpenChange }: OrderDetails
         }
     }, [orderId, open])
 
-    return (
-        <Dialog open={open} onOpenChange={onOpenChange}>
-            <DialogContent className="max-w-2xl">
-                <DialogHeader>
-                    <DialogTitle>Sipariş Detayları</DialogTitle>
-                </DialogHeader>
 
-                {loading && (
+
+
+
+
+    return(
+        <div>
+        <CustomDialog open={open}
+        className="max-w-2xl"
+         onOpenChange={onOpenChange} 
+         title={"Sipariş Detayları"} isInfo={true}
+         description={
+            <div>
+                 {loading && (
                     <div className="flex items-center justify-center py-8">
                         <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
                     </div>
                 )}
-
-                {/* {error && (
-                    <div className="rounded-lg border border-destructive/50 bg-destructive/10 p-4 text-destructive">{error}</div>
-                )} */}
-
                 {order && !loading && (
                     <div className="space-y-4">
                         <div className="grid grid-cols-2 gap-4">
@@ -78,46 +80,48 @@ export function OrderDetailsDialog({ orderId, open, onOpenChange }: OrderDetails
                         </div>
 
                         {order.orderItems && order.orderItems.length > 0 && (
-  <div>
-    <h3 className="mb-3 font-semibold">Sipariş Ürünleri</h3>
+                            <div>
+                                <h3 className="mb-3 font-semibold">Sipariş Ürünleri</h3>
 
-    <div className="space-y-3">
-      {order.orderItems.map((item) => (
-        <div
-          key={item.id}
-          className="flex items-center justify-between rounded-xl border p-4"
-        >
-          {/* Sol taraf */}
-          <div className="flex items-center gap-4">
-            <img
-              src={`http://localhost:5000/file?path=${item.imgs}`}
-              alt=""
-              className="w-16 h-16 rounded-lg object-cover border"
-            />
+                                <div className="space-y-3">
+                                    {order.orderItems.map((item) => (
+                                        <div
+                                            key={item.id}
+                                            className="flex items-center justify-between rounded-xl border p-4"
+                                        >
+                                            {/* Sol taraf */}
+                                            <div className="flex items-center gap-4">
+                                                <img
+                                                    src={`http://localhost:5000/file?path=${item.imgs}`}
+                                                    alt=""
+                                                    className="w-16 h-16 rounded-lg object-cover border"
+                                                />
 
-            <div>
-              <p className="font-medium leading-tight">
-                {item.foodName}
-              </p>
-              <p className="text-sm text-muted-foreground">
-                Adet: {item.qty}
-              </p>
-            </div>
-          </div>
+                                                <div>
+                                                    <p className="font-medium leading-tight">
+                                                        {item.foodName}
+                                                    </p>
+                                                    <p className="text-sm text-muted-foreground">
+                                                        Adet: {item.qty}
+                                                    </p>
+                                                </div>
+                                            </div>
 
-          {/* Sağ taraf */}
-          <p className="font-semibold whitespace-nowrap">
-            {item.total.toFixed(2)} ₺
-          </p>
-        </div>
-      ))}
-    </div>
-  </div>
-)}
+                                            {/* Sağ taraf */}
+                                            <p className="font-semibold whitespace-nowrap">
+                                                {item.total.toFixed(2)} ₺
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
 
                     </div>
                 )}
-            </DialogContent>
-        </Dialog>
+            </div>
+         }
+          />
+        </div>
     )
 }

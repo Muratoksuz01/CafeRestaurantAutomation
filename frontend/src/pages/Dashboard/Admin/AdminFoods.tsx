@@ -193,7 +193,7 @@ export default function AdminFoods() {
         })}
       </div>
 
-      {selectedFood && <EditFoodForm food={selectedFood} onUpdate={onUpdate} open={showEdit} setOpen={setShowEdit} />}
+      {selectedFood && <EditFoodForm key={selectedFood._id} food={selectedFood} onUpdate={onUpdate} open={showEdit} setOpen={setShowEdit} />}
 
 
       {/* Create Dialog */}

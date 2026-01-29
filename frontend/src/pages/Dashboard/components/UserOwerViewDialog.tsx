@@ -146,9 +146,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     }
   }
   const fetchTable = async (id: string) => {
-    const res = await axiosInstance.get(API_PATHS.getTable, {
-      params: { id: id }
-    })
+    const res = await axiosInstance.get(API_PATHS.getTable(id))
     if (res.data.success) {
       // setTable(res.data.data)
       setBasket(res.data.data?.adisyon?.map((i: any) => ({
@@ -362,67 +360,68 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
               ))}
             </div>
 
-           {/* SEPET AKSİYONLARI KONTEYNERİ */}
-<div className="flex flex-col gap-4 mt-4 border-t pt-4">
-  
-  {/* GRUP 1: ANA İŞLEMLER (Büyük ve Odaklı) */}
-  <div className="flex gap-2">
-    <Button
-      onClick={confirmBasket}
-      variant="default"
-      className="flex-[2] h-12 text-base font-bold" // Daha geniş ve yüksek
-    >
-      Sepeti Onayla
-    </Button>
-    
-    {user!.role !== "Garson" && (
-      <Button
-        onClick={odemeAl}
-        className="flex-[3] h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
-      >
-        Ödeme Al
-      </Button>
-    )}
-  </div>
+            {/* SEPET AKSİYONLARI KONTEYNERİ */}
+            <div className="flex flex-col gap-4 mt-4 border-t pt-4">
 
-  {/* GRUP 2: YÖNETİMSEL İŞLEMLER (Daha küçük ve yardımcı) */}
-  <div className="grid grid-cols-3 gap-2">
-    <Button 
-      variant="secondary" 
-      size="sm"
-      onClick={resetBasket} 
-      className="text-xs"
-    >
-      Sıfırla
-    </Button>
-    
-    <Button 
-      variant="secondary" 
-      size="sm"
-      onClick={() => setShowTableDialog(true)}
-      className="text-xs"
-    >
-      Masa Değiştir
-    </Button>
+              {/* GRUP 1: ANA İŞLEMLER (Büyük ve Odaklı) */}
+              <div className="flex gap-2">
+                <Button
+                  onClick={confirmBasket}
+                  variant="default"
+                  className="flex-[2] h-12 text-base font-bold" // Daha geniş ve yüksek
+                >
+                  Sepeti Onayla
+                </Button>
 
-    <DialogClose asChild>
-      <Button variant="outline" size="sm" className="text-xs">
-        Kapat
-      </Button>
-    </DialogClose>
-  </div>
+                {user!.role !== "Garson" && (
+                  <Button
+                    onClick={odemeAl}
+                    className="flex-[3] h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
+                  >
+                    Ödeme Al
+                  </Button>
+                )}
+              </div>
 
-  {/* GRUP 3: TEHLİKELİ İŞLEM (Ayrı ve Belirgin) */}
-  {user!.role !== "Garson" && (
-    <Button
-      onClick={() => setDeleteAlert(true)}
-      variant="ghost"
-      className="w-full text-red-500 hover:text-red-600 hover:bg-red-50 text-xs font-semibold uppercase tracking-widest"
-    >
-      Siparişi Tamamen Sil
-    </Button>
-  )}
-</div>
+              {/* GRUP 2: YÖNETİMSEL İŞLEMLER (Daha küçük ve yardımcı) */}
+              <div className="grid grid-cols-3 gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={resetBasket}
+                  className="text-xs"
+                >
+                  Sıfırla
+                </Button>
+
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  disabled={!selectedTable.currentOrderId}
+                  onClick={() => setShowTableDialog(true)}
+                  className="text-xs cursor-pointer"
+                >
+                  Masa Değiştir
+                </Button>
+
+                <DialogClose asChild>
+                  <Button variant="outline" size="sm" className="text-xs">
+                    Kapat
+                  </Button>
+                </DialogClose>
+              </div>
+
+              {/* GRUP 3: TEHLİKELİ İŞLEM (Ayrı ve Belirgin) */}
+              {user!.role !== "Garson" && (
+                <Button
+                  onClick={() => setDeleteAlert(true)}
+                  variant="ghost"
+                  className="w-full text-red-500 hover:text-red-600 hover:bg-destructive/10 text-xs font-semibold uppercase tracking-widest"
+                >
+                  Siparişi Tamamen Sil
+                </Button>
+              )}
+            </div>
 
             <div className="text-lg  font-semibold border-t pt-3">
               Toplam: {total} TL

@@ -84,94 +84,71 @@ export default function AdminOverview() {
       </div>
 
       {/* Grafik Kartı */}
-      <Card className="border border-border/50 shadow-2xl bg-card">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-2xl font-bold flex items-center gap-2 text-foreground">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <TrendingUp className="w-6 h-6 text-primary" />
-            </div>
-            Aylık Satış Analizi
-          </CardTitle>
-          <p className="text-sm text-muted-foreground ml-12">
-            Son 30 günlük satış performansınız
-          </p>
-        </CardHeader>
+{/* Grafik Kartı */}
+      <Card className="border border-border/50 shadow-2xl bg-card">
+        <CardHeader className="pb-2">
+          <CardTitle className="text-2xl font-bold flex items-center gap-2 text-foreground">
+            <div className="p-2 bg-primary/10 rounded-lg">
+              <TrendingUp className="w-6 h-6 text-primary" />
+            </div>
+            Aylık Satış Analizi
+          </CardTitle>
+          <p className="text-sm text-muted-foreground ml-12">
+            Son 30 günlük satış performansınız
+          </p>
+        </CardHeader>
 
-        <CardContent className="h-[400px] w-full pt-6">
-          <ResponsiveContainer width="100%" height="100%">
-            <LineChart
-              data={stats.monthlySalesChart}
-              margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
-            >
-              {/* Grid çizgilerini çok daha hafiflettik ki grafik öne çıksın */}
-              <CartesianGrid
-                strokeDasharray="3 3"
-                vertical={false}
-                stroke="hsl(var(--muted-foreground)/0.15)"
-              />
+        <CardContent className="h-[400px] w-full pt-6">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart
+              data={stats.monthlySalesChart}
+              margin={{ top: 5, right: 30, left: 10, bottom: 5 }}
+            >
+              {/* Grid çizgilerini çok daha hafiflettik ki grafik öne çıksın */}
+              <CartesianGrid strokeDasharray="3 3"/>
 
-              <XAxis
-                dataKey="day"
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "hsl(var(--foreground)/0.6)", fontSize: 13, fontWeight: 500 }}
-                dy={15}
-              />
+              <XAxis dataKey="day" dy={5} tick={{ fill: "currentColor", fontSize: 20, fontWeight: "600" }} />
+              <YAxis tick={{ fill: "currentColor", fontSize: 20, fontWeight: "600" }} />
 
-              <YAxis
-                axisLine={false}
-                tickLine={false}
-                // Yüzde yüz beyaz yerine hafif kırık ama parlak bir renk (Sayıları öne çıkarır)
-                tick={{ fill: "hsl(var(--foreground))", fontSize: 14, fontWeight: "600" }}
-                // Rakamların genişliğine göre alanı ayarlar (Böylece sayılar kesilmez)
-                width={60}
-                tickFormatter={(value) => `${value}₺`}
-              />
+              <Tooltip
+                cursor={{ stroke: "hsl(var(--primary)/0.2)", strokeWidth: 2 }}
+                contentStyle={{
+                  backgroundColor: "hsl(var(--backgraund))",
+                  borderRadius: "12px",
+                  border: "1px solid hsl(var(--border))",
+                  boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.5)",
+                  padding: "12px"
+                }}
+                itemStyle={{
+                  color: "hsl(var(--foreground))",
+                  fontWeight: "bold",
+                  fontSize: "14px"
+                }}
+                labelStyle={{
+                  // anchorName:"vvf",
+                  color: "hsl(var(--foreground))",
+                  marginBottom: "4px",
+                  fontWeight: "semibold"
+                }}
+                labelFormatter={(value) => `Gün ${value}`}
+                // İçerideki değeri "Total 1000₺" yapmak için:
+                formatter={(value, name) => {
+                  // value: verinin değeri (1000), name: verinin adı (total)
+                  return [`${value} ₺`, "Total"]; // İlk kısım değer, ikinci kısım etikettir
+                }}
+              />
 
-              <Tooltip
-                cursor={{ stroke: "hsl(var(--primary)/0.2)", strokeWidth: 2 }}
-                contentStyle={{
-                  backgroundColor: "hsl(var(--card))",
-                  borderRadius: "12px",
-                  border: "1px solid hsl(var(--border))",
-                  boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.5)",
-                  padding: "12px"
-                }}
-                itemStyle={{
-                  color: "hsl(var(--primary))",
-                  fontWeight: "bold",
-                  fontSize: "14px"
-                }}
-                labelStyle={{
-                  color: "hsl(var(--foreground))",
-                  marginBottom: "4px",
-                  fontWeight: "semibold"
-                }}
-              />
-
-              <Line
-                type="monotone"
-                dataKey="total"
-                stroke="hsl(var(--primary))"
-                strokeWidth={4} // Çizgiyi kalınlaştırdık
-                dot={{
-                  r: 5,
-                  fill: "hsl(var(--card))", // Nokta içini kart rengi yaparak "hollow" efekti verdik
-                  stroke: "hsl(var(--primary))",
-                  strokeWidth: 2,
-                }}
-                activeDot={{
-                  r: 8,
-                  fill: "hsl(var(--primary))",
-                  stroke: "hsl(var(--background))",
-                  strokeWidth: 2,
-                }}
-                animationDuration={1500}
-              />
-            </LineChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
+              <Line type="monotone" dataKey="total" strokeWidth={4} // Çizgiyi kalınlaştırdık
+                stroke="#0c2bf2" activeDot={{
+                  r: 8, fill: "hsl(var(--primary))",
+                  stroke: "hsl(var(--background))",
+                  strokeWidth: 2,
+                }}
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
 
 
     </div>
