@@ -93,7 +93,9 @@ console.log("get table id:",req.params.id)
     }
 
     // OrderItems
-    const orderItems = await OrderItems.find({ _id: { $in: order.orderItems } }).populate('foodId', 'name price');
+    const orderItems = await OrderItems
+    .find({ _id: { $in: order.orderItems } })
+    .populate('foodId', 'name price');
 
     const items = orderItems.map((item) => ({
       foodId: item.foodId._id,

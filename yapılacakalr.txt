@@ -10,13 +10,13 @@ projeye devam edilirse
         bydate 
     
     - admin sipariş sayfası  tarih secildiinde birde carpı iconu olsun 
-    
     - kasiyer giriş yaptıgında sayfa acıldıgında dunden kalma tamamlanmamıs order varsa bunlar gostereilmeli     bunu tekrar dusunelim
-
+    - getir ,trendyol,vs bunlar icin sayfalama olmalı 
 
    
-
-
+mongoose pass:9eyMCLGIRVJoGiW1
+mongoose user:muratoksuz208
+app.useGlobalPipes(new ValidationPipe()) bunu arastır
 
 
 
