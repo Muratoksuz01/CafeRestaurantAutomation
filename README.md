@@ -100,7 +100,3 @@ Sistem üç temel rol üzerine kurgulanmıştır:
 ## 📝 Gelecek Planları (Roadmap)
 
 Projenin geliştirilmeye açık yönleri ve planlanan güncellemeler için `yapilacaklar.txt` dosyasını inceleyebilirsiniz. Satış süreci ve özel düzenleme talepleri için iletişim bilgilerim sistemde mevcuttur.
-
-***
-
-**İstersen `yapilacaklar.txt` içeriğinden birkaç maddeyi "Gelecek Özellikler" kısmına madde madde ekleyebilirim, ne dersin?**
