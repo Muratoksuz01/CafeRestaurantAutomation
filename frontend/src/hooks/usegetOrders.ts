@@ -3,6 +3,7 @@ import axiosInstance from "@/lib/axiosInstance"
 import { API_PATHS } from "@/lib/api"
 import { Order } from "@/models/Order"
 import { DateRange } from "react-day-picker"
+import { ApiResponse } from "@/lib/apiTypes"
 
 export function useGetOrders() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -12,8 +13,8 @@ export function useGetOrders() {
 
   async function getOrders() {
     try {
-      const res = await axiosInstance.get(API_PATHS.getOrders)
-      if (res.data.success && res.data.data) {
+      const res = await axiosInstance.get<ApiResponse<Order[]>>(API_PATHS.getOrders)
+      if (res.data.status && res.data.data) {
         setOrders(res.data.data)
       }
     } catch (err: any) {
@@ -28,7 +29,7 @@ export function useGetOrders() {
     console.log("caliştir")
     if (!range?.from || !range?.to) return
     try {
-      const res = await axiosInstance.post(API_PATHS.orderbydate, {
+      const res = await axiosInstance.post (API_PATHS.orderbydate, {
         from: range.from.toISOString(),
         to: range.to.toISOString(),
       })

@@ -3,7 +3,7 @@ import { TablesService } from './tables.service';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
 
-@Controller('tables')
+@Controller('table')
 export class TablesController {
   constructor(private readonly tablesService: TablesService) { }
 

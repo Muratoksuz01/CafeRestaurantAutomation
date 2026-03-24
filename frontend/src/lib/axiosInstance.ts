@@ -1,6 +1,7 @@
 // src/utils/axiosInstance.js
 import {useAuthStore} from "@/store/useAuthStore";
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
+import { ApiResponse } from "./apiTypes";
 
 const axiosInstance = axios.create({
 });
@@ -19,5 +20,14 @@ axiosInstance.interceptors.request.use(
   },
   (error) => Promise.reject(error)
 );
+axiosInstance.interceptors.response.use(
+  (response: AxiosResponse<ApiResponse>) => {
+    // Backend'den gelen veriyi doğrudan döndür
+    return response;
+  },
+  (error) => {
+    return Promise.reject(error);
+  }
+)
 
 export default axiosInstance;

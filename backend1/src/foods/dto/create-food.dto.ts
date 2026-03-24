@@ -5,6 +5,5 @@ export class CreateFoodDto {
     price:number
     description:string
     categoryId:Types.ObjectId
-    imgs:string[]
-    isDeleted:boolean
+    
 }

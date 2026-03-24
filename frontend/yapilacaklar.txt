@@ -1,0 +1,5 @@
+- masa olusturmada yeni masalar hemen listelenmıyor
+- masa edit ve create compenent birlestirmeye caliş
+- masa sayfası ve kategori sayfadı 1300 pixel genişlikte iyi gorunmuyor 
+- kategori syafası crud işlemi sonrası sayfa guncellenmiyor 
+- siparis verdiginde kasiyer yeniden baktıgında liste gorunmuyor 

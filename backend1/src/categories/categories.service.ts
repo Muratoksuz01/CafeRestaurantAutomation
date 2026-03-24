@@ -17,7 +17,7 @@ export class CategoriesService {
   async create(createCategoryDto: CreateCategoryDto) {
     try {
       const category = await this.categoryModel.create(createCategoryDto);
-      return { success: true, data: category };
+      return { status: true, data: category };
     } catch (error) {
       console.error("Category Create Hatası:", error);
       throw error;
@@ -27,7 +27,7 @@ export class CategoriesService {
   async findAll() {
     try {
       const categories = await this.categoryModel.find();
-      return { success: true, data: categories };
+      return { status: true, data: categories };
     } catch (error) {
       console.error("Category FindAll Hatası:", error);
       throw error;
@@ -38,7 +38,7 @@ export class CategoriesService {
     try {
       const category = await this.categoryModel.findByIdAndUpdate(id, updateCategoryDto, { new: true });
       if (!category) throw new NotFoundException('Kategori bulunamadı');
-      return { success: true, data: category };
+      return { status: true, data: category };
     } catch (error) {
       console.error("Category Update Hatası:", error);
       throw error;
@@ -49,7 +49,7 @@ export class CategoriesService {
     try {
       const category = await this.categoryModel.findByIdAndDelete(id);
       if (!category) throw new NotFoundException('Kategori bulunamadı');
-      return { success: true };
+      return { status: true };
     } catch (error) {
       console.error("Category Remove Hatası:", error);
       throw error;
@@ -59,7 +59,7 @@ export class CategoriesService {
   async reassign(id: string, newCategoryId: string) {
     try {
       await this.foodModel.updateMany({ categoryId: id }, { categoryId: newCategoryId });
-      return { success: true };
+      return { status: true };
     } catch (error) {
       console.error("Category Reassign Hatası:", error);
       throw error;

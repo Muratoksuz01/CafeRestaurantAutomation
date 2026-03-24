@@ -77,7 +77,7 @@ export class TablesService {
         });
       }
 
-      return result;
+      return {status:true,data:result};
     } catch (error) {
       console.error("Table  FindAll Hatası:", error); // Hatayı konsolda gör
       throw error; // Hatayı NestJS'e fırlat ki istemciye hata kodu gitsin
@@ -203,7 +203,7 @@ export class TablesService {
       };
 
     } catch (error) {
-      console.error("Table FindOne Hatası:", error); // Hatayı konsolda gör
+      console.error("Table Remove Hatası:", error); // Hatayı konsolda gör
       throw error; // Hatayı NestJS'e fırlat ki istemciye hata kodu gitsin
     }
   }

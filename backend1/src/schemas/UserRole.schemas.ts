@@ -6,10 +6,10 @@ export type UserRoleDocument = UserRole & Document;
 @Schema({ timestamps: true })
 export class UserRole {
 
-  @Prop({ type: Types.ObjectId, ref: "Users", required: false })
+  @Prop({ type: Types.ObjectId, ref: "User", required: false })
   userId: Types.ObjectId;
 
-  @Prop({ type: Types.ObjectId, ref: "Roles", required: false })
+  @Prop({ type: Types.ObjectId, ref: "Role", required: false })
   roleId: Types.ObjectId;
 }
 

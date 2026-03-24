@@ -4,6 +4,7 @@ import { useState } from "react";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { Category } from "@/models/Food";
+import { ApiResponse } from "@/lib/apiTypes";
 
 export function useGetCategory() {
   const [categories, setCategories] = useState<Category[]>([]);
@@ -15,9 +16,9 @@ export function useGetCategory() {
     setError(null);
 
     try {
-      const res = await axiosInstance.get(API_PATHS.getCategories);
+      const res = await axiosInstance.get<ApiResponse<Category[]>>(API_PATHS.getCategories);
 
-      if (res.data.success) {
+      if (res.data.status) {
         setCategories(res.data.data || []);
       } else {
         setCategories([]);

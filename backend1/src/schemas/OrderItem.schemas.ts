@@ -6,7 +6,7 @@ export type OrderItemDocument = OrderItem & Document;
 @Schema({ timestamps: true })
 export class OrderItem {
 
-  @Prop({ type: Types.ObjectId, ref: "Foods", required: true })
+  @Prop({ type: Types.ObjectId, ref: "Food", required: true })
   foodId: Types.ObjectId;
 
   @Prop({ type: Types.ObjectId, ref: "Order", required: true })

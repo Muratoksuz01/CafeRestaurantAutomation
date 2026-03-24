@@ -4,6 +4,7 @@ import { TrendingUp, Users, Receipt, Wallet } from "lucide-react";
 import { API_PATHS } from "@/lib/api";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { LineChart, Line, CartesianGrid, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { ApiResponse } from "@/lib/apiTypes";
 
 type AdminStats = {
   totalIncome: number;
@@ -27,8 +28,8 @@ export default function AdminOverview() {
   }, []);
 
   const loadData = async () => {
-    const res = await axiosInstance.get(API_PATHS.getAdminStats);
-    if (res.data.success) {
+    const res = await axiosInstance.get<ApiResponse<AdminStats>>(API_PATHS.getAdminStats);
+    if (res.data.status) {
       setStats(res.data.data);
     }
   };
@@ -76,8 +77,8 @@ export default function AdminOverview() {
 
         <StatCard
           title="En Çok Satılan"
-          value={stats.topFood.name}
-          subValue={`${stats.topFood.count} Adet Satıldı`}
+          value={stats.topFood?.name}
+          subValue={`${stats.topFood?.count || 0} Adet Satıldı`}
           icon={<Receipt className="h-6 w-6 text-orange-400" />}
           className="border-orange-500/20 bg-orange-500/5 shadow-sm shadow-orange-500/10"
         />

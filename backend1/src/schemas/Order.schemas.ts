@@ -15,10 +15,10 @@ export class Order {
   @Prop({ required: true, enum: ["hazirlaniyor", "tamamlandi", "iptal edildi"] })
   status: string;
 
-  @Prop({ type: [{ type: Types.ObjectId, ref: "OrderItems" }], required: false })
+  @Prop({ type: [{ type: Types.ObjectId, ref: "OrderItem" }], required: false })
   orderItems: Types.ObjectId[];
 
-  @Prop({ type: Types.ObjectId, ref: "Users" })
+  @Prop({ type: Types.ObjectId, ref: "User" })
   waiterId: Types.ObjectId;
 
   createdAt: Date;

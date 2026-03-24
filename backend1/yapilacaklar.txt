@@ -1,0 +1,8 @@
+
+- server responsu belirli bir tip yapmak gerek her yere status true yazmakdan sıkıldım basladım devam et 
+- order sayfasında update icin iki fok bunları arastır 
+- order  sayfasında getorderByDate ile FİndAll birleştir
+- order sayfasında +value ! gibi ifadeler kullanıldı bunları duzelt seniour tarzı degil
+- assest altındaki reimleri disarıya acmalıyız ve disarıya verecek endpoinit yazmalıyız 
+- token kontorlu tamam simdi role kontrolu yapmamız gerekiyor 
+- sayfa lisanslama nasıl yapılır ogren 

@@ -35,7 +35,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
         console.log("[v0] Form submitted:", data)
         // TODO: Add API call here
         const res = await axiosInstance.post(API_PATHS.createUser, data)
-        if (res.data.success) {
+        if (res.data.status) {
             onSuccess && onSuccess()
             toast.success("kullanıcı basarlılı olusturuldu", successStyle)
             setOpen(false)

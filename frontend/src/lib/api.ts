@@ -1,5 +1,5 @@
 // src/lib/api.ts
-export const API_BASE_URL = "http://localhost:5000/api";
+export const API_BASE_URL = "http://localhost:5000";
 
 export const API_PATHS = {
   //auth
@@ -7,14 +7,14 @@ export const API_PATHS = {
   register: `${API_BASE_URL}/auth/register`,
 
   // getRoles: `${API_BASE_URL}/admin/getRoles`,
-  getAdminStats: `${API_BASE_URL}/admin/getAdminStats`,
+  getAdminStats: `${API_BASE_URL}/users/getAdminStats`,
   getPermissions: `${API_BASE_URL}/admin/getPermissions`,
 
-  updateUser:(id:string)=>`${API_BASE_URL}/user/`+id,
-  deleteUser: (id: string) => `${API_BASE_URL}/user/` + id,
-  getUser:(id:string)=> `${API_BASE_URL}/user/`+id,
-  createUser: `${API_BASE_URL}/user`,
-  getUsers: `${API_BASE_URL}/user`,
+  updateUser:(id:string)=>`${API_BASE_URL}/users/`+id,
+  deleteUser: (id: string) => `${API_BASE_URL}/users/` + id,
+  getUser:(id:string)=> `${API_BASE_URL}/users/`+id,
+  createUser: `${API_BASE_URL}/users`,
+  getUsers: `${API_BASE_URL}/users`,
   
 
   getFoods: `${API_BASE_URL}/food`,
@@ -37,13 +37,14 @@ export const API_PATHS = {
   reassignTables: `${API_BASE_URL}/table/reassign`,// categori silinirse yemekler icin yeni kategori belirlemek icin 
   handleBook: (id: string) => `${API_BASE_URL}/table/book/${id}`,
   // order
-  createOrder: `${API_BASE_URL}/order/createOrder`,
-  getOrders:`${API_BASE_URL}/order/getOrders`,
-  getOrder:(id:string)=>`${API_BASE_URL}/order/getOrder/`+id,
+  createOrder: `${API_BASE_URL}/order`,
+  getOrders:`${API_BASE_URL}/order`,
+  getOrder:(id:string)=>`${API_BASE_URL}/order/`+id,
   orderbydate:`${API_BASE_URL}/order/getOrders/by-date`,
-  updateOrder:(id:string)=>`${API_BASE_URL}/order/updateOrder/`+id,
+  updateOrder:(id:string)=>`${API_BASE_URL}/order/`+id,
   editOrder: `${API_BASE_URL}/order/editOrder`,
-  deleteOrder: `${API_BASE_URL}/order/deleteOrder`,
+  deleteOrder: `${API_BASE_URL}/order
+  `,
   paidOrder: `${API_BASE_URL}/order/paidOrder`,
 
 };

@@ -4,5 +4,5 @@ export class UpdateUser{
     lastName:string
     phoneNumber:string
     roleName:string
-    isActive:string
+    isActive:boolean
 }

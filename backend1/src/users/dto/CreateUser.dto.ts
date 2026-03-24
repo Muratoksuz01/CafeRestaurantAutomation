@@ -1,7 +1,12 @@
 import { IsNotEmpty, IsString } from "class-validator";
 
 export class CreateUser {
-    @IsString()
-    @IsNotEmpty()
-    fistName:string
+    
+      email:string
+    firstName:string
+    lastName:string
+    phoneNumber:string
+    roleName:string
+    isActive:boolean
+    password:string
 }

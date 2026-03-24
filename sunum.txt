@@ -14,9 +14,6 @@ projeye devam edilirse
     - getir ,trendyol,vs bunlar icin sayfalama olmalı 
 
    
-mongoose pass:9eyMCLGIRVJoGiW1
-mongoose user:muratoksuz208
-app.useGlobalPipes(new ValidationPipe()) bunu arastır
 
 
 

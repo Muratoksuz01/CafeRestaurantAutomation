@@ -3,13 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
-import { UserModule } from './users/users.module';
+import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { TablesModule } from './tables/tables.module';
 import { CategoriesModule } from './categories/categories.module';
 import { FoodsModule } from './foods/foods.module';
-
+import { JwtModule } from "@nestjs/jwt";
+import { OrderModule } from './order/order.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -20,36 +21,50 @@ import { FoodsModule } from './foods/foods.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URI'),
-        // connectionFactory: (connection) => {
-        //   // Başarılı bağlantı durumu
-        //   console.log("deneniyor ")
-        //   connection.on('connected', () => {
-        //     console.log('✅ MongoDB bağlantısı başarıyla tamamlandı.');
-        //   });
 
-        //   // Bağlantı hatası durumu
-        //   connection.on('error', (error) => {
-        //     console.error('❌ MongoDB bağlantı hatası:', error);
-        //   });
-
-        //   // Bağlantı koptuğunda
-        //   connection.on('disconnected', () => {
-        //     console.warn('⚠️ MongoDB bağlantısı kesildi!');
-        //   });
-
-        //   return connection;
-        // },
       }),
 
     }),
+    JwtModule.registerAsync({
+      global: true,
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+       
+        secret: configService.get<string>('JWT_SECRET'), // .env'den okur
+        signOptions: { expiresIn: '1h' }, // 60s çok kısa olabilir, 1h (1 saat) daha yaygındır
+      }),
+    }),
     AuthModule,
-    UserModule,
+    UsersModule,
     RolesModule,
     TablesModule,
     CategoriesModule,
     FoodsModule,
+    OrderModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule { }
+
+
+
+    /*     connectionFactory: (connection) => {
+          // Başarılı bağlantı durumu
+          console.log("deneniyor ")
+          connection.on('connected', () => {
+            console.log('✅ MongoDB bağlantısı başarıyla tamamlandı.');
+          });
+
+          // Bağlantı hatası durumu
+          connection.on('error', (error) => {
+            console.error('❌ MongoDB bağlantı hatası:', error);
+          });
+
+          // Bağlantı koptuğunda
+          connection.on('disconnected', () => {
+            console.warn('⚠️ MongoDB bağlantısı kesildi!');
+          });
+
+          return connection;
+        }, */

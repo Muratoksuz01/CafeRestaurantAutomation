@@ -32,6 +32,7 @@ export default function UserOverview() {
 
   useEffect(() => {
     getTables();
+    console.log(tables)
   }, []);
 
  const filteredTables = useMemo(() => {

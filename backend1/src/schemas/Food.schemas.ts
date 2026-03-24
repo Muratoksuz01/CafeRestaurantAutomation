@@ -21,8 +21,8 @@ export class Food {
   @Prop({
     type: [String],
     validate: {
-      validator: (v: string[]) => Array.isArray(v) && v.length === 2,
-      message: "imgs alanı tam olarak 2 elemanlı bir string dizisi olmalıdır.",
+      validator: (v: string[]) => Array.isArray(v) && v.length <= 2 && v.length != 0,
+      message: "imgs alanı en az 1 en fazla 2 resim girilmelidir olmalıdır.",
     },
   })
   imgs: string[];

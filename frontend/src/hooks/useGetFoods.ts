@@ -3,6 +3,7 @@ import { User } from '../models/User';
 import { useState } from 'react';
 import { API_PATHS } from '@/lib/api';
 import { Food } from '@/models/Food';
+import { ApiResponse } from '@/lib/apiTypes';
 // src/hooks/useProducts.ts
 
 
@@ -15,9 +16,9 @@ export function useGetFoods() {
 
   async function getFoods() {
     try {
-      const res = await axiosInstance.get(API_PATHS.getFoods); // buraya auth koruması sadece admin ise ulasabilecek sekilde ayarlanacak
+      const res = await axiosInstance.get<ApiResponse<Food[]>>(API_PATHS.getFoods); // buraya auth koruması sadece admin ise ulasabilecek sekilde ayarlanacak
     //  console.log(res.data.data)
-      if (res.data.success && res.data.data) {
+      if (res.data.status && res.data.data) {
         setFoods(res.data.data);
       //  console.log("basrılı");
         
