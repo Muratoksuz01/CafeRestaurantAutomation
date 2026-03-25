@@ -1,16 +1,16 @@
 import { ColumnDef, ColumnFiltersState, flexRender, getCoreRowModel, getFacetedUniqueValues, getFilteredRowModel, getPaginationRowModel, getSortedRowModel, SortingState, useReactTable, VisibilityState } from '@tanstack/react-table'
 import * as React from "react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from './ui/table'
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../../../components/ui/table'
 
 type Props<T> = {
     columns: ColumnDef<T, any>[]
     data: T[]
     pageSize?: number
-      header?: (table: any) => React.ReactNode
-  footer?: (table: any) => React.ReactNode
+    header?: (table: any) => React.ReactNode
+    footer?: (table: any) => React.ReactNode
 
 }
-function CustomDataTable<T>({ columns, data, pageSize, header,  footer, }: Props<T>) {
+function CustomDataTable<T>({ columns, data, pageSize, header, footer, }: Props<T>) {
     const [pagination, setPagination] = React.useState({
         pageIndex: 0, //initial page index
         pageSize: pageSize || 10, //default page size
@@ -20,14 +20,13 @@ function CustomDataTable<T>({ columns, data, pageSize, header,  footer, }: Props
     const table = useReactTable({
         data,
         columns,
-      
+
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         getSortedRowModel: getSortedRowModel(),
-    getFacetedUniqueValues: getFacetedUniqueValues(),
-
+        getFacetedUniqueValues: getFacetedUniqueValues(),
         getFilteredRowModel: getFilteredRowModel(),
         onPaginationChange: setPagination,
         state: {
@@ -90,9 +89,9 @@ function CustomDataTable<T>({ columns, data, pageSize, header,  footer, }: Props
                     </TableBody>
                 </Table>
                 {footer?.(table)}
-                
 
-                
+
+
 
 
             </div>

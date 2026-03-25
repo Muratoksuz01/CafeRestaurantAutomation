@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { useGetFoods } from "@/hooks/useGetFoods";
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
-import CreateFoodForm from "./CreateFoodForm";
+import CreateFoodForm from "./components/CreateFoodForm";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 
-import EditFoodForm from "./EditFoodForm";
+import EditFoodForm from "./components/EditFoodForm";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { toast } from "sonner";
@@ -29,7 +29,7 @@ import {
   Pencil,
   Trash2
 } from "lucide-react";
-import CustomAlertDialog from "@/components/CustomAlertDialog";
+import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import { Food } from "@/models/Food";
 export default function AdminFoods() {
   const [showEdit, setShowEdit] = useState(false);
@@ -136,15 +136,17 @@ export default function AdminFoods() {
                   const x = e.clientX - rect.left;
                   const img = e.currentTarget.querySelector("img");
                   img.src = x < rect.width / 2
-                    ? `http://localhost:5000/file?path=${food.imgs[0]}`
-                    : `http://localhost:5000/file?path=${food.imgs[1]}`;
+                    ? `http://localhost:5000${food.imgs[0]}`
+                    : `http://localhost:5000${food.imgs[1]}`;
                 }}
               >
-                <div className="relative w-full aspect-video overflow-hidden">
+                <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-gray-100">
+                  {/* aspect-video zaten 16:9 oranını sağlar (Tailwind) */}
                   <img
-                    src={`http://localhost:5000/file?path=${food.imgs[0]}`}
+                    src={`http://localhost:5000${food.imgs[0]}`}
                     alt={food.name}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
+                  // object-cover: Resmi çerçeveye yayar, taşan kısımları kırpar.
                   />
                 </div>
 

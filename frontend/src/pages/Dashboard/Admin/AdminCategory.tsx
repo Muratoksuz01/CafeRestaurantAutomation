@@ -12,8 +12,8 @@ import axiosInstance from "@/lib/axiosInstance";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetFoods } from "@/hooks/useGetFoods";
 import { Pencil, X } from "lucide-react";
-import CustomDialog from "@/components/CustomDialog";
-import CustomAlertDialog from "@/components/CustomAlertDialog";
+import CustomDialog from "@/pages/Dashboard/components/CustomDialog";
+import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import { Category, } from "@/models/Food";
 type SelectedCategory = Category & {
     newCategoryId?: string
@@ -36,7 +36,7 @@ export default function AdminCategory() {
     const handleCreate = async () => {
         try {
             const { data } = await axiosInstance.post(API_PATHS.createCategory, { name: nameInput });
-            if (data.success) {
+            if (data.status) {
                 getCategories();
                 toast.success("Kategori oluşturuldu", successStyle);
             }
@@ -49,12 +49,12 @@ export default function AdminCategory() {
     };
 
     const handleEdit = async () => {
-        if (!selectedCategory) return toast.warning( "Hata:seçili kategori yok", warningStyle);
-        if (!nameInput) return toast.warning( "Hata:yeni kategori ismi girilmedi", warningStyle);
+        if (!selectedCategory) return toast.warning("Hata:seçili kategori yok", warningStyle);
+        if (!nameInput) return toast.warning("Hata:yeni kategori ismi girilmedi", warningStyle);
         try {
-            const { data } = await axiosInstance.put(API_PATHS.updateCategory(String(selectedCategory._id)), 
-            { name: nameInput });
-            if (data.success) {
+            const { data } = await axiosInstance.put(API_PATHS.updateCategory(String(selectedCategory._id)),
+                { name: nameInput });
+            if (data.status) {
                 getCategories();
                 toast.success("Kategori güncellendi", successStyle);
             }
@@ -70,7 +70,7 @@ export default function AdminCategory() {
     const handleDelete = async (id: string) => {
         try {
             const { data } = await axiosInstance.delete(API_PATHS.deleteCategory(id));
-            if (data.success) {
+            if (data.status) {
                 getCategories()
                 toast.success("Kategori silindi", successStyle);
             }
@@ -92,14 +92,22 @@ export default function AdminCategory() {
                 <h1 className="text-2xl font-bold">Kategori Yönetimi</h1>
                 <Button className="bg-foreground text-background" onClick={() => setShowCreate(true)}>Yeni Kategori</Button>
             </div>
-            <div className="grid grid-cols-1 lg:grid-cols-6 md:grid-cols-5 sm:grid-cols-3 gap-4">
-                {categories.map(cat => (
-                    <div key={cat._id} className="p-4 border rounded-lg shadow-sm flex flex-col bg-background justify-between">
-                        <h2 className="font-semibold text-lg mb-2">{cat.name}</h2>
-                        <div className="flex gap-2 mt-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
+                {categories.map((cat) => (
+                    <div
+                        key={cat._id}
+                        className="p-4 border rounded-xl shadow-sm flex flex-col bg-background justify-between hover:border-primary/20 transition-colors"
+                    >
+                        <div className="flex-1">
+                            <h2 className="font-semibold text-lg mb-1 capitalize">{cat.name}</h2>
+                            <p className="text-xs text-muted-foreground">Kategori</p>
+                        </div>
+
+                        {/* Butonların kapsayıcısı: wrap ekledik */}
+                        <div className="flex flex-wrap gap-2 mt-4">
                             <Button
                                 variant="outline"
-                                className="h-8 gap-2 border-green-500/50 text-green-600 hover:bg-green-500/10 hover:text-green-600 bg-transparent"
+                                className="h-9 flex-1 min-w-[100px] gap-2 border-green-500/50 text-green-600 hover:bg-green-500/10 hover:text-green-600 bg-transparent"
                                 size="sm"
                                 onClick={() => {
                                     setSelectedCategory(cat);
@@ -107,18 +115,17 @@ export default function AdminCategory() {
                                     setShowEdit(true);
                                 }}
                             >
-                                <Pencil />
+                                <Pencil className="h-4 w-4" />
                                 Düzenle
                             </Button>
 
                             <Button
                                 variant="outline"
-                                className="h-8 gap-2 border-rose-500/50 text-rose-600 hover:bg-rose-500/10 hover:text-rose-600 bg-transparent"
-
+                                className="h-9 flex-1 min-w-[80px] gap-2 border-rose-500/50 text-rose-600 hover:bg-rose-500/10 hover:text-rose-600 bg-transparent"
                                 size="sm"
                                 onClick={() => {
-                                    setSelectedCategory(cat); // Silinecek kategoriyi seç
-                                    setShowDelete(true);       // AlertDialog'u aç
+                                    setSelectedCategory(cat);
+                                    setShowDelete(true);
                                 }}
                             >
                                 <X className="h-4 w-4" />

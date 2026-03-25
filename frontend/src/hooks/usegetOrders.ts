@@ -26,22 +26,32 @@ export function useGetOrders() {
   }
 
   async function getOrdersByDate(range?: DateRange) {
-    console.log("caliştir")
-    if (!range?.from || !range?.to) return
+    setLoading(true);
+    setError(null);
     try {
-      const res = await axiosInstance.post (API_PATHS.orderbydate, {
-        from: range.from.toISOString(),
-        to: range.to.toISOString(),
-      })
-      if (res.data.success && res.data.data) {
-        setOrders(res.data.data)
+      // 1. Query parametrelerini hazırla
+      const params: any = {};
+      if (range?.from && range?.to) {
+        params.from = range.from.toISOString();
+        params.to = range.to.toISOString();
       }
 
-    } catch (error: any) {
-      setError(error.message || "Veri alınamadı")
-      setOrders([])
+      // 2. İsteği at (params varsa axios bunu otomatik ?from=...&to=... şekline getirir)
+      const res = await axiosInstance.get<ApiResponse<Order[]>>(API_PATHS.getOrders, { params });
+
+      // 3. Backend'den dönen datayı set et
+      // Not: Backend'de result dönerken interceptor kullandığın için res.data.data kontrolü yeterli
+      if (res.data && res.data.status) {
+        // Eğer interceptor datayı { success: true, data: [...] } yapıyorsa:
+        const ordersData = (res.data as any).data || res.data;
+        setOrders(ordersData);
+      }
+    } catch (err: any) {
+      console.error("Sipariş yükleme hatası:", err);
+      setError(err.message || "Veriler alınamadı");
+      setOrders([]);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
   return { orders, loading, error, setOrders, getOrders, getOrdersByDate }

@@ -3,20 +3,25 @@ import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
 import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { Roles } from 'src/auth/roles.decorator';
+import { Role } from 'src/auth/role.enum';
+import { RolesGuard } from 'src/auth/guard/roles.guard';
 @UseGuards(JwtAuthGuard)
 @Controller('category')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
+  @UseGuards( RolesGuard)
+@Roles(Role.Yonetici)
   create(@Body() createCategoryDto: CreateCategoryDto) {
     return this.categoriesService.create(createCategoryDto);
   }
- // @UseGuards(JwtAuthGuard)
-  @Get()
-  findAll() {
-    return this.categoriesService.findAll();
-  }
+ @Get()
+
+findAll() {
+  return this.categoriesService.findAll();
+}
 
   // @Get(':id')
   // findOne(@Param('id') id: string) {
@@ -24,6 +29,8 @@ export class CategoriesController {
   // }
 
   @Put(':id')
+  @UseGuards( RolesGuard)
+@Roles(Role.Yonetici)
   update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto) {
     return this.categoriesService.update(id, updateCategoryDto);
   }

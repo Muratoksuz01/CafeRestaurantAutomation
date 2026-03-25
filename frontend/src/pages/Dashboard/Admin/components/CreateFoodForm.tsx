@@ -10,7 +10,7 @@ import { foodCreateSchema } from "@/models/Food";
 import { useGetCategory } from "@/hooks/useGetCategory";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import { Form } from "@/components/ui/form";
-import CustomFormField from "@/components/CustomFormField";
+import CustomFormField from "@/pages/Dashboard/components/CustomFormField";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 export default function CreateFoodForm({ onUpdate ,open, setOpen }: any) {

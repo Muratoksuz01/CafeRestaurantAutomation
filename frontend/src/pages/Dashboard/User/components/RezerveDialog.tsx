@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import {  } from "@/models/User";
 import { Form } from "@/components/ui/form";
-import CustomFormField from "@/components/CustomFormField";
+import CustomFormField from "@/pages/Dashboard/components/CustomFormField";
 import { toast } from "sonner";
 import { successStyle } from "@/lib/toastStyle";
 

@@ -48,7 +48,7 @@ export const useAuthStore = create<AuthState>()(
         try {
           const { data: result } = await axios.post(API_PATHS.login, credentials);
 
-          if (result.success) {
+          if (result.status) {
             const { user, token } = result.data;
             set({ user, token, loading: false });
            // localStorage.setItem("token",token)

@@ -1,5 +1,5 @@
 import React from 'react'
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from './ui/form'
+import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '../../../components/ui/form'
 interface CustomFormFieldProps {
   control: any
   name: string

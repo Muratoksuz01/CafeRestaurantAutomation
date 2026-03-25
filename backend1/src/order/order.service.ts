@@ -12,7 +12,7 @@ export class OrderService {
     @InjectModel(Table.name) private tableModel: Model<Table>,
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(OrderItem.name) private orderItemModel: Model<OrderItem>,
-    
+
   ) { }
   async create(req: any, createOrderDto: CreateOrderDto) {
     const { tableId, basket, total } = createOrderDto;
@@ -72,21 +72,28 @@ export class OrderService {
     }
   }
 
- async findAll() {
+  async findAll(from?: string, to?: string) {
     try {
       // 1. Günün başlangıç ve bitiş saatlerini ayarla (Senior Date Management)
-      const startOfDay = new Date();
-      startOfDay.setHours(0, 0, 0, 0);
+      let start: Date;
+      let end: Date;
+      if (from && to) {
+        start = new Date(from);
+        end = new Date(to);
+        end.setHours(23, 59, 59, 999); // Günü son saniyesine kadar kapsa
+      } else {
+        start = new Date();
+        start.setHours(0, 0, 0, 0);
 
-      const endOfDay = new Date();
-      endOfDay.setHours(23, 59, 59, 999);
-
+        end = new Date();
+        end.setHours(23, 59, 59, 999);
+      }
       // 2. Sorguyu oluştur ve ilişkili dökümanları çek
       const orders = await this.orderModel
         .find({
           createdAt: {
-            $gte: startOfDay,
-            $lte: endOfDay,
+            $gte: start,
+            $lte: end,
           },
         })
         .populate('tableId', 'name') // Sadece masa adını getir
@@ -156,22 +163,21 @@ export class OrderService {
         })),
       };
 
-      return {status:true,data:result}; // Interceptor bunu { success: true, data: result } yapacaktır.
+      return { status: true, data: result }; // Interceptor bunu { success: true, data: result } yapacaktır.
     } catch (error) {
       if (error instanceof NotFoundException) throw error;
-      
+
       console.error('Order FindOne Hatası:', error);
       throw new InternalServerErrorException('Sipariş detayı alınırken bir hata oluştu.');
     }
   }
 
- async update(id: string, updateOrderDto: UpdateOrderDto) {
+  async update(id: string, updateOrderDto: UpdateOrderDto) {
     try {
-      // 1. Siparişi güncelle (Mevcut DTO'dan gelen status değerini kullanıyoruz)
-      // { new: true } güncellenmiş halini döndürür
+      // sadece ascı rolu icin kullanılıyor
       const order = await this.orderModel.findByIdAndUpdate(
         id,
-        { $set: { status:  'tamamlandi' } },
+        { $set: { status: 'tamamlandi' } },
         { new: true }
       ).lean();
 
@@ -179,10 +185,9 @@ export class OrderService {
         return { status: false, message: 'Sipariş bulunamadı.' };
       }
 
-      
+
 
       return {
-        status:true,
         message: 'Sipariş durumu güncellendi.',
         data: order
       };
@@ -191,22 +196,17 @@ export class OrderService {
       throw new InternalServerErrorException('Sipariş güncellenirken bir hata oluştu.');
     }
   }
-async editOrder(updateOrderDto: UpdateOrderDto) {
+  async editOrder(updateOrderDto: UpdateOrderDto) {
     const { orderId, basket, total } = updateOrderDto;
 
     try {
-      // 1. Adisyonun varlığını kontrol et
       const order = await this.orderModel.findById(orderId);
       if (!order) {
         return { success: false, message: 'Düzenlenecek adisyon bulunamadı.' };
       }
 
-      // 2. Eski sipariş kalemlerini (OrderItems) temizle
-      // Senior Notu: Mevcut kalemleri güncellemek yerine silip yeniden eklemek, 
-      // özellikle sepet yapısında (ekleme/çıkarma) tutarlılık için daha temiz bir yoldur.
       await this.orderItemModel.deleteMany({ orderId });
 
-      // 3. Yeni sepet verilerini hazırla ve toplu (bulk) ekle
       const itemsToSave = basket.map((item) => ({
         foodId: item._id,
         orderId: orderId,
@@ -215,13 +215,11 @@ async editOrder(updateOrderDto: UpdateOrderDto) {
         total: item.qty * item.price,
       }));
 
-      // Tek tek döngü kurmak yerine insertMany ile tek sorguda hallediyoruz
       const createdItems = await this.orderItemModel.insertMany(itemsToSave);
 
-      // 4. Ana siparişi (Order) yeni toplam tutar ve yeni item ID'leri ile güncelle
       const newItemIds = createdItems.map((i) => i._id);
-      
-      order.total = +total!;
+
+      order.total = Number(total) || 0;
       order.orderItems = newItemIds as any;
       const updatedOrder = await order.save();
 
@@ -265,7 +263,7 @@ async editOrder(updateOrderDto: UpdateOrderDto) {
       throw new InternalServerErrorException('Silme işlemi sırasında sunucu hatası oluştu.');
     }
   }
-async getPaid(updateOrderDto: UpdateOrderDto) {
+  async getPaid(updateOrderDto: UpdateOrderDto) {
     const { orderId, tableId } = updateOrderDto;
 
     // 1. Girdi Kontrolü (Zaten DTO'da class-validator ile yapılmalı ama servis içinde de bakıyoruz)
@@ -310,43 +308,47 @@ async getPaid(updateOrderDto: UpdateOrderDto) {
     }
   }
 
-async getOrderByDate(from: string, to: string) {
-    try {
-      // 1. Tarihleri nesneye çevir ve geçerliliğini kontrol et
-      const startDate = new Date(from);
-      const endDate = new Date(to);
-      
-        endDate.setHours(23, 59, 59, 999);
+  // async getOrderByDate(from?: string, to?: string) {
+  //   try {
+  //     // 1. Tarihleri nesneye çevir ve geçerliliğini kontrol et
+  //     const startDate = new Date(from);
+  //     const endDate = new Date(to);
 
-      // 2. Veritabanı sorgusu
-      const orders = await this.orderModel
-        .find({
-          createdAt: {
-            $gte: startDate,
-            $lte: endDate,
-          },
-        })
-        .populate('waiterId', 'firstName lastName')
-        .populate('tableId', 'name')
-        .sort({ createdAt: -1 })
-        .lean(); // Performans için düz JS nesnesi
+  //     endDate.setHours(23, 59, 59, 999);
 
-      // 3. Veriyi Frontend dostu (Zod şemasına uygun) hale getir
-      const result = orders.map((o) => ({
-        id: o._id.toString(),
-        tableName: (o.tableId as any)?.name || 'Bilinmeyen Masa',
-        orderTotal: o.total,
-        status: o.status,
-        waiterName: o.waiterId
-          ? `${(o.waiterId as any).firstName} ${(o.waiterId as any).lastName}`
-          : 'Sistem',
-        orderDate: o.createdAt,
-      }));
+  //     // 2. Veritabanı sorgusu
+  //     const orders = await this.orderModel
+  //       .find({
+  //         createdAt: {
+  //           $gte: startDate,
+  //           $lte: endDate,
+  //         },
+  //       })
+  //       .populate('waiterId', 'firstName lastName')
+  //       .populate('tableId', 'name')
+  //       .sort({ createdAt: -1 })
+  //       .lean(); // Performans için düz JS nesnesi
 
-      return {status:true,data:result}; // Interceptor bunu { success: true, data: result } yapacaktır.
-    } catch (error) {
-      console.error('getOrderByDate Hatası:', error);
-      throw new InternalServerErrorException('Belirtilen tarihler arasında rapor alınamadı.');
-    }
-  }
+  //     // 3. Veriyi Frontend dostu (Zod şemasına uygun) hale getir
+  //     const result = orders.map((o) => ({
+  //       id: o._id.toString(),
+  //       tableName: (o.tableId as any)?.name || 'Bilinmeyen Masa',
+  //       orderTotal: o.total,
+  //       status: o.status,
+  //       waiterName: o.waiterId
+  //         ? `${(o.waiterId as any).firstName} ${(o.waiterId as any).lastName}`
+  //         : 'Sistem',
+  //       orderDate: o.createdAt,
+  //     }));
+
+  //     return { status: true, data: result }; // Interceptor bunu { success: true, data: result } yapacaktır.
+  //   } catch (error) {
+  //     console.error('getOrderByDate Hatası:', error);
+  //     throw new InternalServerErrorException('Belirtilen tarihler arasında rapor alınamadı.');
+  //   }
+  // }
+
+
+
+
 }

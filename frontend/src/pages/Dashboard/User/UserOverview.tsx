@@ -1,8 +1,8 @@
 import { useState, useEffect, useMemo } from "react";
 import { AllTable } from "@/models/Tables";
 import { useGetTables } from "@/hooks/useGetTables";
-import UserOwerViewDialog from "../components/UserOwerViewDialog";
-import TableCard from "../components/TableCard";
+import UserOwerViewDialog from "./components/UserOwerViewDialog";
+import TableCard from "./components/TableCard";
 
 import {
   Select,
@@ -15,7 +15,7 @@ import {
 
 
 import { Filter, PanelRight, Search } from "lucide-react";
-import RightSheet from "../components/RightSheet";
+import RightSheet from "./components/RightSheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 

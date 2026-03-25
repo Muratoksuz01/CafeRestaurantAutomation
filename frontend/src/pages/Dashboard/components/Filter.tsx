@@ -1,8 +1,8 @@
 import { Column } from "@tanstack/react-table"
 import { useId, useMemo } from "react"
-import { Label } from "./ui/label"
-import { Input } from "./ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { Label } from "../../../components/ui/label"
+import { Input } from "../../../components/ui/input"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select"
 import { SearchIcon } from "lucide-react"
 
 function Filter({ column }: { column: Column<any, unknown> }) {

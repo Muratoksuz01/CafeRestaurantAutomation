@@ -57,12 +57,9 @@ export class AuthService {
             console.log("Kullanıcının Rolü:", roleName); // 'Yonetici', 'User' vb. çıkar
             const token = await this.jwtService.signAsync({ userId: user._id.toString(), roleName })
             //  const token = this.generateToken(user._id.toString(), roleName);
-
             return {
-                success: true,
-                message: "Login successful",
-                data: {
-                    user: {
+                data:{
+                 user: {
                         id: user._id,
                         firstName: user.firstName,
                         lastName: user.lastName,
@@ -71,8 +68,22 @@ export class AuthService {
                         phoneNumber: user.phoneNumber,
                     },
                     token,
-                },
-            };
+            }}
+            // return {
+            //     success: true,
+            //     message: "Login successful",
+            //     data: {
+            //         user: {
+            //             id: user._id,
+            //             firstName: user.firstName,
+            //             lastName: user.lastName,
+            //             email: user.email,
+            //             role: roleName,
+            //             phoneNumber: user.phoneNumber,
+            //         },
+            //         token,
+            //     },
+            // };
 
         } catch (error) {
             console.error("Login Hatası:", error); // Hatayı konsolda gör

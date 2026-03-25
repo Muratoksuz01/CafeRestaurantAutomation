@@ -1,23 +1,27 @@
 import { Button } from "@/components/ui/button";
-import { ArrowUpDown, PencilLine, SearchIcon, Trash2 } from "lucide-react";
-import { useEffect, useId, useMemo, useState } from "react";
+import { ArrowUpDown, PencilLine, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetTables } from "@/hooks/useGetTables";
-import { AllTable } from "@/models/Tables";
-import EditTable from "./editTable";
-import CreateTable from "./CreateTable";
+import { AllTable, tableCreateEditSchema } from "@/models/Tables";
+
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, } from "@/components/ui/select";
-import { Column, ColumnDef, RowData } from "@tanstack/react-table";
-import CustomDataTable from "@/components/CustomDataTable";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
+import { ColumnDef, RowData } from "@tanstack/react-table";
+import CustomDataTable from "@/pages/Dashboard/components/CustomDataTable";
+
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import CustomAlertDialog from "@/components/CustomAlertDialog";
-import Filter from "@/components/Filter";
+import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
+import Filter from "@/pages/Dashboard/components/Filter";
+import TableFormDialog from "./TableFormDialog";
+import CustomDialog from "@/pages/Dashboard/components/CustomDialog";
+import { Form } from "@/components/ui/form";
+import CustomFormField from "@/pages/Dashboard/components/CustomFormField";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -34,7 +38,7 @@ function TableList() {
     getTables()
   }, [])
 
-  const openEdit = (t: AllTable) => {
+  const openEditDialog = (t: AllTable) => {
     if (["dolu", "rezerve"].includes(t.status)) {
       toast.warning("Bu masa dolu olduğu için düzenleme yapamazsın.", warningStyle);
       return;
@@ -42,28 +46,33 @@ function TableList() {
     setSelected(t);
     setEditOpen(true);
   };
-  const openDelete = (t: AllTable) => {
+  const openDeleteDialog = (t: AllTable) => {
     if (["dolu", "rezerve"].includes(t.status)) {
-      toast.warning("Dolu masa silinemez.", warningStyle);
+      toast.warning("Dolu/Rezerve masa silinemez.", warningStyle);
       return;
     }
+    console.log("dialog secimi:", t)
     setSelected(t);
     setDeleteOpen(true);
   };
-  const deleteTable = async () => {
-    if (!selected) return;
-    const res = await axiosInstance.delete(API_PATHS.deleteTable(selected._id))
-    if (res.data.success) {
-      toast.success("silindi", successStyle)
-      getTables()
-    } else {
-      toast.success("silinmedi", warningStyle)
+  const deleteTable = async (table: AllTable | null) => {
+    console.log("delete:", table)
+    if (!table) return;
 
+    const res = await axiosInstance.delete(API_PATHS.deleteTable(table._id));
+
+    if (res.data.status) {
+      toast.success("silindi", successStyle);
+      await getTables();
+      setSelected(null);
+    } else {
+      toast.success("silinmedi", warningStyle);
     }
+
     setDeleteOpen(false);
   };
   const onSuccess = async () => {
-    getTables();
+    await getTables();
   };
 
   const column: ColumnDef<AllTable>[] = [
@@ -141,7 +150,7 @@ function TableList() {
           <Button
             size="icon"
             variant="ghost"
-            onClick={() => openEdit(row.original)}
+            onClick={() => openEditDialog(row.original)}
             className="
         h-8 w-8 rounded-md
         hover:bg-primary/10 hover:text-primary
@@ -156,7 +165,7 @@ function TableList() {
           <Button
             size="icon"
             variant="ghost"
-            onClick={() => openDelete(row.original)}
+            onClick={() => openDeleteDialog(row.original)}
             className="
         h-8 w-8 rounded-md
         text-destructive
@@ -176,6 +185,54 @@ function TableList() {
     }
   ]
 
+
+  const handleCreate = async (data: any) => {
+    try {
+      console.log(data)
+      const res = await axiosInstance.post(API_PATHS.createTable, data)
+
+      // Backend'den dönen başarı flag'lerini kontrol et (status veya success)
+      if (res.data.status) {
+        toast.success("Masa eklendi", successStyle)
+        form.reset()
+        await onSuccess()
+        setCreateOpen(false)
+      }
+    } catch (error) {
+      toast.error("İşlem sırasında bir hata oluştu")
+    }
+  }
+  const handleEdit = async (data: any) => {
+    try {
+      console.log(data)
+      const res = await axiosInstance.put(API_PATHS.editTable(selected!._id), data)
+
+      // Backend'den dönen başarı flag'lerini kontrol et (status veya success)
+      if (res.data.status) {
+        toast.success("Masa güncellendi", successStyle)
+        form.reset()
+        await onSuccess()
+        setEditOpen(false)
+      }
+    } catch (error) {
+      toast.error("İşlem sırasında bir hata oluştu")
+    }
+  }
+
+  const form = useForm({
+    resolver: zodResolver(tableCreateEditSchema),
+    defaultValues: {
+      name: "",
+    },
+  })
+  useEffect(() => {
+    if (selected && editOpen) {
+      form.reset({
+        name: selected.name || ""
+      });
+    }
+    
+  }, [ editOpen]);
   return (
     <div className="p-5">
       <div className="rounded-xl border bg-background shadow-sm overflow-hidden">
@@ -198,26 +255,78 @@ function TableList() {
             </div>
           )}
           data={tables} columns={column} />
-      
+
 
       </div>
-
-      {/* Dialoglar */}
-      {editOpen && (
-        <EditTable
-          editOpen={editOpen}
-          setEditOpen={setEditOpen}
-          onEdit={onSuccess}
-          selectetTable={selected}
-        />
-      )}
-
-      <CreateTable
-        createOpen={createOpen}
-        setCreateOpen={setCreateOpen}
-        onCreate={onSuccess}
-
+      <CustomDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        onConfirm={() => { handleCreate(form.getValues()) }}
+        title={"Yeni Masa Ekle"}
+        description={
+          <Form {...form}>
+            <form className="space-y-4">
+              <CustomFormField
+                title="Masa İsmi"
+                control={form.control}
+                name="name"
+              >
+                {(field: any) => (
+                  <Input
+                    {...field}
+                    placeholder="Örn: Masa 1"
+                    autoComplete="off"
+                  />
+                )}
+              </CustomFormField>
+            </form>
+          </Form>
+        }
       />
+      <CustomDialog
+        open={editOpen}
+        onOpenChange={() => {
+          form.reset({ name: "" });
+          setSelected(null);
+          setEditOpen(false)
+        }}
+        onConfirm={ async () => { await handleEdit(form.getValues()) }}
+        title={"Masayı Düznele"}
+        description={
+          <Form {...form}>
+            <form className="space-y-4">
+              <CustomFormField
+                title="Masa İsmi"
+                control={form.control}
+                name="name"
+              >
+                {(field: any) => (
+                  <Input
+                    // value={form.setValue("name",selected?.name || "")}
+                    {...field}
+                    placeholder="Örn: Masa 1"
+                    autoComplete="off"
+                  />
+                )}
+              </CustomFormField>
+            </form>
+          </Form>
+        }
+      />
+
+      {/* <TableFormDialog
+        open={createOpen}
+        onOpenChange={setCreateOpen}
+        onSuccess={onSuccess}
+      />
+
+       <TableFormDialog
+        open={editOpen}
+        onOpenChange={setEditOpen}
+        table={selected} // Seçili masayı gönderdiğin an "Düzenle" moduna geçer
+        onSuccess={onSuccess}
+      /> */}
+
       <CustomAlertDialog
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
@@ -229,10 +338,10 @@ function TableList() {
         description={
           <div className="text-sm text-muted-foreground">
             <p>Bu işlem geri alınamaz.</p>
-            <p>Masa: <b>{selected ? selected.name : ""}</b></p>
+            <p>Masa: <b>{selected ? selected.name : "veri gelmedi"}</b></p>
           </div>
         }
-        onConfirm={deleteTable}
+        onConfirm={() => deleteTable(selected)}
       />
 
 

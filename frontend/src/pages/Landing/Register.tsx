@@ -12,7 +12,7 @@ import { successStyle, warningStyle } from "@/lib/toastStyle"
 import { registerSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
-import { useAuthControl } from "@/hooks/useAuthControl"
+import { useAuthControl } from "@/lib/useAuthControl"
 export default function Register() {
   useAuthControl()
   const [showPassword, setShowPassword] = useState(false)

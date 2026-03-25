@@ -12,7 +12,7 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ApiResponse<T
         message: data?.message || 'İşlem başarılı',
         // Eğer data içinde mesaj gönderdiysek, onu ayıklayıp geri kalanı data'ya koyarız
         data: data?.data !== undefined ? data.data : data, 
-        timestamp: new Date().toISOString(),
+    //    timestamp: new Date().toISOString(),
       })),
     );
   }

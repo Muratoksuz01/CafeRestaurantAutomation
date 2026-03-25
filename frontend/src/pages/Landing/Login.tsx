@@ -10,9 +10,9 @@ import { successStyle, warningStyle } from "@/lib/toastStyle"
 import { loginSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useEffect, useState } from "react"
-import CustomFormField from "@/components/CustomFormField"
+import CustomFormField from "@/pages/Dashboard/components/CustomFormField"
 import useAuthStore from '../../store/useAuthStore';
-import { useAuthControl } from "@/hooks/useAuthControl";
+import { useAuthControl } from "@/lib/useAuthControl";
 export default function Login() {
   // const login = useAuthStore((state) => state.login);
   // const loading = useAuthStore((state) => state.loading);

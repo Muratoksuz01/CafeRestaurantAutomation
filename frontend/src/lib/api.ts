@@ -1,5 +1,5 @@
 // src/lib/api.ts
-export const API_BASE_URL = "http://localhost:5000";
+export const API_BASE_URL = "http://localhost:6001";
 
 export const API_PATHS = {
   //auth
@@ -40,7 +40,6 @@ export const API_PATHS = {
   createOrder: `${API_BASE_URL}/order`,
   getOrders:`${API_BASE_URL}/order`,
   getOrder:(id:string)=>`${API_BASE_URL}/order/`+id,
-  orderbydate:`${API_BASE_URL}/order/getOrders/by-date`,
   updateOrder:(id:string)=>`${API_BASE_URL}/order/`+id,
   editOrder: `${API_BASE_URL}/order/editOrder`,
   deleteOrder: `${API_BASE_URL}/order

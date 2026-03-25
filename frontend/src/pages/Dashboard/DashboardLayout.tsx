@@ -1,9 +1,11 @@
-import { useAuthControl } from "@/hooks/useAuthControl";
-import  AppSidebar  from "@/pages/Dashboard/components/AppSidebar";
+import { useAuthControl } from "@/lib/useAuthControl";
+import AppSidebar from "@/pages/Dashboard/components/AppSidebar";
 import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useState } from "react";
+import { Settings } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 function DashboardLayout() {
   useAuthControl();
@@ -20,11 +22,16 @@ function DashboardLayout() {
               <SidebarTrigger />
               <h2 className="text-sm font-medium text-muted-foreground">{title}</h2>
             </div>
-            <ModeToggle />
+
+      
+             
+
+              <ModeToggle />
+           
           </header>
 
           {/* İçerik alanına hafif bir ton farkı vererek kartları öne çıkarıyoruz */}
-          <main className="flex-1 p-6 bg-muted/20"> 
+          <main className="flex-1 p-6 bg-muted/20">
             <Outlet />
           </main>
         </SidebarInset>

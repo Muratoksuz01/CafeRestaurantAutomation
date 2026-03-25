@@ -8,7 +8,7 @@ import axiosInstance from "@/lib/axiosInstance"
 import { API_PATHS } from "@/lib/api"
 import { toast } from "sonner"
 import { warningStyle } from "@/lib/toastStyle"
-import CustomDialog from "@/components/CustomDialog"
+import CustomDialog from "@/pages/Dashboard/components/CustomDialog"
 
 interface OrderDetailsDialogProps {
     orderId: string | null

@@ -4,16 +4,16 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ArrowUpDown, Info, Loader2 } from "lucide-react"
 import { useGetOrders } from "@/hooks/usegetOrders"
 import { Order } from "@/models/Order"
-import { OrderDetailsDialog } from "./OrderDetailsDialog"
+import { OrderDetailsDialog } from "./components/OrderDetailsDialog"
 import { ColumnDef, Row, RowData } from "@tanstack/react-table"
 import { DateRange } from 'react-day-picker'
-import CustomDataTable from "@/components/CustomDataTable"
-import { DataTableColumnHeader } from "@/components/data-table-column-header"
-import { DataTablePagination } from "@/components/data-table-paginition"
+import CustomDataTable from "@/pages/Dashboard/components/CustomDataTable"
+import { DataTableColumnHeader } from "@/pages/Dashboard/components/data-table-column-header"
+import { DataTablePagination } from "@/pages/Dashboard/components/data-table-paginition"
 import DatePickerRangeDemo from "@/components/shadcn-studio/date-picker/date-picker-02"
 import { Badge } from "@/components/ui/badge"
 import { cn, exportToExcel } from "@/lib/utils"
-import Filter from "@/components/Filter"
+import Filter from "@/pages/Dashboard/components/Filter"
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -170,9 +170,9 @@ function AdminOrders() {
                   <DatePickerRangeDemo onChange={setDateRange} />
                   <Button
                     className="mt-6"
-                    onClick={() => {
+                    onClick={async () => {
                       if (!dateRange?.from || !dateRange?.to) return
-                      getOrdersByDate(dateRange)
+                      await getOrdersByDate(dateRange)
                     }}
                   >
                     Getir

@@ -9,10 +9,9 @@ import AdminUsers from "./pages/Dashboard/Admin/AdminUsers";
 import AdminFoods from "./pages/Dashboard/Admin/AdminFoods";
 import AdminCategory from "./pages/Dashboard/Admin/AdminCategory";
 import AdminOrders from "./pages/Dashboard/Admin/AdminOrders";
-import AdminRoles from "./pages/Dashboard/Admin/AdminRoles";
-import { DataTableDemo } from "./components/DataTableDemo";
 import useAuthStore from "./store/useAuthStore";
 import TableList from "./pages/Dashboard/User/TableList";
+import Profile from "./pages/Landing/Profile";
 
 
 
@@ -34,19 +33,16 @@ function AppRoutes() {
         <Route path="/" element={<Navigate to={"/login"} />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/profile" element={<Profile />} />
         {/* Yönetici Route Grubu */}
-        {user?.role === "Yonetici" && (
-         
+        {user?.role === "Yonetici" && (         
             <Route path="/admin" element={<DashboardLayout />}>
-              {/* /admin yazıldığında otomatik olarak genel-bakis'a yönlendirir */}
               <Route index element={<Navigate to="genel-bakis" />} />
               <Route path="genel-bakis" element={<AdminOverview />} />
               <Route path="kullanicilar" element={<AdminUsers />} />
               <Route path="yemekler" element={<AdminFoods />} />
               <Route path="kategoriler" element={<AdminCategory />} />
               <Route path="siparisler" element={<AdminOrders />} />
-              <Route path="roller" element={<AdminRoles />} />
-              <Route path="gereksiz" element={<DataTableDemo />} />
             </Route>
         
         )}
@@ -54,7 +50,6 @@ function AppRoutes() {
         {/* Kasiyer ve Garson Route Grubu */}
         {user?.role && ["Kasiyer", "Garson"].includes(user.role) && (
             <Route path="/user" element={<DashboardLayout />}>
-              {/* Kullanıcının rolüne göre ana sayfayı belirle */}
               <Route index element={
                 user.role === "Kasiyer"
                   ? <Navigate to="satis-ekrani" />

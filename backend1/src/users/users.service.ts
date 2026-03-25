@@ -121,6 +121,7 @@ const monthlySalesChart = chartAgg.map(c => ({
     }));
     return {
       status: true,
+      message:"basardın",
       data: {
         chart: result,
         totalIncome,

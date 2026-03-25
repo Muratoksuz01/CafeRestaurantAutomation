@@ -8,11 +8,11 @@ import { useGetCategory } from "@/hooks/useGetCategory";
 import { Food } from "@/models/Food";
 import { API_PATHS } from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
-import CustomAlertDialog from "@/components/CustomAlertDialog";
+import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { AllTable } from "@/models/Tables";
-import RezerveDialog from "./RezerveDialog";
+// import RezerveDialog from "./RezerveDialog";
 import useAuthStore from "@/store/useAuthStore";
 import { CalendarCheck, CalendarX, X } from "lucide-react";
 type Basket = Food & { qty: number };
@@ -23,7 +23,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
   const [deleteAlert, setDeleteAlert] = useState(false)
   const [showTableDialog, setShowTableDialog] = useState(false)
-  const [showRezerveDialog, setShowRezerveDialog] = useState(false)
+  //const [showRezerveDialog, setShowRezerveDialog] = useState(false)
   const [search, setSearch] = useState("");
   const [selectedCat, setSelectedCat] = useState("all");
   const [originalBasket, setOriginalBasket] = useState<any[]>([]);
@@ -74,7 +74,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
       }
 
       // Güncelleme uyarısı
-      const res = await axiosInstance.post(API_PATHS.editOrder, { tableId: selectedTable?._id, basket, total, orderId: selectedTable.currentOrderId })
+      const res = await axiosInstance.put(API_PATHS.editOrder, { tableId: selectedTable?._id, basket, total, orderId: selectedTable.currentOrderId })
       // console.log("edit  işlemi:",{ tableId: selectedTable?._id, basket, total, orderId: selectedTable.adisyon.id });
       if (res.data.success) {
         setOpen(false); setBasket([]);
@@ -147,7 +147,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
   }
   const fetchTable = async (id: string) => {
     const res = await axiosInstance.get(API_PATHS.getTable(id))
-    if (res.data.success) {
+    if (res.data.status) {
       // setTable(res.data.data)
       setBasket(res.data.data?.adisyon?.map((i: any) => ({
         _id: i.foodId,       // foods ile uyumlu olsun
@@ -167,12 +167,16 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     }
   }
   useEffect(() => {
-    if (selectedTable) {
-      getCategories()
-      getFoods();
-      selectedTable?._id && fetchTable(selectedTable?._id)
+  const initData = async () => {
+    if (open && selectedTable?._id) {
+     await  fetchTable(selectedTable._id)
+      await getFoods()
+      await  getCategories()
     }
-  }, [selectedTable]);
+  };
+
+  initData();
+}, [open, selectedTable?._id]);
 
   const filteredFoods = foods
     .filter(f => selectedCat === "all" ? true : f.categoryId === selectedCat)
@@ -252,8 +256,8 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
             {/* FOOD LIST */}
             <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-background">
               {filteredFoods.map((food) => {
-                console.log("food:", food)
-                console.log("basket", basket)
+                // console.log("food:", food)
+                // console.log("basket", basket)
                 const inBasket =
                   basket && basket.some(
                     (item: Basket) => item._id == food._id);
@@ -386,20 +390,21 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
               {/* GRUP 2: YÖNETİMSEL İŞLEMLER (Daha küçük ve yardımcı) */}
               <div className="grid grid-cols-3 gap-2">
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="sm"
+                  disabled={!selectedTable.currentOrderId}
                   onClick={resetBasket}
-                  className="text-xs"
+                  className="text-xs disabled:cursor-not-allowed disabled:pointer-events-auto"
                 >
                   Sıfırla
                 </Button>
 
                 <Button
-                  variant="secondary"
+                  variant="outline"
                   size="sm"
                   disabled={!selectedTable.currentOrderId}
                   onClick={() => setShowTableDialog(true)}
-                  className="text-xs cursor-pointer"
+                  className="text-xs cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-auto"
                 >
                   Masa Değiştir
                 </Button>

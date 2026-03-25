@@ -1,10 +1,7 @@
-"use client"
-
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
-import { Search, Trash2, PencilLine, Check, X, MoreVertical, ArrowUpDown, Info } from "lucide-react"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Search, Trash2, PencilLine, Check, X, MoreVertical } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Input } from "@/components/ui/input"
@@ -12,59 +9,14 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { useGetUsers } from "@/hooks/useGetUsers"
 import { API_PATHS } from "@/lib/api"
 import type { Users } from "@/models/User"
-import EditDialog from "../components/EditDialog"
-import CreateUserDialog from "./CreateUserDialog"
-import {DropdownMenu,DropdownMenuTrigger,DropdownMenuContent,DropdownMenuItem,} from "@/components/ui/dropdown-menu"
-
-
-
+import EditDialog from "./components/EditDialog"
+import CreateUserDialog from "./components/CreateUserDialog"
+import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
-import { DataTableColumnHeader } from "@/components/data-table-column-header"
-import CustomDataTable from "@/components/CustomDataTable"
-import CustomDialog from "@/components/CustomDialog"
+import CustomDataTable from "@/pages/Dashboard/components/CustomDataTable"
+import { DataTableColumnHeader } from "../components/data-table-column-header"
 
-function TableSkeleton() {
-  return (
-    <div className="rounded-md border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Ad Soyad</TableHead>
-            <TableHead>E-posta</TableHead>
-            <TableHead>Telefon</TableHead>
-            <TableHead>Rol</TableHead>
-            <TableHead className="text-right">İşlemler</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {Array.from({ length: 5 }).map((_, i) => (
-            <TableRow key={i}>
-              <TableCell>
-                <Skeleton className="h-4 w-[140px]" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-[180px]" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-4 w-[100px]" />
-              </TableCell>
-              <TableCell>
-                <Skeleton className="h-5 w-[60px] rounded-full" />
-              </TableCell>
-              <TableCell className="text-right">
-                <div className="flex justify-end gap-2">
-                  <Skeleton className="h-8 w-[120px]" />
-                  <Skeleton className="h-8 w-[60px]" />
-                  <Skeleton className="h-8 w-[80px]" />
-                </div>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </div>
-  )
-}
+
 
 export default function AdminUsers() {
 
@@ -82,33 +34,28 @@ export default function AdminUsers() {
       accessorKey: "firstName",
       header: ({ column }) => {
         return (
-          <Button
-            variant={"ghost"}
-            onClick={() => { column.toggleSorting(column.getIsSorted() === "asc") }}
-          >
-            Ad Soyad
-            <ArrowUpDown />
-          </Button>
+          <DataTableColumnHeader title="Ad Soyad" column={column} />
         )
       },
-      cell: ({ row }) => (
-        <div className="capitalize">{row.getValue("firstName")} {row.getValue("lastName")}</div>
-      ),
+      cell: ({ row }) => {
+        // row.original üzerinden tüm nesneye erişiyoruz
+        const user = row.original;
+        return (
+          <div className="capitalize">
+            {user.firstName} {user.lastName}
+          </div>
+        );
+      },
     },
     {
       accessorKey: "email",
       header: ({ column }) => {
         return (
-          <Button
-            variant={"ghost"}
-            onClick={() => { column.toggleSorting(column.getIsSorted() === "asc") }}
-          >
-            E-Posta
-            <ArrowUpDown />
-          </Button>
+          <DataTableColumnHeader title="E Posta" column={column} />
+
         )
       },//new Date(order.orderDate).toLocaleString("tr-TR")
-      cell: ({ row }) => <div className="lowercase">{row.getValue("email")}</div>,
+      cell: ({ row }) => <div>{row.getValue("email")}</div>,
     },
     {
       accessorKey: "phoneNumber",
@@ -140,8 +87,7 @@ export default function AdminUsers() {
     },
     {
       id: "İşlemler",
-      header: ({ column }) => (< DataTableColumnHeader column={column} title="İşlemler" />),
-      // header: "İşlemler",
+      header: "İşlemler",
       cell: ({ row }) => (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -178,10 +124,6 @@ export default function AdminUsers() {
   useEffect(() => {
     getUsers()
   }, [])
-
-
-
-
 
   const onSuccess = async () => {
     getUsers()
@@ -266,39 +208,32 @@ export default function AdminUsers() {
           <CardTitle className="text-xl">Kullanıcılar</CardTitle>
         </CardHeader>
         <CardContent>
-            <div className="rounded-md border">
-              <CustomDataTable
-                columns={columns} data={users}
-                header={(table) => (
-                  <div className="flex items-center justify-between mb-5 p-3 border-b">
-                    <div className="relative w-82">
-                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                      <Input
-                        placeholder="Ad, soyad, e-posta veya telefon ile ara..."
-                        value={table.getState().globalFilter ?? ""}
-                        onChange={(e) => table.setGlobalFilter(e.target.value)}
-                        disabled={userLoading}
-                        className="pl-9"
-                      />
-                    </div>
-
-                    <Button onClick={() => { setCreateDialog(true) }}>Yeni Eleman</Button>
+          <div className="rounded-md border">
+            <CustomDataTable
+              columns={columns} data={users}
+              header={(table) => (
+                <div className="flex items-center justify-between mb-5 p-3 border-b">
+                  <div className="relative w-82">
+                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                      placeholder="Ad, soyad, e-posta veya telefon ile ara..."
+                      value={table.getState().globalFilter ?? ""}
+                      onChange={(e) => table.setGlobalFilter(e.target.value)}
+                      disabled={userLoading}
+                      className="pl-9"
+                    />
                   </div>
-                )}
-              />
-            </div>
+
+                  <Button onClick={() => { setCreateDialog(true) }}>Yeni Eleman</Button>
+                </div>
+              )}
+            />
+          </div>
         </CardContent>
       </Card>
 
-      {/* Permission Dialog */}
-      {/* <PermissionDialog
-        open={openDialog}
-        setOpen={setOpenDialog}
-        userId={selectedUserId}
-        onClose={handleCloseDialog}
-        onSuccess={onSuccess}
-      /> */}
      
+
       <EditDialog open={openEdit} setOpenEdit={setOpenEdit} user={selectedUser} onSuccess={onSuccess} />
       <CreateUserDialog open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess} />
     </div>

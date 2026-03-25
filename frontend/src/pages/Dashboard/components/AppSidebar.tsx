@@ -114,11 +114,34 @@ function AppSidebar({ settitle }: any) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
+              onClick={() => navigate("/profile")}
+              tooltip="Profil Ayarları"
+              className={`group transition-all duration-300 ease-in-out border border-transparent ${open
+                  ? "bg-transparent hover:bg-primary/10 text-muted-foreground hover:text-primary hover:border-primary/20"
+                  : "hover:bg-primary/5 text-muted-foreground hover:text-primary"
+                }`}
+            >
+              <LuSettings
+                className={`${open ? "mr-2" : "mx-auto"
+                  } h-5 w-5 transition-all duration-300 text-muted-foreground group-hover:text-primary group-hover:rotate-45`}
+              />
+
+              {open && (
+                <span className="font-medium transition-opacity duration-300">
+                  Profil & Ayarlar
+                </span>
+              )}
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+
+
+          <SidebarMenuItem>
+            <SidebarMenuButton
               onClick={handleLogout}
               tooltip="Çıkış Yap"
               className={`group transition-all duration-300 ease-in-out ${open
-                  ? "bg-transparent hover:bg-destructive/20 text-muted-foreground hover:text-destructive"
-                  : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
+                ? "bg-transparent hover:bg-destructive/20 text-muted-foreground hover:text-destructive"
+                : "hover:bg-destructive/10 text-muted-foreground hover:text-destructive"
                 } border border-transparent hover:border-destructive/30`}
             >
               <LuLogOut
