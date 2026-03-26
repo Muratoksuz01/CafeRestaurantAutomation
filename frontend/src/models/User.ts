@@ -1,13 +1,6 @@
 import z from "zod";
 
-export const registerSchema = z.object({
-  firstName: z.string().min(1, "İsim gerekli"),
-  lastName: z.string().min(1, "Soyisim gerekli"),
-  email: z.string().email("Geçerli email girin"),
-  phone: z.string().min(5, "Geçerli telefon girin"),
-  password: z.string().min(6, "Şifre en az 6 karakter"),
-  adminCode: z.string().optional(),
-});
+
 export const usersSchema = z.object({
   _id: z.int(),
   firstName: z.string().optional(),
@@ -26,7 +19,7 @@ export const userSchema = z.object({
   phoneNumber: z.string().optional(),
   password: z.string().optional(),
   roleName: z.enum(["Asci","Yonetici", "Garson", "Kasiyer"]),
-  permissions: z.string(),// liste geliyor 
+//  permissions: z.string(),// liste geliyor 
   isActive: z.boolean().optional()
 });
 export const userEditSchema = z.object({
@@ -51,6 +44,14 @@ export const userCreateSchema = z.object({
 export const loginSchema = z.object({
   email: z.string().email("Geçerli bir email girin"),
   password: z.string().min(6, "Şifre en az 6 karakter olmalı"),
+});
+export const registerSchema = z.object({
+  firstName: z.string().min(1, "İsim gerekli"),
+  lastName: z.string().min(1, "Soyisim gerekli"),
+  email: z.string().email("Geçerli email girin"),
+  phone: z.string().min(5, "Geçerli telefon girin"),
+  password: z.string().min(6, "Şifre en az 6 karakter"),
+  adminCode: z.string().optional(),
 });
 /* export const rezerveSchema = z.object({
   firstName: z.string().min(1, "Zorunlu"),

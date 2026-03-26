@@ -258,63 +258,9 @@ function TableList() {
 
 
       </div>
-      <CustomDialog
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onConfirm={() => { handleCreate(form.getValues()) }}
-        title={"Yeni Masa Ekle"}
-        description={
-          <Form {...form}>
-            <form className="space-y-4">
-              <CustomFormField
-                title="Masa İsmi"
-                control={form.control}
-                name="name"
-              >
-                {(field: any) => (
-                  <Input
-                    {...field}
-                    placeholder="Örn: Masa 1"
-                    autoComplete="off"
-                  />
-                )}
-              </CustomFormField>
-            </form>
-          </Form>
-        }
-      />
-      <CustomDialog
-        open={editOpen}
-        onOpenChange={() => {
-          form.reset({ name: "" });
-          setSelected(null);
-          setEditOpen(false)
-        }}
-        onConfirm={ async () => { await handleEdit(form.getValues()) }}
-        title={"Masayı Düznele"}
-        description={
-          <Form {...form}>
-            <form className="space-y-4">
-              <CustomFormField
-                title="Masa İsmi"
-                control={form.control}
-                name="name"
-              >
-                {(field: any) => (
-                  <Input
-                    // value={form.setValue("name",selected?.name || "")}
-                    {...field}
-                    placeholder="Örn: Masa 1"
-                    autoComplete="off"
-                  />
-                )}
-              </CustomFormField>
-            </form>
-          </Form>
-        }
-      />
+     
 
-      {/* <TableFormDialog
+      <TableFormDialog
         open={createOpen}
         onOpenChange={setCreateOpen}
         onSuccess={onSuccess}
@@ -323,9 +269,9 @@ function TableList() {
        <TableFormDialog
         open={editOpen}
         onOpenChange={setEditOpen}
-        table={selected} // Seçili masayı gönderdiğin an "Düzenle" moduna geçer
+        table={selected} 
         onSuccess={onSuccess}
-      /> */}
+      />
 
       <CustomAlertDialog
         open={deleteOpen}

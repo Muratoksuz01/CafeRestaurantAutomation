@@ -261,4 +261,9 @@ export class TablesService {
       throw error; // Hatayı NestJS'e fırlat ki istemciye hata kodu gitsin
     }
   }
+
+ 
+  
+
+
 }

@@ -8,10 +8,12 @@ export class TransformInterceptor<T> implements NestInterceptor<T, ApiResponse<T
   intercept(context: ExecutionContext, next: CallHandler): Observable<ApiResponse<T>> {
     return next.handle().pipe(
       map((data) => ({
-        status: true,
+        status: data?.status ?? true,
         message: data?.message || 'İşlem başarılı',
         // Eğer data içinde mesaj gönderdiysek, onu ayıklayıp geri kalanı data'ya koyarız
-        data: data?.data !== undefined ? data.data : data, 
+        data: data.data ? data.data:null
+        
+        //data: data?.data !== undefined ? data.data : data, 
     //    timestamp: new Date().toISOString(),
       })),
     );

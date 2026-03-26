@@ -1,36 +1,25 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { useGetFoods } from "@/hooks/useGetFoods";
 import { Button } from "@/components/ui/button";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
 import CreateFoodForm from "./components/CreateFoodForm";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
-
 import EditFoodForm from "./components/EditFoodForm";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetCategory } from "@/hooks/useGetCategory";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle
-} from "@/components/ui/card";
+import {Card,CardContent,CardFooter,CardHeader,CardTitle} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import {
-  Search,
-  Plus,
-  UtensilsCrossed,
-  Pencil,
-  Trash2
-} from "lucide-react";
+import {Search,Plus,UtensilsCrossed,Pencil,Trash2} from "lucide-react";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import { Food } from "@/models/Food";
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { foodEditSchema } from "@/models/Food"
+
+
 export default function AdminFoods() {
   const [showEdit, setShowEdit] = useState(false);
   const [selectedFood, setSelectedFood] = useState<Food>();
@@ -60,9 +49,9 @@ export default function AdminFoods() {
       setSelectedFood(undefined);
     }
   };
-  const onUpdate = () => {
-
+  const onSuccess = () => {
     getFoods()
+    setSelectedFood(undefined)
   };
   const filteredFoods = foods.filter(f => {
     const matchCategory = filterCategory === "all" || f.categoryId === filterCategory;
@@ -72,10 +61,31 @@ export default function AdminFoods() {
       f.price.toString().includes(search);
     return matchCategory && matchSearch;
   });
+
+
+
+const form = useForm({
+    resolver: zodResolver(foodEditSchema),
+    defaultValues: {
+      name: "",
+      price: 0,
+      description: "",
+      categoryId: "",
+    },
+  })
+
+useEffect(()=>{
+  form.reset({
+     name: selectedFood?.name || "",
+      price: selectedFood?.price,
+      description: selectedFood?.description,
+      categoryId: selectedFood?.categoryId,
+  })
+},[selectedFood])
+
   return (
     <div className="p-6 space-y-8 animate-in fade-in duration-500">
 
-      {/* Üst Kısım: Başlık ve Ekle Butonu */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-2">
@@ -92,7 +102,6 @@ export default function AdminFoods() {
         </Button>
       </div>
 
-      {/* Filtreleme ve Arama Çubuğu */}
       <div className="flex flex-col sm:flex-row items-center gap-4 bg-card/40 p-4 rounded-xl border border-border/50 backdrop-blur-sm">
         <div className="relative w-full sm:w-72">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -119,7 +128,6 @@ export default function AdminFoods() {
         </div>
       </div>
 
-      {/* Yemek Listesi Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredFoods.map((food) => {
           const hasTwoImages = food.imgs.length > 1;
@@ -195,11 +203,11 @@ export default function AdminFoods() {
         })}
       </div>
 
-      {selectedFood && <EditFoodForm key={selectedFood._id} food={selectedFood} onUpdate={onUpdate} open={showEdit} setOpen={setShowEdit} />}
-
+      {selectedFood && <EditFoodForm key={selectedFood._id} food={selectedFood} onUpdate={onSuccess} open={showEdit} setOpen={setShowEdit} />}
+      
 
       {/* Create Dialog */}
-      <CreateFoodForm open={showCreate} setOpen={setShowCreate} onUpdate={onUpdate} />
+      <CreateFoodForm open={showCreate} setOpen={setShowCreate} onUpdate={onSuccess} />
 
 
       {/* Delete AlertDialog */}

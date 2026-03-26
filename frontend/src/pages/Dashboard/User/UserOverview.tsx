@@ -18,9 +18,11 @@ import { Filter, PanelRight, Search } from "lucide-react";
 import RightSheet from "./components/RightSheet";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useGetRezerve } from "@/hooks/useGetRezerve";
 
 export default function UserOverview() {
   const { tables, getTables } = useGetTables();
+  const {rezerve,getRezerve}=useGetRezerve();
   const [openSheet, setOpenSheet] = useState(false)
   const [open, setOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState<AllTable>();
@@ -28,10 +30,11 @@ export default function UserOverview() {
   const [statusFilter, setStatusFilter] =
     useState<"all" | "dolu" | "bos" | "rezerve">("all");
 
-  const onChange = () => getTables();
+  const onSuccess = () => getTables();
 
   useEffect(() => {
     getTables();
+    getRezerve()
     console.log(tables)
   }, []);
 
@@ -65,8 +68,7 @@ export default function UserOverview() {
   return (
    <div className="p-4 flex flex-col gap-8 relative min-h-screen bg-transparent animate-in fade-in duration-700">
     
-    {/* SHEET TRIGGER - SAĞ ÜST DAİRE BUTON */}
-    {/* Sabit beyaz yerine tema rengi ve blur ekledik */}
+   
     <Button
       variant="outline"
       size="icon"
@@ -132,7 +134,7 @@ export default function UserOverview() {
         open={open}
         setOpen={setOpen}
         selectedTable={selectedTable}
-        onChange={onChange}
+        onChange={onSuccess}
         allTable={tables}
         setSelectedTable={setSelectedTable}
       />

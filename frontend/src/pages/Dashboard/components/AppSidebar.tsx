@@ -114,7 +114,8 @@ function AppSidebar({ settitle }: any) {
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton
-              onClick={() => navigate("/profile")}
+              onClick={() => {
+                user!.role=="Yonetici" ?  navigate("/admin/profile"):navigate("/user/profile")   }}
               tooltip="Profil Ayarları"
               className={`group transition-all duration-300 ease-in-out border border-transparent ${open
                   ? "bg-transparent hover:bg-primary/10 text-muted-foreground hover:text-primary hover:border-primary/20"

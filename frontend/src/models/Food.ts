@@ -35,6 +35,7 @@ export const foodEditSchema = z.object({
 
 
 });
+export type Food = z.infer<typeof foodSchema>;
 
 
 
@@ -46,5 +47,15 @@ export const categorySchema = z.object({
     _id:z.string(),
     name: z.string()
 })
-export type Food = z.infer<typeof foodSchema>;
 export type Category = z.infer<typeof categorySchema>;
+
+
+
+
+export const rezerveSchema=z.object({
+    employeeName:z.string(),
+    employeePhone:z.string(),
+    description:z.string(),
+    startDate:z.date(),
+    endDate:z.date(),
+})

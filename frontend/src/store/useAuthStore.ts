@@ -11,7 +11,7 @@ interface User {
   lastName?: string;
   phoneNumber?: string;
   // permissions: string[]
-  role: string
+  role: string ;
 
 }
 
@@ -22,6 +22,7 @@ interface AuthState {
   loading: boolean;
   login: (credentials: any) => Promise<LoginResponse>;
   logout: () => void;
+  update:(veri:any)=> void;
 }
 interface LoginResponse {
   success: boolean;
@@ -51,7 +52,7 @@ export const useAuthStore = create<AuthState>()(
           if (result.status) {
             const { user, token } = result.data;
             set({ user, token, loading: false });
-           // localStorage.setItem("token",token)
+            // localStorage.setItem("token",token)
             // Buradaki yapı LoginResponse interface'ine tam uymalı
             return {
               success: true,
@@ -68,9 +69,25 @@ export const useAuthStore = create<AuthState>()(
       },
 
       logout: () => {
-     //   localStorage.clear()
+        //   localStorage.clear()
         set({ user: null, token: null })
+      },
+
+      update: (veri: any) => {
+        if (!veri) return;
+
+        set({
+          user: {
+            id: veri._id?.toString(),
+            email: veri.email,
+            firstName: veri.firstName,
+            lastName: veri.lastName,
+            phoneNumber: veri.phoneNumber,
+            role: veri.roleName, // mapping
+          }
+        });
       }
+
     }),
     { name: 'auth-storage' }
   )

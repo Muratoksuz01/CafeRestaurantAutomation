@@ -16,6 +16,7 @@ import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
 import { Label } from 'recharts'
 import { Switch } from '@/components/ui/switch'
+import CustomDialog from '../../components/CustomDialog'
 
 function CreateUserDialog({ open, setOpen, onSuccess }: any) {
     const [showPassword, setShowPassword] = useState(false)
@@ -46,28 +47,16 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
     }
 
     return (
-        <Dialog open={open} onOpenChange={(v) => {
-            setOpen(v)
-            if (!v) {
-                form.reset({
-                    firstName: "",
-                    lastName: "",
-                    email: "",
-                    phoneNumber: "",
-                    roleName: undefined,
-                    isActive: true,
-                    password: ""
-                })
-            }
-        }}>
-            <DialogContent className="sm:max-w-[480px]">
-                <DialogHeader>
-                    <DialogTitle className="text-xl font-semibold">Kullanıcı Düzenle</DialogTitle>
-                </DialogHeader>
 
+        <CustomDialog
+            open={open}
+            onOpenChange={setOpen}
+            title="Kullanıcıyı olustur"
+            onConfirm={() => { handleSave(form.getValues()) }}
+            description={
                 <Form {...form}>
-                    <form onSubmit={form.handleSubmit(handleSave)} className="space-y-5">
-                        {/* Name Fields Row */}
+                    <form  className="space-y-5">
+                     
                         <div className="grid grid-cols-2 gap-4">
                             <CustomFormField control={form.control} name="firstName" title="Ad">
                                 {(field: any) => (
@@ -83,7 +72,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                             </CustomFormField>
                         </div>
 
-                        {/* Email Field */}
+                     
                         <CustomFormField control={form.control} name="email" title="E-posta">
                             {(field: any) => (
                                 <div className="relative">
@@ -93,7 +82,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                             )}
                         </CustomFormField>
 
-                        {/* Phone Field with formatting */}
+                       
                         <div className="grid grid-cols-2 gap-4">
                             <CustomFormField control={form.control} name="phoneNumber" title="Telefon Numarası">
                                 {(field: any) => (
@@ -114,7 +103,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                     </div>
                                 )}
                             </CustomFormField>
-                            {/*Sifresi*/}
+                          
                             <CustomFormField control={form.control} name={"password"} title="Sifre"  >
                                 {(field: any) => (
                                     <div className="relative">
@@ -135,7 +124,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                 )}
                             </CustomFormField>
                         </div>
-                        {/* Role Field */}
+                      
                         <CustomFormField control={form.control} name="roleName" title="Rol">
                             {(field: any) => (
                                 <div className="relative">
@@ -155,7 +144,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                             )}
                         </CustomFormField>
 
-                        {/* Active Status Toggle */}
+                      
                         <CustomFormField control={form.control} name="isActive" title="Kullanıcı Durumu">
                             {(field: any) => (
                                 <div className="flex items-center justify-between rounded-lg border p-4 bg-muted/30">
@@ -177,18 +166,12 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                             )}
                         </CustomFormField>
 
-                        <DialogFooter className="gap-2 sm:gap-0">
-                            <DialogClose asChild>
-                                <Button type="button" variant="outline">
-                                    İptal
-                                </Button>
-                            </DialogClose>
-                            <Button type="submit">Kaydet</Button>
-                        </DialogFooter>
+                        
                     </form>
                 </Form>
-            </DialogContent>
-        </Dialog>
+            }
+        />
+
     )
 }
 

@@ -11,6 +11,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { FoodsModule } from './foods/foods.module';
 import { JwtModule } from "@nestjs/jwt";
 import { OrderModule } from './order/order.module';
+import { RezerveModule } from './rezerve/rezerve.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -31,7 +32,7 @@ import { OrderModule } from './order/order.module';
       useFactory: (configService: ConfigService) => ({
        
         secret: configService.get<string>('JWT_SECRET'), // .env'den okur
-        signOptions: { expiresIn: '1h' }, // 60s çok kısa olabilir, 1h (1 saat) daha yaygındır
+        signOptions: { expiresIn: '7d'  as const }, // 60s çok kısa olabilir, 1h (1 saat) daha yaygındır
       }),
     }),
     AuthModule,
@@ -41,6 +42,7 @@ import { OrderModule } from './order/order.module';
     CategoriesModule,
     FoodsModule,
     OrderModule,
+    RezerveModule,
   ],
   controllers: [AppController],
   providers: [AppService],

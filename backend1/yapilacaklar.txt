@@ -1,13 +1,10 @@
 
-25 mart
-    - server responsu belirli bir tip yapmak gerek her yere status true yazmakdan sıkıldım basladım devam et ==tamam global response tipi yazıldı 
-    - order sayfasında update icin iki fok bunları arastır == tamam   update foksiyonu sadece ascı rolu icin geerkliymiş gelecekte belki kullanırız 
-    - order  sayfasında getorderByDate ile FİndAll birleştir == tamam  from ve to varsa onlar yoksa bu varsayılan degerlere gore getir yazıldı
-    - order sayfasında +value ! gibi ifadeler kullanıldı bunları duzelt seniour tarzı degil  == tamam Number(total) || 0 yaparak cozdum
-    - assest altındaki reimleri disarıya acmalıyız ve disarıya verecek endpoinit yazmalıyız  == tamam main.ts icinde dosyaları kontrol etmeden paylasıyourz cunku zaten sirkette icinde calişacak sorun olmaz bir guvenlik acıgı olmaz diye dusunuyorum
-    - token kontorlu tamam simdi role kontrolu yapmamız gerekiyor       == roleGuard eklendi bunu suan sadece categorirde kullanıyoruz sonra yazarız 
-    - sayfa lisanslama nasıl yapılır ogren 
 
+26mart 
+    - profil sayfasında bazı endpointler ihtiyac var onları ayarla == tamam
+    - email gonderme islemina bak   => https://notiz.dev/blog/send-emails-with-nestjs
+    - sayfa lisanslama arastır
+    - randevu sistemine bak                 == az kaldı guzel goruntuleme kaldı  
 
 
 yapılacaklar

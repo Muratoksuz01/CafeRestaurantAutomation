@@ -16,6 +16,7 @@ import { foodEditSchema } from "@/models/Food"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import CustomDialog from "../../components/CustomDialog"
 
 interface EditFoodFormProps {
   food: any
@@ -74,11 +75,11 @@ export default function EditFoodForm({ food, onUpdate, open, setOpen }: EditFood
     }
   }
   return (
-    <Dialog open={open} onOpenChange={setOpen}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Yemeği Düzenle</DialogTitle>
-        </DialogHeader>
+    <CustomDialog
+      open={open}
+      onOpenChange={setOpen}
+      title="Yeni Yemek Ekle"
+      description={
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
 
@@ -149,8 +150,8 @@ export default function EditFoodForm({ food, onUpdate, open, setOpen }: EditFood
 
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      }
+    />
 
 
 

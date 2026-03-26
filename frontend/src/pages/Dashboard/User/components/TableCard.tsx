@@ -81,7 +81,7 @@ export default function TableCard({ table, onClick }: { table: AllTable; onClick
       </div>
 
       {/* ALT KISIM: SİPARİŞİ ALAN KİŞİ (Garson) */}
-      {!isEmpty && (
+      {!isEmpty && !isReserved && (
         <div className="flex items-center justify-between mt-4 pt-3 border-t border-white/20">
           <div className="flex items-center gap-2 overflow-hidden">
             <div className="flex-shrink-0 w-6 h-6 rounded-lg bg-white/20 flex items-center justify-center">

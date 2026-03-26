@@ -15,12 +15,13 @@ import { AllTable } from "@/models/Tables";
 // import RezerveDialog from "./RezerveDialog";
 import useAuthStore from "@/store/useAuthStore";
 import { CalendarCheck, CalendarX, X } from "lucide-react";
+import RezerveDialog from "./RezerveDialog";
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
   const user = useAuthStore((state) => state.user);
-
+const [showRezerveDialog, setShowRezerveDialog] = useState(false)
   const [deleteAlert, setDeleteAlert] = useState(false)
   const [showTableDialog, setShowTableDialog] = useState(false)
   //const [showRezerveDialog, setShowRezerveDialog] = useState(false)
@@ -202,18 +203,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
   }
   const handleBook = async (id: string) => {
-    console.log("rezrve edilen masa id:", id);
-    // burada orderd varsa baska işlemler yapılmalı bu işi kontrol edilmeli
-    const res = await axiosInstance.put(API_PATHS.handleBook(id))
-    if (res.data.success) {
-      toast.success(res.data.message || "işlem basarılı", successStyle)
-      setOpen(false);
-      onChange && onChange()
-
-    } else {
-      toast.success(res.data.message || "işlem basarısız", warningStyle)
-
-    }
+    setShowRezerveDialog(true)
   }
   return (
     <>
@@ -224,6 +214,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
         setOpen(false)
       }}>
         <DialogContent
+         onInteractOutside={(e) => e.preventDefault()}
           className="w-full max-w-[95vw] h-[85vh] p-0 flex flex-col overflow-hidden md:flex-row md:max-w-[1200px] "
         >
           {/* LEFT */}
@@ -468,7 +459,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
         </DialogContent>
       </Dialog>
-      {/* <RezerveDialog showRezerveDialog={showRezerveDialog}  setShowRezerveDialog={setShowRezerveDialog} onChange={onChange}/> */}
+      <RezerveDialog showRezerveDialog={showRezerveDialog}  setShowRezerveDialog={setShowRezerveDialog} masaId={selectedTable._id}/>
       <CustomAlertDialog
         open={deleteAlert}
         onOpenChange={setDeleteAlert}

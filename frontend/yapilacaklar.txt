@@ -1,16 +1,16 @@
-25 mart
-    - masa olusturmada yeni masalar hemen listelenmıyor == tamam
-    - siparis verdiginde kasiyer yeniden baktıgında liste gorunmuyor == tamam
-    - masa edit ve create compenent birlestirmeye caliş             == tamam
-    - kategori syafası crud işlemi sonrası sayfa guncellenmiyor         ==tamam
-    - masa sayfası ve kategori sayfadı 1300 pixel genişlikte iyi gorunmuyor ==tamam
-    - masa edit create icin customDialog com i kullanılabilir               ==tamam tableformDialog bosa dustu suan silinebilir
+
+26 mart
+    - editDialog ile customDialog birleştirmeye caliş  == editdiaslog icinde custom dialsog kullandım 
+    - profil sayfasını yaz  == tamam ama buraya sonra bakmk lazım guncelledikten sonra useAuthStore guncellenmeli 
+    - randevu incele            == az kaldı 
 yapılacaklar
+    - app.tsx de iki tane dashboardLayout var oradaki yonlendirme sistemi iyi degil bunu duzelt
     - randevu sistemi
         vite tarafını yaz 
     profil sayfası tasarla
         suanlık email alanını basit yap sonra email servisi yapalom email dogrulaması yapalım
     login sayfasında unuttum ekle 
     user create işelminde yonetici rolu icin emial dogrulaması ekle 
-
+    - adisyon yazdırma 
+    - getir trendyol baglama
 

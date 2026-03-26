@@ -20,6 +20,7 @@ import axiosInstance from "@/lib/axiosInstance"
 import { API_PATHS } from "@/lib/api"
 import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
+import CustomDialog from "../../components/CustomDialog"
 
 interface EditDialogProps {
   open: boolean
@@ -61,7 +62,7 @@ function EditDialog({ open, setOpenEdit, user, onSuccess }: EditDialogProps) {
     console.log("[v0] Form submitted:", data)
     // TODO: Add API call here
     const res=await axiosInstance.put(API_PATHS.updateUser(String(user._id)),data)
-    if(res.data.success){
+    if(res.data.status){
       onSuccess && onSuccess()
       toast.success("kullanıcı basarlılı guncellendi",successStyle)
       setOpenEdit(false)
@@ -73,14 +74,15 @@ function EditDialog({ open, setOpenEdit, user, onSuccess }: EditDialogProps) {
   }
 
   return (
-    <Dialog open={open} onOpenChange={setOpenEdit}>
-      <DialogContent className="sm:max-w-[480px]">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold">Kullanıcı Düzenle</DialogTitle>
-        </DialogHeader>
 
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(handleSave)} className="space-y-5">
+    <CustomDialog 
+    open={open}
+    onOpenChange={setOpenEdit}
+    title="Kullanıcıyı Düzenle"
+    onConfirm={() => {handleSave(form.getValues())}}
+    description={
+       <Form {...form}>
+          <form  className="space-y-5">
             {/* Name Fields Row */}
             <div className="grid grid-cols-2 gap-4">
               <CustomFormField control={form.control} name="firstName" title="Ad">
@@ -160,18 +162,19 @@ function EditDialog({ open, setOpenEdit, user, onSuccess }: EditDialogProps) {
               )}
             </CustomFormField>
 
-            <DialogFooter className="gap-2 sm:gap-0">
+            {/* <DialogFooter className="gap-2 sm:gap-0">
               <DialogClose asChild>
                 <Button type="button" variant="outline">
                   İptal
                 </Button>
               </DialogClose>
               <Button type="submit">Kaydet</Button>
-            </DialogFooter>
+            </DialogFooter> */}
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+    }
+    />
+   
   )
 }
 

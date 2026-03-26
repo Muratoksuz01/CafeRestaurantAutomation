@@ -13,6 +13,7 @@ import axiosInstance from "@/lib/axiosInstance"
 import { API_PATHS } from "@/lib/api"
 import { successStyle } from "@/lib/toastStyle"
 import { tableCreateEditSchema } from "@/models/Tables"
+import CustomDialog from "../components/CustomDialog"
 
 interface TableFormDialogProps {
   open: boolean
@@ -51,7 +52,7 @@ const TableFormDialog = ({ open, onOpenChange, onSuccess, table }: TableFormDial
       // Backend'den dönen başarı flag'lerini kontrol et (status veya success)
       if (res.data.status || res.data.success) {
         toast.success(
-          isEditMode ? "Masa güncellendi" : "Masa eklendi", 
+          isEditMode ? "Masa güncellendi" : "Masa eklendi",
           successStyle
         )
         if (onSuccess) await onSuccess()
@@ -64,46 +65,36 @@ const TableFormDialog = ({ open, onOpenChange, onSuccess, table }: TableFormDial
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>
-            {isEditMode ? "Masayı Düzenle" : "Yeni Masa Ekle"}
-          </DialogTitle>
-        </DialogHeader>
 
+    <CustomDialog
+      open={open}
+      onOpenChange={onOpenChange}
+      confirmText={isEditMode ? "Güncelle" : "Ekle"}
+      title={isEditMode ? "Masayı Düzenle" : "Yeni Masa Ekle"}
+      onConfirm={() => { onSubmit(form.getValues()) }}
+      description={
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-            <CustomFormField 
-              title="Masa İsmi" 
-              control={form.control} 
+            <CustomFormField
+              title="Masa İsmi"
+              control={form.control}
               name="name"
             >
               {(field: any) => (
-                <Input 
-                  {...field} 
-                  placeholder="Örn: Masa 1" 
-                  autoComplete="off" 
+                <Input
+                  {...field}
+                  placeholder="Örn: Masa 1"
+                  autoComplete="off"
                 />
               )}
             </CustomFormField>
 
-            <div className="flex justify-end gap-2 pt-2">
-              <Button 
-                type="button" 
-                variant="outline" 
-                onClick={() => onOpenChange(false)}
-              >
-                İptal
-              </Button>
-              <Button type="submit" disabled={form.formState.isSubmitting}>
-                {form.formState.isSubmitting ? "İşleniyor..." : isEditMode ? "Güncelle" : "Ekle"}
-              </Button>
-            </div>
+            
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
+      }
+    />
+
   )
 }
 

@@ -46,4 +46,22 @@ export class UsersController {
     async createUser(@Body() createUser: CreateUser) {
         return this.usersService.createUser(createUser);
     }
+
+    @Put('updateProfile/:id')
+    async updateProfile(
+        @Param('id') id: string,
+        @Body() body: any
+    ) {
+        return this.usersService.updateProfile(id, body);
+    }
+
+    @Put('updteProfilePassword/:id')
+    async updateProfilePassword(
+        @Param('id') id: string,
+        @Body() body: any
+    ) {
+        return this.usersService.updateProfilePassword(id, body);
+    }
+
+
 }

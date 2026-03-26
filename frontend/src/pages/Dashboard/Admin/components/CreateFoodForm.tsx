@@ -11,9 +11,9 @@ import { useGetCategory } from "@/hooks/useGetCategory";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import { Form } from "@/components/ui/form";
 import CustomFormField from "@/pages/Dashboard/components/CustomFormField";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import CustomDialog from "../../components/CustomDialog";
 
-export default function CreateFoodForm({ onUpdate ,open, setOpen }: any) {
+export default function CreateFoodForm({ onUpdate, open, setOpen }: any) {
   const [loading, setLoading] = useState(false);
   const { categories, getCategories } = useGetCategory()
   const form = useForm({
@@ -44,7 +44,7 @@ export default function CreateFoodForm({ onUpdate ,open, setOpen }: any) {
       });
       form.reset();
       console.log("Yemek oluşturuldu");
-      onUpdate?.(); // üst componentte listeyi güncelle
+      onUpdate?.();
       setOpen(false)
     } catch (err) {
       console.log(err);
@@ -54,15 +54,13 @@ export default function CreateFoodForm({ onUpdate ,open, setOpen }: any) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={() => {
-      form.reset()
-      setOpen(false)
-    }}>
-      <DialogContent className="sm:max-w-[500px]">
-        <DialogHeader>
-          <DialogTitle>Yeni Yemek Ekle</DialogTitle>
-        </DialogHeader>
 
+
+    <CustomDialog
+      open={open}
+      onOpenChange={setOpen}
+      title="Yeni Yemek Ekle"
+      description={
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 p-2">
 
@@ -123,11 +121,8 @@ export default function CreateFoodForm({ onUpdate ,open, setOpen }: any) {
 
           </form>
         </Form>
-      </DialogContent>
-    </Dialog>
-
-
-
+      }
+    />
 
 
   );
