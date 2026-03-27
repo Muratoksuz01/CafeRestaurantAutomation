@@ -52,5 +52,5 @@ export const API_PATHS = {
   getRezervasyonlar: `${API_BASE_URL}/rezerve`,
   getRezervasyon:(id:string)=>`${API_BASE_URL}/rezerve/`+id,
   createRezervasyon:`${API_BASE_URL}/rezerve`,
-  deleteRezervasyon:`${API_BASE_URL}/rezerve`,
+  deleteRezervasyon:(id:string)=>`${API_BASE_URL}/rezerve/`+id,
 };

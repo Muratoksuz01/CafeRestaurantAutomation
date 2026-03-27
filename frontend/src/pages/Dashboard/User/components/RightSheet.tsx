@@ -1,11 +1,4 @@
-import React from 'react'
-import {
-    Sheet,
-    SheetContent,
-    SheetHeader,
-    SheetTitle,
-    SheetFooter,
-} from "@/components/ui/sheet";
+import {Sheet,SheetContent,SheetHeader,SheetTitle,SheetFooter,} from "@/components/ui/sheet";
 function RightSheet({ fullTables, openSheet, setOpenSheet, totalAmount }: { fullTables: any, openSheet: boolean, setOpenSheet: any, totalAmount: number }) {
     return (
         <Sheet open={openSheet} onOpenChange={setOpenSheet}>

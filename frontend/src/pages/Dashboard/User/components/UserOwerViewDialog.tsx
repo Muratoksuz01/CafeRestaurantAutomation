@@ -1,30 +1,25 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";import { Input } from "@/components/ui/input";
+import { toast } from "sonner";import { ApiResponse } from "@/lib/apiTypes";
 import { useEffect, useState } from 'react'
-import { Input } from "@/components/ui/input";
-import { useGetFoods } from "@/hooks/useGetFoods";
-import { useGetCategory } from "@/hooks/useGetCategory";
-import { Food } from "@/models/Food";
-import { API_PATHS } from "@/lib/api";
-import axiosInstance from "@/lib/axiosInstance";
+import { useGetCategory } from "@/hooks/useGetCategory";import { useGetFoods } from "@/hooks/useGetFoods";
+import { Food } from "@/models/Food";import { AllTable } from "@/models/Tables";
+import { API_PATHS } from "@/lib/api";import axiosInstance from "@/lib/axiosInstance";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
-import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
-import { AllTable } from "@/models/Tables";
-// import RezerveDialog from "./RezerveDialog";
 import useAuthStore from "@/store/useAuthStore";
 import { CalendarCheck, CalendarX, X } from "lucide-react";
 import RezerveDialog from "./RezerveDialog";
+
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
   const user = useAuthStore((state) => state.user);
-const [showRezerveDialog, setShowRezerveDialog] = useState(false)
+  const [showRezerveDialog, setShowRezerveDialog] = useState(false)
   const [deleteAlert, setDeleteAlert] = useState(false)
   const [showTableDialog, setShowTableDialog] = useState(false)
-  //const [showRezerveDialog, setShowRezerveDialog] = useState(false)
   const [search, setSearch] = useState("");
   const [selectedCat, setSelectedCat] = useState("all");
   const [originalBasket, setOriginalBasket] = useState<any[]>([]);
@@ -54,7 +49,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
       }
 
       const res = await axiosInstance.post(API_PATHS.createOrder, { tableId: selectedTable?._id, basket, total })
-      if (res.data.success) {
+      if (res.data.status) {
         toast.success("basarılı bir sekilde kaydedildi", successStyle)
         setOpen(false); setBasket([]);
         onChange && onChange()
@@ -77,7 +72,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
       // Güncelleme uyarısı
       const res = await axiosInstance.put(API_PATHS.editOrder, { tableId: selectedTable?._id, basket, total, orderId: selectedTable.currentOrderId })
       // console.log("edit  işlemi:",{ tableId: selectedTable?._id, basket, total, orderId: selectedTable.adisyon.id });
-      if (res.data.success) {
+      if (res.data.status) {
         setOpen(false); setBasket([]);
         toast.success("basarılı bir sekilde kaydedildi", successStyle)
         onChange && onChange()
@@ -107,7 +102,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
       data: { orderId: selectedTable?.currentOrderId }
     });
     console.log(res.data)
-    if (res.data.success) {
+    if (res.data.status) {
       resetBasket()
       setOpen(false)
       toast.success("sipairis silindi", successStyle)
@@ -125,7 +120,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
     console.log(selectedTable)
     if (selectedTable.currentOrderId) {
       const res = await axiosInstance.post(API_PATHS.paidOrder, { tableId: selectedTable?._id, basket, total, orderId: selectedTable.currentOrderId })
-      if (res.data.success) {
+      if (res.data.status) {
         setOpen(false); setBasket([]);
         toast.success("basarılı bir sekilde odeme alındı ", successStyle)
         onChange && onChange()
@@ -137,7 +132,8 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
       toast.warning("once siparişi onaylamalısınız", warningStyle)
     }
   }
-  const onClose = () => {
+
+ /*  const onClose = () => {
     const changed = JSON.stringify(basket) !== JSON.stringify(originalBasket);
     if (changed) {
       toast.warning("degiişklikler kaydediilmedi", warningStyle)
@@ -145,7 +141,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
       setOpen(false)
       setBasket([])
     }
-  }
+  } */
   const fetchTable = async (id: string) => {
     const res = await axiosInstance.get(API_PATHS.getTable(id))
     if (res.data.status) {
@@ -168,16 +164,16 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
     }
   }
   useEffect(() => {
-  const initData = async () => {
-    if (open && selectedTable?._id) {
-     await  fetchTable(selectedTable._id)
-      await getFoods()
-      await  getCategories()
-    }
-  };
+    const initData = async () => {
+      if (open && selectedTable?._id) {
+        await fetchTable(selectedTable._id)
+        await getFoods()
+        await getCategories()
+      }
+    };
 
-  initData();
-}, [open, selectedTable?._id]);
+    initData();
+  }, [open, selectedTable?._id]);
 
   const filteredFoods = foods
     .filter(f => selectedCat === "all" ? true : f.categoryId === selectedCat)
@@ -190,7 +186,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
         newTableId: table._id,
         orderId: selectedTable.currentOrderId
       });
-      if (res.data.success) {
+      if (res.data.status) {
         setShowTableDialog(false)
         setOpen(false)
         toast.success("basarılı bir sekilde masalar degiştirildi", successStyle)
@@ -202,9 +198,24 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
     console.log(table);
 
   }
-  const handleBook = async (id: string) => {
-    setShowRezerveDialog(true)
-  }
+  const handleBook = async (table: AllTable) => {
+    if (table.status !== "rezerve") {
+      return setShowRezerveDialog(true);
+    }
+    try {
+      const res= await axiosInstance.delete<ApiResponse>(API_PATHS.deleteRezervasyon(table._id));
+      if(res.data.status){
+        onChange()
+        toast.success(res.data.message || "Rezervasyon Silindi",successStyle)
+        setOpen(false)
+      }else{
+        toast.warning(res.data.message || "Hata:Rezervasyon Silinemedi",warningStyle)
+      }
+    } catch (error:any) {
+      console.error("Silme işlemi başarısız:", error);
+      toast.warning(error.res.data.message || "Sistemsel bir hata var Rezervasyon Silinemedi",warningStyle)
+    }
+  };
   return (
     <>
 
@@ -214,7 +225,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
         setOpen(false)
       }}>
         <DialogContent
-         onInteractOutside={(e) => e.preventDefault()}
+          onInteractOutside={(e) => e.preventDefault()}
           className="w-full max-w-[95vw] h-[85vh] p-0 flex flex-col overflow-hidden md:flex-row md:max-w-[1200px] "
         >
           {/* LEFT */}
@@ -299,7 +310,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
                       size="sm"
                       variant={selectedTable.status === "rezerve" ? "destructive" : "outline"}
                       className="flex gap-2 items-center" // İkon ve metni hizalar
-                      onClick={() => handleBook(selectedTable._id)}
+                      onClick={() => handleBook(selectedTable)}
                     >
                       {selectedTable.status === "rezerve" ? (
                         <>
@@ -363,7 +374,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
                 <Button
                   onClick={confirmBasket}
                   variant="default"
-                  className="flex-[2] h-12 text-base font-bold" // Daha geniş ve yüksek
+                  className="flex-2 h-12 text-base font-bold" // Daha geniş ve yüksek
                 >
                   Sepeti Onayla
                 </Button>
@@ -371,7 +382,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
                 {user!.role !== "Garson" && (
                   <Button
                     onClick={odemeAl}
-                    className="flex-[3] h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
+                    className="flex-3 h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
                   >
                     Ödeme Al
                   </Button>
@@ -411,6 +422,7 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
               {user!.role !== "Garson" && (
                 <Button
                   onClick={() => setDeleteAlert(true)}
+                  disabled={selectedTable.currentOrderId ? false : true}
                   variant="ghost"
                   className="w-full text-red-500 hover:text-red-600 hover:bg-destructive/10 text-xs font-semibold uppercase tracking-widest"
                 >
@@ -459,7 +471,13 @@ const [showRezerveDialog, setShowRezerveDialog] = useState(false)
 
         </DialogContent>
       </Dialog>
-      <RezerveDialog showRezerveDialog={showRezerveDialog}  setShowRezerveDialog={setShowRezerveDialog} masaId={selectedTable._id}/>
+      <RezerveDialog 
+      setOpen={setOpen}
+      showRezerveDialog={showRezerveDialog}
+       setShowRezerveDialog={setShowRezerveDialog}
+        masaId={selectedTable._id}
+        onSuccess={onChange}
+        />
       <CustomAlertDialog
         open={deleteAlert}
         onOpenChange={setDeleteAlert}

@@ -38,7 +38,7 @@ export class OrderController {
     return this.orderService.remove(id);
   }
   @Post("paidOrder")
-  async paidOrder(updateOrderDto: UpdateOrderDto) {
+  async paidOrder(@Body() updateOrderDto: UpdateOrderDto) {
     return await this.orderService.getPaid(updateOrderDto)
   }
   @Post("getOrders/by-date")
@@ -46,7 +46,7 @@ export class OrderController {
   //   return await this.orderService.getOrderByDate(from, to)
   // }
   @Put()
-  async editOrder(updateOrderDto: UpdateOrderDto) {
+  async editOrder(@Body() updateOrderDto: UpdateOrderDto) {
     return await this.orderService.editOrder(updateOrderDto)
   }
 }

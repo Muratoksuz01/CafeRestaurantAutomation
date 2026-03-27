@@ -11,9 +11,8 @@ import CustomDialog from "../../components/CustomDialog";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { ApiResponse } from "@/lib/apiTypes";
-import { da } from "date-fns/locale";
 
-function RezerveDialog({ masaId, showRezerveDialog, setShowRezerveDialog }: any) {
+function RezerveDialog({ masaId, showRezerveDialog, setShowRezerveDialog,onSuccess ,setOpen}: any) {
     const now = new Date();
     const form = useForm({
         resolver: zodResolver(rezerveSchema),
@@ -34,6 +33,8 @@ function RezerveDialog({ masaId, showRezerveDialog, setShowRezerveDialog }: any)
             setShowRezerveDialog(false);
             toast.success("basrılı", successStyle)
             form.reset()
+            onSuccess()
+            setOpen(false)
         }else{
             console.error("rezerve edilirken hata var:",data.message)
             toast.warning(data.message || "rezerve edilirken hata olustu")

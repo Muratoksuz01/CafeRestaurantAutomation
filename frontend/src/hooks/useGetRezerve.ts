@@ -2,19 +2,20 @@ import axiosInstance from '@/lib/axiosInstance';
 import { useState } from 'react';
 import { API_PATHS } from '@/lib/api';
 import { ApiResponse } from '@/lib/apiTypes';
+import { Rezerve } from '@/models/Tables';
 // src/hooks/useProducts.ts
 
 
 
 
 export function useGetRezerve() {
-  const [rezerve, setRezerve] = useState<[]>([]);
+  const [rezerve, setRezerve] = useState<Rezerve[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   async function getRezerve() {
     try {
-      const res = await axiosInstance.get<ApiResponse>(API_PATHS.getRezervasyonlar); // buraya auth koruması sadece admin ise ulasabilecek sekilde ayarlanacak
+      const res = await axiosInstance.get<ApiResponse<Rezerve[]>>(API_PATHS.getRezervasyonlar); // buraya auth koruması sadece admin ise ulasabilecek sekilde ayarlanacak
       if (res.data.status && res.data.data) {
         setRezerve(res.data.data);        
       }

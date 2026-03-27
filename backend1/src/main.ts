@@ -4,6 +4,7 @@ import { ValidationPipe } from '@nestjs/common';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { join } from 'path';
 import * as express from 'express';
+import { MyLogger } from './logger/logger.service';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +19,7 @@ async function bootstrap() {
   });
   app.useGlobalInterceptors(new TransformInterceptor());
   app.use('/assets', express.static(join(__dirname, '..', 'assets')));
+  app.useLogger(app.get(MyLogger));
   await app.listen(process.env.PORT ?? 6002); //port 6001 de calişiyor 
 }
 bootstrap();

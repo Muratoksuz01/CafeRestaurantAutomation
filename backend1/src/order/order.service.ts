@@ -6,12 +6,17 @@ import { OrderItem } from 'src/schemas/OrderItem.schemas';
 import { InjectModel } from '@nestjs/mongoose';
 import { Table } from 'src/schemas/table.schemas';
 import { Model } from 'mongoose';
+import { Rezerve } from 'src/schemas/Rezerve.schemas';
+import { PrinterService } from 'src/Printer/printer.service';
 @Injectable()
 export class OrderService {
   constructor(
     @InjectModel(Table.name) private tableModel: Model<Table>,
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(OrderItem.name) private orderItemModel: Model<OrderItem>,
+    @InjectModel(Rezerve.name) private rezerveModel: Model<Rezerve>,
+    private readonly printerService: PrinterService
+
 
   ) { }
   async create(req: any, createOrderDto: CreateOrderDto) {
@@ -22,6 +27,14 @@ export class OrderService {
     const table = await this.tableModel.findById(tableId);
     if (!table) {
       return { success: false, message: 'Masa bulunamadı.' };
+    }
+    if (table.status == "rezerve") {
+      const rezerve = await this.rezerveModel.findOne({ masaId: table._id })
+      if (!rezerve) {
+        return { success: false, message: 'Rezervasyon bulunamadı.' };
+      }
+      rezerve.status = "arrived"
+      await rezerve.save()
     }
 
     try {
@@ -57,7 +70,16 @@ export class OrderService {
         status: 'dolu',
         currentOrderId: savedOrder._id,
       });
-
+      await this.printerService.printOrder({
+        orderId: savedOrder._id,
+        tableId: tableId,
+        items: basket.map(item => ({
+          name: item.name,
+          qty: item.qty,
+          price: item.price
+        })),
+        totalAmount:total
+      })
       // 6. Sonucu döndür (Interceptor sayesinde otomatik paketlenecek)
       return {
         message: 'Sipariş başarıyla oluşturuldu.',

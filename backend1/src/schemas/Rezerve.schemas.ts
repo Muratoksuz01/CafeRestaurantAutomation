@@ -14,7 +14,7 @@ export class Rezerve {
 
   @Prop({ 
     required: true, 
-    enum: ["arrived","cancaled","pending"] 
+    enum: ["arrived","cancelled","pending"] 
   })
   status: string;
 

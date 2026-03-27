@@ -1,74 +1,112 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Table, TableDocument } from 'src/schemas/table.schemas';
 import { CreateRezerveDto } from './dto/create-rezerve.dto';
 import { UpdateRezerveDto } from './dto/update-rezerve.dto';
 import { Rezerve, RezerveDocument } from 'src/schemas/Rezerve.schemas';
+import { MyLogger } from 'src/logger/logger.service';
 
 @Injectable()
 export class RezerveService {
   constructor(
+    private readonly logger:MyLogger,
     @InjectModel(Rezerve.name) private rezerveModel: Model<RezerveDocument>,
     @InjectModel(Table.name) private tableModel: Model<TableDocument>,
-  ) {}
+  ) { 
+    this.logger.setContext("RezerveService")
+  }
 
-  async create(req:any,createRezerveDto: CreateRezerveDto) {
-    const userId=req.user.userId
+  async create(req: any, createRezerveDto: CreateRezerveDto) {
+    const userId = req.user.userId
     const { masaId } = createRezerveDto;
+    try {
 
-    // Masa kontrolü
-    const table = await this.tableModel.findById(masaId);
-    if (!table) return({status:false,message:'Masa bulunamadı'});
 
-    // Masa durumunu "rezerve" yap
-    table.status = 'rezerve';
-    await table.save();
+      // Masa kontrolü
+      const table = await this.tableModel.findById(masaId);
+      if (!table) {
+        // Hata değil, bir iş kuralı ihlali (Uyarı/Warn)
+        this.logger.warn(`Rezervasyon başarısız: Masa bulunamadı. MasaID: ${masaId}`);
+        return { status: false, message: 'Masa bulunamadı' };
+      }
+      // Masa durumunu "rezerve" yap
+      table.status = 'rezerve';
 
-    // Rezerve oluştur
-    const rezerve = new this.rezerveModel({
-      ...createRezerveDto,
-      masaId: new Types.ObjectId(masaId),
-      status: 'pending', // default status
-    });
-await rezerve.save()
-    return rezerve
+      await table.save();
+
+      // Rezerve oluştur
+      const rezerve = new this.rezerveModel({
+        ...createRezerveDto,
+        masaId: new Types.ObjectId(masaId),
+        status: 'pending', // default status
+      });
+      await rezerve.save()
+      return rezerve
+    } catch (error) {
+      this.logger.error(
+        `Rezervasyon Create Hatası! User: ${userId}, Data: ${JSON.stringify(createRezerveDto)} - Hata: ${error.message}`,
+        error.stack,
+      );
+      throw new InternalServerErrorException('Rezervasyon oluşturulurken teknik bir hata oluştu.');
+    }
   }
 
   async findAll() {
-    const results=await this.rezerveModel.find().populate('masaId').lean()
-    
-    return {data:results};
+    try{
+    const results = await this.rezerveModel.find().lean()
+
+    return { data: results };
+    } catch (error) {
+      console.error("Rezervasyon findAll Hatası:", error);
+      throw error;
+    }
   }
 
   async findOne(id: string) {
+    try{
     const rezerve = await this.rezerveModel.findById(id).populate('masaId').lean();
-    if (!rezerve) return {message:'Rezerve bulunamadı',status:false};
-    return {data:rezerve};
+    if (!rezerve) return { message: 'Rezerve bulunamadı', status: false };
+    return { data: rezerve };
+    } catch (error) {
+      console.error("Rezervasyon findOne Hatası:", error);
+      throw error;
+    }
   }
 
   async update(id: string, updateRezerveDto: UpdateRezerveDto) {
+    try{
     const rezerve = await this.rezerveModel.findByIdAndUpdate(
       id,
       updateRezerveDto,
       { new: true },
     ).populate('masaId').lean();
-    if (!rezerve) return {message:'Rezerve bulunamadı', status:false};
+    if (!rezerve) return { message: 'Rezerve bulunamadı', status: false };
     return rezerve;
+    } catch (error) {
+      console.error("Rezervasyon update Hatası:", error);
+      throw error;
+    }
   }
 
   async remove(id: string) {
-    const rezerve = await this.rezerveModel.findById(id);
-    if (!rezerve) return {message:'Rezerve bulunamadı', status:false};
+    try{
+    const masa = await this.tableModel.findById(id);
+    if (!masa) return { message: 'Masa bulunamadı', status: false };
+    masa.status = "bos"
+
+    const rezerve = await this.rezerveModel.findOne({ masaId: masa._id });
+    if (!rezerve) return { message: 'Rezervasyon bulunamadı', status: false };
+
+    rezerve.status = "cancelled"
+    await rezerve.save()
+    await masa.save()
 
 
-    // Masa durumunu "bos" yap
-    const table = await this.tableModel.findById(rezerve.masaId);
-    if (table) {
-      table.status = 'bos';
-      await table.save();
+    return masa;
+    } catch (error) {
+      console.error("Rezervasyon remove Hatası:", error);
+      throw error;
     }
-
-    return {data:await this.rezerveModel.findByIdAndDelete(id).lean()};
   }
 }

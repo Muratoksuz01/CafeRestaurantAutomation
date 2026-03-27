@@ -4,7 +4,10 @@
     - profil sayfasında bazı endpointler ihtiyac var onları ayarla == tamam
     - email gonderme islemina bak   => https://notiz.dev/blog/send-emails-with-nestjs
     - sayfa lisanslama arastır
-    - randevu sistemine bak                 == az kaldı guzel goruntuleme kaldı  
+    - randevu sistemine bak                 == az kaldı guzel goruntuleme kaldı 
+27 mart 
+    adisyon hazırlık yaz  == tamam temel oldu standart icin biraz sekli semasi degişmesi gerek ,termal icin suanlık bir caişma yok sadece temeli var 
+    
 
 
 yapılacaklar
