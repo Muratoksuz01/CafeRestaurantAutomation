@@ -8,6 +8,7 @@ import { Table } from 'src/schemas/table.schemas';
 import { Model } from 'mongoose';
 import { Rezerve } from 'src/schemas/Rezerve.schemas';
 import { PrinterService } from 'src/Printer/printer.service';
+import { IPrintOrderData } from 'src/Printer/dto/adisyonModel';
 @Injectable()
 export class OrderService {
   constructor(
@@ -27,6 +28,9 @@ export class OrderService {
     const table = await this.tableModel.findById(tableId);
     if (!table) {
       return { success: false, message: 'Masa bulunamadı.' };
+    }
+    if (table.status == "dolu") {
+      return { success: false, message: 'Bu Masa Dolu oldugu icin tekrar sipariş verilemez ' };
     }
     if (table.status == "rezerve") {
       const rezerve = await this.rezerveModel.findOne({ masaId: table._id })
@@ -71,16 +75,17 @@ export class OrderService {
         currentOrderId: savedOrder._id,
       });
       await this.printerService.printOrder({
-        orderId: savedOrder._id,
-        tableId: tableId,
+        orderNo: savedOrder._id.toString().slice(-4),
+        tableName: table.name,
+        date: savedOrder.createdAt,
         items: basket.map(item => ({
           name: item.name,
-          qty: item.qty,
-          price: item.price
+          qty: Number(item.qty),
+          price: Number(item.price),
+          total: Number(item.qty) * Number(item.price)
         })),
-        totalAmount:total
-      })
-      // 6. Sonucu döndür (Interceptor sayesinde otomatik paketlenecek)
+        totalAmount: Number(total)
+      });
       return {
         message: 'Sipariş başarıyla oluşturuldu.',
         data: {
@@ -219,6 +224,7 @@ export class OrderService {
     }
   }
   async editOrder(updateOrderDto: UpdateOrderDto) {
+    console.log("edit order sayfası ")
     const { orderId, basket, total } = updateOrderDto;
 
     try {
@@ -369,7 +375,38 @@ export class OrderService {
   //     throw new InternalServerErrorException('Belirtilen tarihler arasında rapor alınamadı.');
   //   }
   // }
+  async printOrder(orderId: string) {
+    const order = await this.orderModel.findById(orderId)
+      .populate({
+        path: 'orderItems',
+        populate: { path: 'foodId' }
+      })
+      .exec();
 
+    if (!order) return { status: false, message: "Sipariş Bulunamadı" };
+
+    const table = await this.tableModel.findById(order.tableId);
+    if (!table) return { status: false, message: "Masa Bulunamadı" };
+
+    const printData: IPrintOrderData = {
+      orderNo: order._id.toString().slice(-4),
+      tableName: table.name,
+      date: order.createdAt,
+      items: order.orderItems.map((item: any) => ({
+        name: item.foodId.name,
+        qty: Number(item.qty),
+        price: Number(item.unitprice),
+        total: Number(item.total)
+      })),
+      totalAmount: Number(order.total) as number
+    };
+
+    const success = await this.printerService.printOrder(printData);
+    if (success)
+      return { message: "basral sekilde yazdırıldı " }
+    else
+      return {status:false, message: "yazdırma işleminde hat olustur " }
+  }
 
 
 

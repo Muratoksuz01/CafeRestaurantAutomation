@@ -1,15 +1,15 @@
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";import { Input } from "@/components/ui/input";
-import { toast } from "sonner";import { ApiResponse } from "@/lib/apiTypes";
+import { Button } from "@/components/ui/button"; import { Input } from "@/components/ui/input";
+import { toast } from "sonner"; import { ApiResponse } from "@/lib/apiTypes";
 import { useEffect, useState } from 'react'
-import { useGetCategory } from "@/hooks/useGetCategory";import { useGetFoods } from "@/hooks/useGetFoods";
-import { Food } from "@/models/Food";import { AllTable } from "@/models/Tables";
-import { API_PATHS } from "@/lib/api";import axiosInstance from "@/lib/axiosInstance";
+import { useGetCategory } from "@/hooks/useGetCategory"; import { useGetFoods } from "@/hooks/useGetFoods";
+import { Food } from "@/models/Food"; import { AllTable } from "@/models/Tables";
+import { API_BASE_URL, API_PATHS } from "@/lib/api"; import axiosInstance from "@/lib/axiosInstance";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import useAuthStore from "@/store/useAuthStore";
-import { CalendarCheck, CalendarX, X } from "lucide-react";
+import { CalendarCheck, CalendarX, Printer, X } from "lucide-react";
 import RezerveDialog from "./RezerveDialog";
 
 type Basket = Food & { qty: number };
@@ -133,15 +133,15 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     }
   }
 
- /*  const onClose = () => {
-    const changed = JSON.stringify(basket) !== JSON.stringify(originalBasket);
-    if (changed) {
-      toast.warning("degiişklikler kaydediilmedi", warningStyle)
-    } else {
-      setOpen(false)
-      setBasket([])
-    }
-  } */
+  /*  const onClose = () => {
+     const changed = JSON.stringify(basket) !== JSON.stringify(originalBasket);
+     if (changed) {
+       toast.warning("degiişklikler kaydediilmedi", warningStyle)
+     } else {
+       setOpen(false)
+       setBasket([])
+     }
+   } */
   const fetchTable = async (id: string) => {
     const res = await axiosInstance.get(API_PATHS.getTable(id))
     if (res.data.status) {
@@ -203,19 +203,27 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
       return setShowRezerveDialog(true);
     }
     try {
-      const res= await axiosInstance.delete<ApiResponse>(API_PATHS.deleteRezervasyon(table._id));
-      if(res.data.status){
+      const res = await axiosInstance.delete<ApiResponse>(API_PATHS.deleteRezervasyon(table._id));
+      if (res.data.status) {
         onChange()
-        toast.success(res.data.message || "Rezervasyon Silindi",successStyle)
+        toast.success(res.data.message || "Rezervasyon Silindi", successStyle)
         setOpen(false)
-      }else{
-        toast.warning(res.data.message || "Hata:Rezervasyon Silinemedi",warningStyle)
+      } else {
+        toast.warning(res.data.message || "Hata:Rezervasyon Silinemedi", warningStyle)
       }
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Silme işlemi başarısız:", error);
-      toast.warning(error.res.data.message || "Sistemsel bir hata var Rezervasyon Silinemedi",warningStyle)
+      toast.warning(error.res.data.message || "Sistemsel bir hata var Rezervasyon Silinemedi", warningStyle)
     }
   };
+  const handlePrint = async (orderId: string) => {
+    console.log("yazdırılıan orderID:", orderId)
+    const res = await axiosInstance.get<ApiResponse>(API_PATHS.printAdisyon(orderId))
+    if (res.data.status)
+      return toast.success("fiş basaılı sekilde yazdırıldı ", successStyle)
+    return toast.warning("yazdırma işleminde bir soun olustu:" + res.data.message || "hata gelmedi", warningStyle)
+
+  }
   return (
     <>
 
@@ -266,24 +274,46 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
                 return (
                   <div
                     key={food._id}
-                    className="bg-background shadow-sm hover:shadow border rounded-lg p-3 flex justify-between items-center"
+                    className="bg-background shadow-sm hover:shadow-md border rounded-xl p-3 flex justify-between items-center transition-all"
                   >
-                    <div>
-                      <div className="font-medium">{food.name}</div>
-                      <div className="text-sm text-foreground">{food.price} TL</div>
+                    <div className="flex items-center gap-4">
+                      {/* Resim Kısmı */}
+                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-muted">
+                        <img
+                          className="h-full w-full object-cover"
+                          src={food.imgs?.[0] ? `${API_BASE_URL}${food.imgs[0]}` : "/placeholder.png"}
+                          alt={food.name}
+                        />
+                      </div>
+
+                      {/* Metin Kısmı */}
+                      <div className="flex flex-col">
+                        <div className="font-semibold text-sm md:text-base capitalize leading-tight">
+                          {food.name}
+                        </div>
+                        <div className="text-sm font-medium text-muted-foreground mt-1">
+                          {food.price} TL
+                        </div>
+                      </div>
                     </div>
 
-                    <div className="flex gap-2">
+                    {/* Butonlar */}
+                    <div className="flex items-center gap-2">
                       {inBasket && (
                         <Button
-                          size="sm"
+                          size="icon"
                           variant="outline"
+                          className="h-8 w-8 rounded-full"
                           onClick={() => removeFood(String(food._id))}
                         >
                           -
                         </Button>
                       )}
-                      <Button size="sm" onClick={() => addFood(food)}>
+                      <Button
+                        size="sm"
+                        className="rounded-lg px-4"
+                        onClick={() => addFood(food)}
+                      >
                         Ekle
                       </Button>
                     </div>
@@ -305,7 +335,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
                 <div className="flex items-center gap-2">
                   {/* Rezerve Butonu Buraya Gelebilir */}
-                  {selectedTable?.currentOrderId == null && (
+                  {selectedTable.currentOrderId == null ? (
                     <Button
                       size="sm"
                       variant={selectedTable.status === "rezerve" ? "destructive" : "outline"}
@@ -324,6 +354,10 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
                         </>
                       )}
                     </Button>
+                  ) : (
+                    <Printer
+                      onClick={() => { handlePrint(selectedTable.currentOrderId) }}
+                      className="cursor-pointer" />
                   )}
                   {/* KAPATMA BUTONU */}
                   <DialogClose>
@@ -471,13 +505,13 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
 
         </DialogContent>
       </Dialog>
-      <RezerveDialog 
-      setOpen={setOpen}
-      showRezerveDialog={showRezerveDialog}
-       setShowRezerveDialog={setShowRezerveDialog}
+      <RezerveDialog
+        setOpen={setOpen}
+        showRezerveDialog={showRezerveDialog}
+        setShowRezerveDialog={setShowRezerveDialog}
         masaId={selectedTable._id}
         onSuccess={onChange}
-        />
+      />
       <CustomAlertDialog
         open={deleteAlert}
         onOpenChange={setDeleteAlert}

@@ -1,17 +1,12 @@
-
-26 mart
-    - editDialog ile customDialog birleştirmeye caliş  == editdiaslog icinde custom dialsog kullandım 
-    - profil sayfasını yaz  == tamam ama buraya sonra bakmk lazım guncelledikten sonra useAuthStore guncellenmeli 
-    - randevu incele            == az kaldı 
-
-27 mart 
-    rezerve icin tooltip tanımla == tamam 
-   
-    adisyon hazırlık yaz  == sade bir buton koyulacaktı orderId varsa masada yanında yazdır adında bir button koyulacaktı 
-yapılacaklar
+31 mart 
+    - login register sayfası bunu dusun 
     - app.tsx de iki tane dashboardLayout var oradaki yonlendirme sistemi iyi degil bunu duzelt
-    - randevu sistemi
-        vite tarafını yaz 
+
+
+
+
+
+yapılacaklar
     profil sayfası tasarla
         suanlık email alanını basit yap sonra email servisi yapalom email dogrulaması yapalım
     login sayfasında unuttum ekle 

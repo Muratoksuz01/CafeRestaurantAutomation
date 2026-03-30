@@ -2,7 +2,7 @@ import PDFDocument from 'pdfkit';
 import * as fs from 'fs';
 import * as path from 'path';
 import * as printer from 'node-printer';
-import { IPrinter } from './printer.interface';
+import { IPrinter } from '../printer.interface';
 import { print, getDefaultPrinter } from "pdf-to-printer";
 export class StandardPrinterService implements IPrinter {
  private printDir: string;

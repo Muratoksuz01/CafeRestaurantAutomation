@@ -12,7 +12,7 @@ import {
 export default function TableCard({ table, onClick, rezerve }: { table: AllTable; onClick: any; rezerve: Rezerve[] }) {
   const isEmpty = table.status === "bos"
   const isReserved = table.status === "rezerve"
- // const isFull = table.status === "dolu"
+  // const isFull = table.status === "dolu"
 
   // Bu masaya ait rezervasyon bilgisini buluyoruz
   const reservationDetail = rezerve.find((r) => r.masaId === table._id)
@@ -54,16 +54,16 @@ export default function TableCard({ table, onClick, rezerve }: { table: AllTable
         {!isEmpty && (
           <div className="flex items-center gap-1.5 bg-black/10 backdrop-blur-md px-2.5 py-1 rounded-full text-[11px] font-bold">
             <Clock size={12} />
-           {table.orderCreated || (reservationDetail?.endDate ? new Date(reservationDetail.endDate).toLocaleTimeString("tr-TR", {
-  hour: "2-digit",
-  minute: "2-digit"
-}) : "SAAT YOK")}
+            {table.orderCreated || (reservationDetail?.endDate ? new Date(reservationDetail.endDate).toLocaleTimeString("tr-TR", {
+              hour: "2-digit",
+              minute: "2-digit"
+            }) : "SAAT YOK")}
           </div>
         )}
       </div>
 
       <div className="flex flex-col flex-1 justify-center mt-2">
-        <h3 className="font-bold text-2xl tracking-tight leading-none uppercase">
+        <h3 className="font-bold text-lg xl:text-xl tracking-tight leading-tight uppercase wrap-break-words line-clamp-2">
           {table.name}
         </h3>
 
@@ -103,54 +103,54 @@ export default function TableCard({ table, onClick, rezerve }: { table: AllTable
   )
 
 
- return (
-   <TooltipProvider delayDuration={100}>
-     {
-     isReserved &&  reservationDetail ? (
-         <Tooltip>
-           <TooltipTrigger asChild>
-           
-             {CardContent}
-           </TooltipTrigger>
-           <TooltipContent side="right" className="p-4 w-64 bg-slate-900 text-white border-amber-500/50">
-             <div className="space-y-3">
-               <div className="flex items-center gap-2 border-b border-white/10 pb-2">
-                 <CalendarCheck className="text-amber-400" size={16} />
-                 <p className="font-bold text-sm uppercase">Rezervasyon Detayı</p>
-               </div>
- 
-               <div className="space-y-2 text-xs">
-                 <div className="flex justify-between items-center">
-                   <span className="opacity-60 flex items-center gap-1"><User size={12} /> Müşteri:</span>
-                   <span className="font-semibold">{reservationDetail.employeeName}</span>
-                 </div>
-                 <div className="flex justify-between items-center">
-                   <span className="opacity-60 flex items-center gap-1"><Phone size={12} /> Telefon:</span>
-                   <span className="font-semibold">{reservationDetail.employeePhone}</span>
-                 </div>
-                 <div className="flex justify-between items-center text-amber-300">
-                   <span className="opacity-60 flex items-center gap-1"><Clock size={12} /> Saat:</span>
-                   <span className="font-bold">
-                     {new Date(reservationDetail.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-                   </span>
-                 </div>
-                 {reservationDetail.description && (
-                   <div className="pt-2 border-t border-white/5">
-                     <span className="opacity-60 flex items-center gap-1 mb-1"><Info size={12} /> Not:</span>
-                     <p className="italic bg-white/5 p-2 rounded leading-tight">{reservationDetail.description}</p>
-                   </div>
-                 )}
-               </div>
-             </div>
-           </TooltipContent>
-         </Tooltip>
- 
-       ) : (
-         CardContent
-       )
-     }
- 
- 
-   </TooltipProvider>
- )
+  return (
+    <TooltipProvider delayDuration={100}>
+      {
+        isReserved && reservationDetail ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+
+              {CardContent}
+            </TooltipTrigger>
+            <TooltipContent side="right" className="p-4 w-64 bg-slate-900 text-white border-amber-500/50">
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 border-b border-white/10 pb-2">
+                  <CalendarCheck className="text-amber-400" size={16} />
+                  <p className="font-bold text-sm uppercase">Rezervasyon Detayı</p>
+                </div>
+
+                <div className="space-y-2 text-xs">
+                  <div className="flex justify-between items-center">
+                    <span className="opacity-60 flex items-center gap-1"><User size={12} /> Müşteri:</span>
+                    <span className="font-semibold">{reservationDetail.employeeName}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="opacity-60 flex items-center gap-1"><Phone size={12} /> Telefon:</span>
+                    <span className="font-semibold">{reservationDetail.employeePhone}</span>
+                  </div>
+                  <div className="flex justify-between items-center text-amber-300">
+                    <span className="opacity-60 flex items-center gap-1"><Clock size={12} /> Saat:</span>
+                    <span className="font-bold">
+                      {new Date(reservationDetail.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </span>
+                  </div>
+                  {reservationDetail.description && (
+                    <div className="pt-2 border-t border-white/5">
+                      <span className="opacity-60 flex items-center gap-1 mb-1"><Info size={12} /> Not:</span>
+                      <p className="italic bg-white/5 p-2 rounded leading-tight">{reservationDetail.description}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </TooltipContent>
+          </Tooltip>
+
+        ) : (
+          CardContent
+        )
+      }
+
+
+    </TooltipProvider>
+  )
 }

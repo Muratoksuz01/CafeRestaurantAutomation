@@ -5,7 +5,7 @@ import CreateFoodForm from "./components/CreateFoodForm";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import EditFoodForm from "./components/EditFoodForm";
 import axiosInstance from "@/lib/axiosInstance";
-import { API_PATHS } from "@/lib/api";
+import { API_BASE_URL, API_PATHS } from "@/lib/api";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetCategory } from "@/hooks/useGetCategory";
@@ -144,14 +144,14 @@ useEffect(()=>{
                   const x = e.clientX - rect.left;
                   const img = e.currentTarget.querySelector("img");
                   img.src = x < rect.width / 2
-                    ? `http://localhost:5000${food.imgs[0]}`
-                    : `http://localhost:5000${food.imgs[1]}`;
+                    ? `${API_BASE_URL}${food.imgs[0]}`
+                    : `${API_BASE_URL}${food.imgs[1]}`;
                 }}
               >
                 <div className="relative aspect-video w-full overflow-hidden rounded-t-xl bg-gray-100">
                   {/* aspect-video zaten 16:9 oranını sağlar (Tailwind) */}
                   <img
-                    src={`http://localhost:5000${food.imgs[0]}`}
+                    src={`${API_BASE_URL}${food.imgs[0]}`}
                     alt={food.name}
                     className="absolute inset-0 w-full h-full object-cover transition-all duration-500 group-hover:scale-105"
                   // object-cover: Resmi çerçeveye yayar, taşan kısımları kırpar.

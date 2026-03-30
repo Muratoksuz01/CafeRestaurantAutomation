@@ -9,6 +9,7 @@ export default defineConfig({
   server: {
     port: 6174,
     strictPort: true, // Eğer 5174 doluysa başka porta geçmemesi için (isteğe bağlı)
+    host:"0.0.0.0"
   },
   resolve: {
     alias: {

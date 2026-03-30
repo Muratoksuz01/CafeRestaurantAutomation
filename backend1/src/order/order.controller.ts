@@ -22,6 +22,10 @@ export class OrderController {
   console.log("burada:",to)
     return await this.orderService.findAll(from, to);
   }
+  @Put("editOrder")
+  async editOrder(@Body() updateOrderDto: UpdateOrderDto) {
+    return await this.orderService.editOrder(updateOrderDto)
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
@@ -41,12 +45,13 @@ export class OrderController {
   async paidOrder(@Body() updateOrderDto: UpdateOrderDto) {
     return await this.orderService.getPaid(updateOrderDto)
   }
-  @Post("getOrders/by-date")
+  // @Post("getOrders/by-date")
   // async getOrderByDate(from?: string, to?: string) {
   //   return await this.orderService.getOrderByDate(from, to)
   // }
-  @Put()
-  async editOrder(@Body() updateOrderDto: UpdateOrderDto) {
-    return await this.orderService.editOrder(updateOrderDto)
+  @Get("print/:id")
+  async  printAdisyon(@Param("id") id :string) {
+    return await this.orderService.printOrder(id)
   }
+  
 }
