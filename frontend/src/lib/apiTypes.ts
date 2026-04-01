@@ -5,3 +5,10 @@ export interface ApiResponse<T = any> {
   message: string;
   data: T;            // T, o anki verinin tipi (Table, User, Product vb.) olacak
 }
+
+export interface JwtToken{
+  userId:string
+  roleName:string
+  iat:Number
+  exp:number
+}

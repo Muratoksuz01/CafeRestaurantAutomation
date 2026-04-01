@@ -1,96 +1,56 @@
-import { HiBookOpen, HiMiniQueueList, } from "react-icons/hi2";
-import { LuChevronRight } from "react-icons/lu";
-import { Link, useLocation } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import { LuLogOut } from "react-icons/lu";
+import useAuthStore from "../store/useAuthStore"; // Store yolunu kontrol edin
+// import noAuthImg from "@/assets/noAuthImg.png";
+import  noAuthImg from "@/assets/noAuthİmg.png"
+export default function Unauthorized() {
+  const navigate = useNavigate();
+  const logout = useAuthStore((state) => state.logout);
 
-const links = [
-  {
-    name: "Login",
-    href: "/login",
-    description: "istersniz buradan login olabilrsiniz .",
-    icon: HiBookOpen,
-  },
-  {
-    name: "Ana Sayfa",
-    href: "/",
-    description: "temiz bir baslangoc icin başa git.",
-    icon: HiMiniQueueList,
-  },
-
-];
-
-export default function NotFound() {
-  const { pathname } = useLocation();
-  const path = pathname.split("/").filter(Boolean).pop() || "page";
+  const handleLogout = () => {
+    logout(); // Mevcut oturumu temizle
+    navigate("/login",{replace:true}); // Login sayfasına yönlendir
+  };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-start justify-center py-12 px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-4xl">
-        <div className="bg-white rounded-lg shadow-md">
-          <main className="px-6 pb-16 pt-10 sm:pb-24 lg:px-8">
-            <div className="text-center">
-              <p className="text-4xl font-bold leading-8 text-sky-600">404</p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight text-gray-900">
-                <span className="text-red-500 underline underline-offset-2 decoration-1 capitalize">
-                  {path}
-                </span>{" "}
-                does not exist
-              </h1>
-              <p className="mt-2 text-base leading-7 text-gray-600 sm:mt-6 sm:text-lg sm:leading-8">
-                Sorry, we couldn’t find the {path} page you’re looking for.
-              </p>
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white p-10 rounded-xl shadow-lg text-center">
+        <div>
+          {/* Görsel Alanı */}
+          <div className="flex justify-center">
+            <div className="relative">
+              <img
+                src={noAuthImg}// Resmin public klasöründe olduğunu varsayıyorum
+                alt="Unauthorized"
+                className="h-32 w-32 object-contain"
+              />
+             
             </div>
+          </div>
 
-            <div className="mx-auto mt-6 flow-root max-w-lg">
-              <h2 className="sr-only">Popular pages</h2>
-              <ul
-                role="list"
-                className="divide-y divide-gray-200 border-b border-gray-200 flex flex-col"
-              >
-                {links.map((link, idx) => {
-                  const Icon = link.icon;
-                  return (
-                    <li
-                      key={idx}
-                      className="relative flex gap-x-6 py-4 px-4 rounded-md hover:bg-sky-100 transition-colors"
-                    >
-                      <Link
-                        to={link.href}
-                        className="absolute inset-0 z-10"
-                      />
-
-                      <div className="flex h-10 w-10 flex-none items-center justify-center rounded-lg shadow-sm ring-1 ring-gray-200">
-                        <Icon className="h-6 w-6 text-sky-600" />
-                      </div>
-
-                      <div className="flex-auto">
-                        <h3 className="text-sm font-semibold text-gray-900">
-                          {link.name}
-                        </h3>
-                        <p className="mt-2 text-sm text-gray-600">
-                          {link.description}
-                        </p>
-                      </div>
-
-                      <div className="flex-none self-center">
-                        <LuChevronRight className="h-5 w-5 text-gray-400" />
-                      </div>
-                    </li>
-
-                  );
-                })}
-              </ul>
-
-              <div className="mt-5 flex justify-center">
-                <Link
-                  to="/"
-                  className="inline-flex items-center rounded-md bg-sky-600 px-4 py-2 text-sm font-semibold text-white shadow hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500"
-                >
-                  Go to homepage
-                </Link>
-              </div>
-            </div>
-          </main>
+          <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
+            Erişim Engellendi
+          </h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Üzgünüz, bu sayfayı görüntülemek için gerekli yetkilere sahip değilsiniz.
+          </p>
         </div>
+
+        <div className="mt-8 border-t border-gray-100 pt-8">
+        
+          
+          <button
+            onClick={handleLogout}
+            className="group relative w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition-all duration-200"
+          >
+            <span className="absolute left-0 inset-y-0 flex items-center pl-3">
+              <LuLogOut className="h-5 w-5 text-red-300 group-hover:text-white" />
+            </span>
+            Güvenli Çıkış Yap ve Giriş Ekranına Dön
+          </button>
+        </div>
+
+        
       </div>
     </div>
   );

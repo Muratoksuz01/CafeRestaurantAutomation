@@ -4,8 +4,7 @@ import { Outlet } from "react-router-dom";
 import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { ModeToggle } from "@/components/mode-toggle";
 import { useState } from "react";
-import { Settings } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 
 function DashboardLayout() {
   useAuthControl();

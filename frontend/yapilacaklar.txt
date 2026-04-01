@@ -4,7 +4,9 @@
 
 
 
-
+2 nisan 
+    telefon moduna iyi ayarla 
+    login register sayfası ,siparis alma sayfası oradaki dialglar bunları yap 
 
 yapılacaklar
     profil sayfası tasarla

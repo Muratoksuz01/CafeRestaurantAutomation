@@ -22,20 +22,31 @@ type AdminStats = {
 };
 export default function AdminOverview() {
   const [stats, setStats] = useState<AdminStats | null>(null);
-
-  useEffect(() => {
+const [error, setError] = useState("")
+const [loading, setLoading] = useState(false) 
+useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
-    const res = await axiosInstance.get<ApiResponse<AdminStats>>(API_PATHS.getAdminStats);
-    if (res.data.status) {
-      setStats(res.data.data);
+    try {
+      setLoading(true)
+      const res = await axiosInstance.get<ApiResponse<AdminStats>>(API_PATHS.getAdminStats);
+      if (res.data.status) {
+        setStats(res.data.data);
+      }
+      else{
+        setError(res.data.message || "verileri cekerken hata olustu")
+      }
+    } catch (error) {
+      console.error(error)
+    }finally{
+      setLoading(false)
     }
   };
 
-  if (!stats) return <div className="p-6 text-center animate-pulse text-muted-foreground">Yükleniyor...</div>;
-
+  if (loading) return <div className="p-6 text-center animate-pulse text-muted-foreground">Yükleniyor...</div>;
+  if(!error ||!stats) return <div>veriler cekilirken bir hata olustu</div>
   return (
     <div className="p-6 space-y-6 bg-transparent">
       {/* Başlık */}

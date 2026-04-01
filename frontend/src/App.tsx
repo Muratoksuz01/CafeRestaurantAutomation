@@ -33,10 +33,10 @@ function AppRoutes() {
       <Route path="/" element={<Navigate to={"/login"} />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
-      <Route path="/profile" element={<Profile />} />
-      {/* Yönetici Route Grubu */}
+      
       {user?.role === "Yonetici" && (
         <Route path="/admin" element={<DashboardLayout />}>
+
           <Route index element={<Navigate to="genel-bakis" />} />
           <Route path="genel-bakis" element={<AdminOverview />} />
           <Route path="kullanicilar" element={<AdminUsers />} />
@@ -49,24 +49,25 @@ function AppRoutes() {
 
       )}
 
-      {/* Kasiyer ve Garson Route Grubu */}
-      {user?.role && ["Kasiyer", "Garson"].includes(user.role) && (
-        <Route path="/user" element={<DashboardLayout />}>
-        <Route path="profile" element={<Profile />} />
 
-          <Route index element={
-            user.role === "Kasiyer"
-              ? <Navigate to="satis-ekrani" />
-              : <Navigate to="masalar" />
-          } />
+      {user?.role == "Kasiyer" && (
+        <Route path="user" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="satis" />} />
+          <Route path="satis" element={<UserOverview />} />
+          <Route path="masa" element={<TableList />} />
+          <Route path="profile" element={<Profile />} />
 
-          {/* Kasiyer Özel */}
-          <Route path="satis-ekrani" element={<UserOverview />} />
-          <Route path="islem-listesi" element={<TableList />} />
-          {/* Garson Özel (veya ortak) */}
-          <Route path="masalar" element={<UserOverview />} />
         </Route>
+      )}
 
+
+      {user?.role == "Garson" && (
+        <Route path="user" element={<DashboardLayout />}>
+          <Route index element={<Navigate to="satis" />} />
+          <Route path="satis" element={<UserOverview />} />
+          <Route path="profile" element={<Profile />} />
+
+        </Route>
       )}
 
 
@@ -74,7 +75,12 @@ function AppRoutes() {
 
 
 
-      <Route path="*" element={<NotFound />} />
+
+
+      <Route path="401" element={<NotFound />} />
+
+
+      <Route path="*" element={<Navigate to={"/"} />} />
     </Routes>
 
   );

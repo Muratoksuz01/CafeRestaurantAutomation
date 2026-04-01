@@ -26,6 +26,18 @@ axiosInstance.interceptors.response.use(
     return response;
   },
   (error) => {
+    // 401 Unauthorized hatası gelirse
+    if (error.response && error.response.status === 401) {
+      const logout = useAuthStore.getState().logout;
+      
+      // 1. Client-side oturumu temizle
+      logout();
+
+      // 2. Kullanıcıyı 401 (Yetki Yok) sayfasına yönlendir
+      // Not: React hook'ları burada çalışmaz, bu yüzden window.location kullanılır.
+      window.location.href = "/401"; 
+    }
+
     return Promise.reject(error);
   }
 )

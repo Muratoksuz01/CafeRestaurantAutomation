@@ -1,0 +1,17 @@
+
+
+yapılacaklar
+   
+    - email gonderme servisi yaz helper servisine 
+    - adisyon cıktı formatı secebilmeli 58 ve 80 a gore formatlar secilebilmeli bunlar config da saklanmalı 
+    - getir trendyol gibi servisler baglayabilmel 
+    - config sayfası icin 
+        cıktı formatı 58 mi 80 mı sorusu 
+        otomatik adisyon yazdıırlsın mı 
+        hangi PC ye hangi yazıcı baglı 
+    - data seed gibi bir yapı role ve ilk user lar icin 
+    - redis kur 
+    - loggeri digerlerinede yaz 
+    - config sayfası gibi bir sey olacak bunu dusun nasıl yapılır 
+        
+    birde sirketten sirkete aidsyon goruntusu degişebilir bunu farklı bir sekilde dusunmeliyiz 
