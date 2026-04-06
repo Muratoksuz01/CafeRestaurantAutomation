@@ -6,6 +6,7 @@ interface CustomDialogProps {
     open: boolean
     onOpenChange: (open: boolean) => void
     title: ReactNode
+    footer?:ReactNode
     isInfo?: boolean
     description?: ReactNode
     confirmText?: string
@@ -14,8 +15,8 @@ interface CustomDialogProps {
     className?: string
 }
 function CustomDialog({ 
-    open, className, onOpenChange, title, onConfirm , description, 
-    isInfo = false,confirmText = "Onayla", cancelText = "İptal"
+    open, className, onOpenChange, title , description, footer
+    
 }: CustomDialogProps) {
 
     return (
@@ -25,11 +26,9 @@ function CustomDialog({
                     <DialogTitle>{title}</DialogTitle>
                 </DialogHeader>
                 {description}
-                {!isInfo &&
-                    <DialogFooter className="flex justify-end gap-4">
-                        <DialogClose>{cancelText}</DialogClose>
-                        <Button onClick={onConfirm}>{confirmText}</Button>
-                    </DialogFooter>}
+                    <DialogFooter >
+                        {footer }
+                    </DialogFooter>
             </DialogContent>
         </Dialog>
     )

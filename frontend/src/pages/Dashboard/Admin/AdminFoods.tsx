@@ -38,7 +38,7 @@ export default function AdminFoods() {
     if (!selectedFood) return;
     try {
       const { data } = await axiosInstance.delete(API_PATHS.deleteFood(String(selectedFood._id)));
-      if (data.success) {
+      if (data.status) {
         getFoods();
         toast.success("Yemek silindi", successStyle);
       }
@@ -64,24 +64,7 @@ export default function AdminFoods() {
 
 
 
-const form = useForm({
-    resolver: zodResolver(foodEditSchema),
-    defaultValues: {
-      name: "",
-      price: 0,
-      description: "",
-      categoryId: "",
-    },
-  })
 
-useEffect(()=>{
-  form.reset({
-     name: selectedFood?.name || "",
-      price: selectedFood?.price,
-      description: selectedFood?.description,
-      categoryId: selectedFood?.categoryId,
-  })
-},[selectedFood])
 
   return (
     <div className="p-6 space-y-8 animate-in fade-in duration-500">
@@ -214,7 +197,6 @@ useEffect(()=>{
       <CustomAlertDialog open={showDelete} onOpenChange={setShowDelete}
         title={`${selectedFood?.name} adlı yemeği  silmek istediğine emin misin?`}
         description="Bu işlem geri alınamaz."
-
         onConfirm={handleDelete}
       />
 

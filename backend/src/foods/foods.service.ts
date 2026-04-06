@@ -39,7 +39,7 @@ export class FoodsService {
         isDeleted: false
       });
       return { data: food }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Food Create Hatası:", error);
       this.logger.error(`Food Create Hatası: -Data:${JSON.stringify(createFoodDto)} -  Hata: ${error.message}`,error.stack)
       throw new InternalServerErrorException("Yemek Olusturulurken hata olustu");
@@ -50,7 +50,7 @@ export class FoodsService {
     try {
       const foods = await this.foodModel.find({ isDeleted: false });
       return { status: true, data: foods }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Food FindALl Hatası:", error);
       this.logger.error( ` Food FindALl Hatası:  -  Hata: ${error.message}`,error.stack)
 
@@ -100,7 +100,7 @@ export class FoodsService {
 
 
 
-    } catch (error) {
+    } catch (error:any) {
       console.error("Food Update Hatası:", error);
       this.logger.error(`Food Update Hatası: Gelen Id:${id} -Data:${JSON.stringify(updateFoodDto)} -  Hata: ${error.message}`,error.stack)
 
@@ -117,7 +117,7 @@ export class FoodsService {
         isDeleted: true
       });
       return { status: true, message: "Food deleted" }
-    } catch (error) {
+    } catch (error:any) {
       console.error("Food Remove Hatası:", error);
       this.logger.error( ` Food Remove Hatası: Gelen Id:${id} -  Hata: ${error.message}`,error.stack)
 

@@ -13,8 +13,9 @@
     "target": "ES2023",
     "sourceMap": true,
     "outDir": "./dist",
+    "strictPropertyInitialization": false,
     "baseUrl": "./",
-    
+    "types": ["node", "Multer"],
     "incremental": true,
     "skipLibCheck": true,
     "strictNullChecks": true,

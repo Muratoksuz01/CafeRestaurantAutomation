@@ -18,7 +18,10 @@ export class RolesGuard implements CanActivate {
       return true;
     }
     const { user } = context.switchToHttp().getRequest();
-    if (!user) return false;
+    console.log(context.switchToHttp().getRequest())
+    if (!user) {
+       throw new ForbiddenException('bu kısı burada yok ');
+    };
    // console.log(context.switchToHttp().getRequest().user || "yok")
     if (!requiredRoles.includes(user.roleName)) {
       throw new ForbiddenException('Bu işlem için yetkin yok');

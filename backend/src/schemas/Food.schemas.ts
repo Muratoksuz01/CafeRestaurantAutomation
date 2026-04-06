@@ -12,7 +12,7 @@ export class Food {
   @Prop({ required: true })
   price: number;
 
-  @Prop({ required: true, trim: true })
+  @Prop({ required: false, trim: true })
   description: string;
 
   @Prop({ type: Types.ObjectId, ref: "Category", required: true })

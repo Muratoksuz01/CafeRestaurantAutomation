@@ -137,7 +137,7 @@ export class UsersService {
         }
       }
 
-    } catch (error) {
+    } catch (error:any) {
       console.error("User GetAdminStats Hatası:", error);
       this.logger.error(`User GetAdminStats Hatası: User:${currentUserId} - Hata: ${error.message}`,error.stack)
       throw new InternalServerErrorException('Kullanıcı getadminstats teknik bir hata oluştu.');
@@ -151,7 +151,7 @@ export class UsersService {
       if (!user) throw new HttpException({ status: false, message: "User bulunamadı", }, HttpStatus.OK,);
       await this.userModel.findByIdAndDelete(id)
       return { status: true, message: "User Deleted" }
-    } catch (error) {
+    } catch (error:any) {
       console.error("User Delete Hatası:", error);
       this.logger.error(`User Delete Hatası: Gelen Id:${id} - Hata: ${error.message}`,error.stack)
 
@@ -183,7 +183,7 @@ export class UsersService {
       )
 
       return { status: true, message: "Kullanıcı güncellendi" }
-    } catch (error) {
+    } catch (error:any) {
       console.error("User Update Hatası:", error);
       this.logger.error(`User Update Hatası: Gelen Id:${id} -Data:${JSON.stringify(updateUser)} -  Hata: ${error.message}`,error.stack)
 
@@ -211,7 +211,7 @@ export class UsersService {
           roleName: role.name
         }
       }
-    } catch (error) {
+    } catch (error:any) {
       console.error("User GetUser Hatası:", error);
       this.logger.error(`User GetUser Hatası: Gelen Id:${id} -  Hata: ${error.message}`,error.stack)
 
@@ -251,7 +251,7 @@ export class UsersService {
       );
 
       return { status: true, data: result };
-    } catch (error) {
+    } catch (error:any) {
       console.error("User GetUsers Hatası:", error);
       this.logger.error(`User GetUsers Hatası: Gelen Id:${currentUserId} -  Hata: ${error.message}`,error.stack)
 
@@ -264,7 +264,7 @@ export class UsersService {
     try {
       const actions = await this.userRoleModel.find().select("_id name");
       return { status: true, data: actions }
-    } catch (error) {
+    } catch (error:any) {
       console.error("User GetRoles Hatası:", error);
       this.logger.error(`User GetRoles Hatası -  Hata: ${error.message}`,error.stack)
 
@@ -294,7 +294,7 @@ export class UsersService {
         roleId: role._id
       });
       return { status: true }
-    } catch (error) {
+    } catch (error:any) {
       console.error("User CreateUser Hatası:", error);
       this.logger.error(`User CreateUser Hatası: Data:${JSON.stringify(createUser)} -  Hata: ${error.message}`,error.stack)
 
@@ -318,7 +318,7 @@ export class UsersService {
       //status: true,
       message: "Profil güncellendi"
     };
-    } catch (error) {
+    } catch (error:any) {
       console.error("User updateProfile Hatası:", error);
       this.logger.error(`User updateProfile Hatası: Gelen Id:${userId} -Data:${JSON.stringify(data)} -  Hata: ${error.message}`,error.stack)
 
@@ -351,7 +351,7 @@ export class UsersService {
         message: "Şifre başarıyla güncellendi"
       };
 
-    } catch (error) {
+    } catch (error:any) {
       console.error("User updateProfilePassword Hatası:", error);
       this.logger.error(`User updateProfilePassword Hatası: Gelen Id:${userId} -Data:${JSON.stringify(data)} -  Hata: ${error.message}`,error.stack)
 

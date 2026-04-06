@@ -1,7 +1,6 @@
-
-
 yapılacaklar
-   
+    - get admin stats da veri yoksa vite de veri cekilirhen hata mesajı var 
+    yapıyı duzelt dizin yapısı bozuk bunları duzelt 
     - email gonderme servisi yaz helper servisine 
     - adisyon cıktı formatı secebilmeli 58 ve 80 a gore formatlar secilebilmeli bunlar config da saklanmalı 
     - getir trendyol gibi servisler baglayabilmel 
@@ -13,5 +12,4 @@ yapılacaklar
     - redis kur 
     - loggeri digerlerinede yaz 
     - config sayfası gibi bir sey olacak bunu dusun nasıl yapılır 
-        
     birde sirketten sirkete aidsyon goruntusu degişebilir bunu farklı bir sekilde dusunmeliyiz 

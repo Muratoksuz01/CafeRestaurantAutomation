@@ -13,6 +13,10 @@ import { JwtModule } from "@nestjs/jwt";
 import { OrderModule } from './order/order.module';
 import { RezerveModule } from './rezerve/rezerve.module';
 import { LoggerModule } from './logger/logger.module';
+import { User, UserSchema } from './schemas/User.schemas';
+import { Role, RoleSchema } from './schemas/Role.schemas';
+import { UserRole, UserRoleSchema } from './schemas/UserRole.schemas';
+import { SeedService } from './database/seed.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -23,10 +27,13 @@ import { LoggerModule } from './logger/logger.module';
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => ({
         uri: configService.get<string>('MONGO_URI'),
-
       }),
-
     }),
+    MongooseModule.forFeature([
+  { name: User.name, schema: UserSchema },
+  { name: Role.name, schema: RoleSchema },
+  { name: UserRole.name, schema: UserRoleSchema },
+]),
     JwtModule.registerAsync({
       global: true,
       inject: [ConfigService],
@@ -47,7 +54,10 @@ import { LoggerModule } from './logger/logger.module';
     RezerveModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    // SeedService
+  ],
 })
 export class AppModule { }
 

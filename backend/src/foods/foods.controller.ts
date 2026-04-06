@@ -8,17 +8,18 @@ import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
 import { RolesGuard } from 'src/auth/guard/roles.guard';
 import { Roles } from 'src/auth/roles.decorator';
 import { Role } from 'src/auth/role.enum';
+
 @Controller('food')
 export class FoodsController {
   constructor(private readonly foodsService: FoodsService) {}
 
   @Post()
-  @UseGuards(JwtAuthGuard)
-  @UseGuards( RolesGuard)
-  @Roles(Role.Yonetici)
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards( RolesGuard)
+  // @Roles(Role.Yonetici)
   @UseInterceptors(FilesInterceptor('imgs'))
   create(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    @UploadedFiles() files: Express.Multer.File[],
     @Body() createFoodDto: CreateFoodDto
   ) {
     return this.foodsService.create(files,createFoodDto);
@@ -31,9 +32,9 @@ export class FoodsController {
 
  
 @Put(':id')
-@UseGuards(JwtAuthGuard)
-  @UseGuards( RolesGuard)
-  @Roles(Role.Yonetici)
+// @UseGuards(JwtAuthGuard)
+//   @UseGuards( RolesGuard)
+//   @Roles(Role.Yonetici)
   @UseInterceptors(FilesInterceptor('files'))
   update(
     @Param('id') id: string, 
@@ -45,9 +46,9 @@ export class FoodsController {
   }
 
   @Delete(':id')
-  @UseGuards(JwtAuthGuard)
-  @UseGuards( RolesGuard)
-  @Roles(Role.Yonetici)
+  // @UseGuards(JwtAuthGuard)
+  // @UseGuards( RolesGuard)
+  // @Roles(Role.Yonetici)
   remove(@Param('id') id: string) {
     return this.foodsService.remove(id);
   }

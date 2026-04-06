@@ -12,7 +12,7 @@ export const foodSchema = z.object({
 export const foodCreateSchema = z.object({
     name: z.string("yemek adı giriniz ").min(1, { message: "Yemek adı boş olamaz" }),
     price: z.number("Fiyat sayı olmalıdır").min(1, { message: "Fiyat 1'den küçük olamaz" }),
-    description: z.string().optional(),
+description: z.string().optional().default(""),
     categoryId: z.string("kategory secmelisiniz "),
     imgs: z.any().refine(files => files instanceof FileList && files.length <= 2 && files.length != 0, { message: "Tam olarak 1 yada 2 resim seçilmelidir" })
 });

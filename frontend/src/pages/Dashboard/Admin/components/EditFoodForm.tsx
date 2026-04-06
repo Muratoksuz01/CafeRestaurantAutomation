@@ -1,4 +1,3 @@
-"use client"
 
 import { useEffect } from "react"
 import { Button } from "@/components/ui/button"
@@ -15,7 +14,6 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { foodEditSchema } from "@/models/Food"
 import { useForm } from "react-hook-form"
 import { toast } from "sonner"
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import CustomDialog from "../../components/CustomDialog"
 
 interface EditFoodFormProps {
@@ -64,7 +62,7 @@ export default function EditFoodForm({ food, onUpdate, open, setOpen }: EditFood
         { headers: { "Content-Type": "multipart/form-data" } }
       )
 
-      if (res.data.success) {
+      if (res.data.status) {
         toast.success("Yemek güncellendi", successStyle)
         onUpdate?.()
         setOpen(false)

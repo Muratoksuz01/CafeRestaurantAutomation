@@ -39,8 +39,8 @@ const MENU_CONFIG = {
   Kasiyer: {
     title: "Kasiyer Paneli",
     items: [
-      { title: "Kasa / Satış", url: "/user/satis-ekrani", icon: LuShoppingBag },
-      { title: "Günlük İşlemler", url: "/user/islem-listesi", icon: LuListOrdered },
+      { title: "Kasa / Satış", url: "/user/satis", icon: LuShoppingBag },
+      { title: "Günlük İşlemler", url: "/user/masa", icon: LuListOrdered },
     ]
   },
   Garson: {

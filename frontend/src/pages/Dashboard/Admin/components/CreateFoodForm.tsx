@@ -1,4 +1,4 @@
-import { Controller, useForm } from "react-hook-form";
+import {  useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -8,7 +8,7 @@ import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { foodCreateSchema } from "@/models/Food";
 import { useGetCategory } from "@/hooks/useGetCategory";
-import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
+import { Select, SelectContent , SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 import { Form } from "@/components/ui/form";
 import CustomFormField from "@/pages/Dashboard/components/CustomFormField";
 import CustomDialog from "../../components/CustomDialog";
@@ -24,6 +24,7 @@ export default function CreateFoodForm({ onUpdate, open, setOpen }: any) {
   }, [])
 
   const onSubmit = async (data: any) => {
+    console.log("vdsvd")
     console.log(data);
 
     setLoading(true);
@@ -115,12 +116,21 @@ export default function CreateFoodForm({ onUpdate, open, setOpen }: any) {
               )}
             </CustomFormField>
 
-            <Button type="submit" disabled={loading}>
-              {loading ? "Yükleniyor..." : "Oluştur"}
-            </Button>
+
 
           </form>
         </Form>
+      }
+      footer={
+        <div className="flex justify-end gap-4">
+
+          <Button onClick={form.handleSubmit(onSubmit)} type="submit" disabled={loading}>
+            {loading ? "Yükleniyor..." : "Oluştur"}
+          </Button>
+          <Button onClick={() => { setOpen(false) }} disabled={loading}>
+            İptal
+          </Button>
+        </div>
       }
     />
 
