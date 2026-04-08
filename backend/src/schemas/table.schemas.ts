@@ -17,7 +17,7 @@ export class Table {
 
   @Prop({ 
     type: Types.ObjectId, 
-    ref: "Orders", 
+    ref: "Order", 
     required: false 
   })
   currentOrderId: Types.ObjectId;

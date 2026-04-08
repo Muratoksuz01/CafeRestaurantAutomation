@@ -32,10 +32,8 @@ export class FoodsController {
 
  
 @Put(':id')
-// @UseGuards(JwtAuthGuard)
-//   @UseGuards( RolesGuard)
-//   @Roles(Role.Yonetici)
-  @UseInterceptors(FilesInterceptor('files'))
+
+  @UseInterceptors(FilesInterceptor('imgs'))
   update(
     @Param('id') id: string, 
     @Body() updateFoodDto: UpdateFoodDto,

@@ -13,7 +13,7 @@ import { CalendarCheck, CalendarX, Printer, X } from "lucide-react";
 import RezerveDialog from "./RezerveDialog";
 
 type Basket = Food & { qty: number };
-function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: any, setSelectedTable: any }) {
+function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: AllTable[], setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
   const { getFoods, foods, } = useGetFoods();
   const user = useAuthStore((state) => state.user);
@@ -226,304 +226,286 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
   }
   return (
     <>
+  <Dialog
+    open={open}
+    onOpenChange={() => {
+      setOriginalBasket([])
+      setBasket([])
+      setOpen(false)
+    }}
+  >
+    <DialogContent
+      onInteractOutside={(e) => e.preventDefault()}
+      className="w-full max-w-[100vw] h-[100dvh] p-0 flex flex-col overflow-hidden rounded-none sm:rounded-xl md:flex-row md:max-w-[1200px] md:h-[85vh]"
+    >
+      <div className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r overflow-hidden min-h-0">
+        <div className="p-3 sm:p-4 bg-background border-b sticky top-0 z-10 flex flex-col gap-2 sm:flex-row">
+          <Input
+            placeholder="Ara..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            className="flex-1"
+          />
 
-      <Dialog open={open} onOpenChange={() => {
-        setOriginalBasket([])
-        setBasket([])
-        setOpen(false)
-      }}>
-        <DialogContent
-          onInteractOutside={(e) => e.preventDefault()}
-          className="w-full max-w-[95vw] h-[85vh] p-0 flex flex-col overflow-hidden md:flex-row md:max-w-[1200px] "
-        >
-          {/* LEFT */}
-          <div className="w-full md:w-1/2 flex flex-col border-b md:border-b-0 md:border-r overflow-auto">
+          <Select value={selectedCat} onValueChange={setSelectedCat}>
+            <SelectTrigger className="w-full sm:w-[150px]">
+              <SelectValue placeholder="Kategori" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tümü</SelectItem>
+              {categories.map((c) => (
+                <SelectItem key={c._id} value={c._id}>
+                  {c.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
 
-            {/* Sticky Filters */}
-            <div className="p-4 bg-background border-b sticky top-0 z-10 flex gap-2">
-              <Input
-                placeholder="Ara..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="flex-1"
-              />
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 flex flex-col gap-3 bg-background min-h-0">
+          {filteredFoods.map((food) => {
+            const inBasket = basket && basket.some((item: Basket) => item._id == food._id)
 
-              <Select value={selectedCat} onValueChange={setSelectedCat}>
-                <SelectTrigger className="w-[150px]">
-                  <SelectValue placeholder="Kategori" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">Tümü</SelectItem>
-                  {categories.map((c) => (
-                    <SelectItem key={c._id} value={c._id}>
-                      {c.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
+            return (
+              <div
+                key={food._id}
+                className="bg-background shadow-sm hover:shadow-md border rounded-xl p-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 transition-all"
+              >
+                <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                  <div className="h-14 w-14 sm:h-16 sm:w-16 shrink-0 overflow-hidden rounded-lg border bg-muted">
+                    <img
+                      className="h-full w-full object-cover"
+                      src={food.imgs?.[0] ? `${API_BASE_URL}${food.imgs[0]}` : "/placeholder.png"}
+                      alt={food.name}
+                    />
+                  </div>
 
-            {/* FOOD LIST */}
-            <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3 bg-background">
-              {filteredFoods.map((food) => {
-                // console.log("food:", food)
-                // console.log("basket", basket)
-                const inBasket =
-                  basket && basket.some(
-                    (item: Basket) => item._id == food._id);
-                return (
-                  <div
-                    key={food._id}
-                    className="bg-background shadow-sm hover:shadow-md border rounded-xl p-3 flex justify-between items-center transition-all"
-                  >
-                    <div className="flex items-center gap-4">
-                      {/* Resim Kısmı */}
-                      <div className="h-16 w-16 shrink-0 overflow-hidden rounded-lg border bg-muted">
-                        <img
-                          className="h-full w-full object-cover"
-                          src={food.imgs?.[0] ? `${API_BASE_URL}${food.imgs[0]}` : "/placeholder.png"}
-                          alt={food.name}
-                        />
-                      </div>
-
-                      {/* Metin Kısmı */}
-                      <div className="flex flex-col">
-                        <div className="font-semibold text-sm md:text-base capitalize leading-tight">
-                          {food.name}
-                        </div>
-                        <div className="text-sm font-medium text-muted-foreground mt-1">
-                          {food.price} TL
-                        </div>
-                      </div>
+                  <div className="flex flex-col min-w-0">
+                    <div className="font-semibold text-sm sm:text-base capitalize leading-tight truncate">
+                      {food.name}
                     </div>
-
-                    {/* Butonlar */}
-                    <div className="flex items-center gap-2">
-                      {inBasket && (
-                        <Button
-                          size="icon"
-                          variant="outline"
-                          className="h-8 w-8 rounded-full"
-                          onClick={() => removeFood(String(food._id))}
-                        >
-                          -
-                        </Button>
-                      )}
-                      <Button
-                        size="sm"
-                        className="rounded-lg px-4"
-                        onClick={() => addFood(food)}
-                      >
-                        Ekle
-                      </Button>
+                    <div className="text-sm font-medium text-muted-foreground mt-1">
+                      {food.price} TL
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* RIGHT */}
-          <div className="w-full md:w-1/2 flex flex-col p-4 bg-background">
-
-            {/* Sticky Header */}
-            <div className="sticky top-0 bg-background pb-3 border-b z-10">
-              <DialogTitle className="flex justify-between items-center">
-                <span>
-                  {selectedTable?.name} – Sepet
-                </span>
-
-                <div className="flex items-center gap-2">
-                  {/* Rezerve Butonu Buraya Gelebilir */}
-                  {selectedTable.currentOrderId == null ? (
-                    <Button
-                      size="sm"
-                      variant={selectedTable.status === "rezerve" ? "destructive" : "outline"}
-                      className="flex gap-2 items-center" // İkon ve metni hizalar
-                      onClick={() => handleBook(selectedTable)}
-                    >
-                      {selectedTable.status === "rezerve" ? (
-                        <>
-                          <CalendarX className="h-4 w-4" /> {/* İptal İkonu */}
-                          <span className="hidden sm:inline">Rezervasyonu İptal Et</span>
-                        </>
-                      ) : (
-                        <>
-                          <CalendarCheck className="h-4 w-4" /> {/* Rezerve Et İkonu */}
-                          <span className="hidden sm:inline">Rezerve Et</span>
-                        </>
-                      )}
-                    </Button>
-                  ) : (
-                    <Printer
-                      onClick={() => { handlePrint(selectedTable.currentOrderId) }}
-                      className="cursor-pointer" />
-                  )}
-                  {/* KAPATMA BUTONU */}
-                  <DialogClose>
-                    <Button type="button" variant="ghost" size="icon" className="h-8 w-8">
-                      <X className="h-4 w-4" />
-                      <span className="sr-only">Kapat</span>
-                    </Button>
-                  </DialogClose>
                 </div>
-              </DialogTitle>
-            </div>
 
-            {/* Basket Items */}
-            <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-3">
-              {!basket && (
-                <p className="text-foreground text-center mt-10">Henüz ürün yok.</p>
-              )}
-
-              {basket && basket.map((item) => (
-                <div
-                  key={item._id}
-                  className="shadow-sm border rounded-lg p-3 flex justify-between items-center"
-                >
-                  <div>
-                    <div className="font-medium">{item.name}</div>
-                    <div className="text-sm text-foreground">
-                      {item.price} TL × {item.qty}
-                    </div>
-                  </div>
-
-                  <div className="flex gap-2">
-                    <Button size="sm" variant="outline" onClick={() => removeFood(String(item._id))}>
+                <div className="flex items-center gap-2 self-end sm:self-auto">
+                  {inBasket && (
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="h-8 w-8 rounded-full"
+                      onClick={() => removeFood(String(food._id))}
+                    >
                       -
                     </Button>
-                    <Button className="" size="sm" onClick={() => addFood(item)}>
-                      +
-                    </Button>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* SEPET AKSİYONLARI KONTEYNERİ */}
-            <div className="flex flex-col gap-4 mt-4 border-t pt-4">
-
-              {/* GRUP 1: ANA İŞLEMLER (Büyük ve Odaklı) */}
-              <div className="flex gap-2">
-                <Button
-                  onClick={confirmBasket}
-                  variant="default"
-                  className="flex-2 h-12 text-base font-bold" // Daha geniş ve yüksek
-                >
-                  Sepeti Onayla
-                </Button>
-
-                {user!.role !== "Garson" && (
+                  )}
                   <Button
-                    onClick={odemeAl}
-                    className="flex-3 h-12 text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
+                    size="sm"
+                    className="rounded-lg px-4"
+                    onClick={() => addFood(food)}
                   >
-                    Ödeme Al
+                    Ekle
                   </Button>
-                )}
+                </div>
               </div>
+            )
+          })}
+        </div>
+      </div>
 
-              {/* GRUP 2: YÖNETİMSEL İŞLEMLER (Daha küçük ve yardımcı) */}
-              <div className="grid grid-cols-3 gap-2">
+      <div className="w-full md:w-1/2 flex flex-col p-3 sm:p-4 bg-background min-h-0 overflow-hidden">
+        <div className="sticky top-0 bg-background pb-3 border-b z-10">
+          <DialogTitle className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center text-base sm:text-lg">
+            <span className="wrap-break-word">
+              {selectedTable?.name} – Sepet
+            </span>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              {selectedTable.currentOrderId == null ? (
                 <Button
-                  variant="outline"
                   size="sm"
-                  disabled={!selectedTable.currentOrderId}
-                  onClick={resetBasket}
-                  className="text-xs disabled:cursor-not-allowed disabled:pointer-events-auto"
+                  variant={selectedTable.status === "rezerve" ? "destructive" : "outline"}
+                  className="flex gap-2 items-center"
+                  onClick={() => handleBook(selectedTable)}
                 >
-                  Sıfırla
+                  {selectedTable.status === "rezerve" ? (
+                    <>
+                      <CalendarX className="h-4 w-4" />
+                      <span className="hidden sm:inline">Rezervasyonu İptal Et</span>
+                    </>
+                  ) : (
+                    <>
+                      <CalendarCheck className="h-4 w-4" />
+                      <span className="hidden sm:inline">Rezerve Et</span>
+                    </>
+                  )}
                 </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  disabled={!selectedTable.currentOrderId}
-                  onClick={() => setShowTableDialog(true)}
-                  className="text-xs cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-auto"
-                >
-                  Masa Değiştir
-                </Button>
-
-                <DialogClose asChild>
-                  <Button variant="outline" size="sm" className="text-xs">
-                    Kapat
-                  </Button>
-                </DialogClose>
-              </div>
-
-              {/* GRUP 3: TEHLİKELİ İŞLEM (Ayrı ve Belirgin) */}
-              {user!.role !== "Garson" && (
-                <Button
-                  onClick={() => setDeleteAlert(true)}
-                  disabled={selectedTable.currentOrderId ? false : true}
-                  variant="ghost"
-                  className="w-full text-red-500 hover:text-red-600 hover:bg-destructive/10 text-xs font-semibold uppercase tracking-widest"
-                >
-                  Siparişi Tamamen Sil
-                </Button>
+              ) : (
+                <Printer
+                  onClick={() => { handlePrint(selectedTable.currentOrderId) }}
+                  className="cursor-pointer"
+                />
               )}
-            </div>
 
-            <div className="text-lg  font-semibold border-t pt-3">
-              Toplam: {total} TL
+              <DialogClose>
+                <Button type="button" variant="ghost" size="icon" className="h-8 w-8">
+                  <X className="h-4 w-4" />
+                  <span className="sr-only">Kapat</span>
+                </Button>
+              </DialogClose>
             </div>
+          </DialogTitle>
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-3 sm:py-4 flex flex-col gap-3 min-h-0">
+          {!basket && (
+            <p className="text-foreground text-center mt-10">Henüz ürün yok.</p>
+          )}
+
+          {basket && basket.map((item) => (
+            <div
+              key={item._id}
+              className="shadow-sm border rounded-lg p-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3"
+            >
+              <div>
+                <div className="font-medium">{item.name}</div>
+                <div className="text-sm text-foreground">
+                  {item.price} TL × {item.qty}
+                </div>
+              </div>
+
+              <div className="flex gap-2 self-end sm:self-auto">
+                <Button size="sm" variant="outline" onClick={() => removeFood(String(item._id))}>
+                  -
+                </Button>
+                <Button size="sm" onClick={() => addFood(item)}>
+                  +
+                </Button>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-3 sm:gap-4 mt-4 border-t pt-4">
+          <div className="flex flex-col sm:flex-row gap-2">
+            <Button
+              onClick={confirmBasket}
+              variant="default"
+              className="flex-2 h-11 sm:h-12 text-sm sm:text-base font-bold"
+            >
+              Sepeti Onayla
+            </Button>
+
+            {user!.role !== "Garson" && (
+              <Button
+                onClick={odemeAl}
+                className="flex-3 h-11 sm:h-12 text-sm sm:text-base font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
+              >
+                Ödeme Al
+              </Button>
+            )}
           </div>
-        </DialogContent>
-      </Dialog>
 
-      <Dialog open={showTableDialog} onOpenChange={setShowTableDialog}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle>Masa Değiştir</DialogTitle>
-          </DialogHeader>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!selectedTable.currentOrderId}
+              onClick={resetBasket}
+              className="text-xs disabled:cursor-not-allowed disabled:pointer-events-auto"
+            >
+              Sıfırla
+            </Button>
 
-          <div className="max-h-96 overflow-y-auto pr-1">
-            <div className="grid grid-cols-3 gap-4 mt-4">
-              {allTable
-                .filter((t: any) => t._id !== selectedTable?._id)
-                .map((t: any) => {
-                  const isFull = t.status === "dolu";
-                  return (
-                    <Button
-                      key={t._id}
-                      disabled={isFull}
-                      onClick={() => handleSelectTable(t)}
-                      className={`rounded-xl border text-base font-medium transition cursor-pointer ${isFull
-                        ? "bg-red-200 text-red-700 border-red-300 cursor-not-allowed"
-                        : "bg-green-200 text-green-800 border-green-300 hover:bg-green-300"
-                        }
-                           `}
-                    >
-                      {t.name}
-                    </Button>
-                  );
-                })}
-            </div>
+            <Button
+              variant="outline"
+              size="sm"
+              disabled={!selectedTable.currentOrderId}
+              onClick={() => setShowTableDialog(true)}
+              className="text-xs cursor-pointer disabled:cursor-not-allowed disabled:pointer-events-auto"
+            >
+              Masa Değiştir
+            </Button>
+
+            <DialogClose asChild>
+              <Button variant="outline" size="sm" className="text-xs">
+                Kapat
+              </Button>
+            </DialogClose>
           </div>
 
+          {user!.role !== "Garson" && (
+            <Button
+              onClick={() => setDeleteAlert(true)}
+              disabled={selectedTable.currentOrderId ? false : true}
+              variant="ghost"
+              className="w-full text-red-500 hover:text-red-600 hover:bg-destructive/10 text-xs font-semibold uppercase tracking-widest"
+            >
+              Siparişi Tamamen Sil
+            </Button>
+          )}
+        </div>
 
-        </DialogContent>
-      </Dialog>
-      <RezerveDialog
-        setOpen={setOpen}
-        showRezerveDialog={showRezerveDialog}
-        setShowRezerveDialog={setShowRezerveDialog}
-        masaId={selectedTable._id}
-        onSuccess={onChange}
-      />
-      <CustomAlertDialog
-        open={deleteAlert}
-        onOpenChange={setDeleteAlert}
-        title="Sipariş silinsin mi?"
-        description="Bu işlem geri alınamaz."
-        confirmText="Evet, sil"
-        cancelText="Vazgeç"
-        onConfirm={deleteOrder}
-      />
+        <div className="text-base sm:text-lg font-semibold border-t pt-3">
+          Toplam: {total} TL
+        </div>
+      </div>
+    </DialogContent>
+  </Dialog>
 
+ <Dialog open={showTableDialog} onOpenChange={setShowTableDialog}>
+  <DialogContent className="w-[95vw] max-w-md sm:max-w-md">
+    <DialogHeader>
+      <DialogTitle>Masa Değiştir</DialogTitle>
+    </DialogHeader>
 
-    </>
+    <div className="max-h-96 overflow-y-auto pr-1 mt-4">
+      {allTable.filter((t: AllTable) => t._id !== selectedTable?._id && (t.status !== "dolu" && t.status !== "rezerve" )).length === 0 ? (
+        <div className="text-center text-sm text-muted-foreground py-10">
+          Uygun masa yok
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+          {allTable
+            .filter((t: any) => t._id !== selectedTable?._id)
+            .map((t: any) => {
+
+              return (
+                <Button
+                  key={t._id}
+                  onClick={() => handleSelectTable(t)}
+                  className={`rounded-xl border text-sm sm:text-base font-medium transition cursor-pointer bg-green-200 text-green-800 border-green-300 hover:bg-green-300`}
+                >
+                  {t.name}
+                </Button>
+              )
+            })}
+        </div>
+      )}
+    </div>
+  </DialogContent>
+</Dialog>
+
+  <RezerveDialog
+    setOpen={setOpen}
+    showRezerveDialog={showRezerveDialog}
+    setShowRezerveDialog={setShowRezerveDialog}
+    masaId={selectedTable._id}
+    onSuccess={onChange}
+  />
+
+  <CustomAlertDialog
+    open={deleteAlert}
+    onOpenChange={setDeleteAlert}
+    title="Sipariş silinsin mi?"
+    description="Bu işlem geri alınamaz."
+    confirmText="Evet, sil"
+    cancelText="Vazgeç"
+    onConfirm={deleteOrder}
+  />
+</>
   )
 }
 

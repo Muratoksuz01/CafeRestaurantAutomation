@@ -1,9 +1,15 @@
 31 mart 
     - login register sayfası bunu dusun 
     - app.tsx de iki tane dashboardLayout var oradaki yonlendirme sistemi iyi degil bunu duzelt
-
-
-
+7 nisan 
+    karanlık modda admin food duzenle burası yazılar silip duruyor ve var olan yemek resmini de burada goruntule   == tamam
+    admin genel bakıs sayfası veri yoksa hata mesajı var buna el at  == tamam
+    admin users tablo guzel gorunmyor search bar sorunlu  ==tamam
+    admin users create islemi icin onayla btn yok  ==tamam
+    admin ordars sayfası berbat  ==tamam
+    admin profil sayfası rezalat ==tamam
+    kasiyer masa eklem sayfası mobilde rezlat ==tamam
+    masa degisti btn de uygun masa yoksa yok yazsın == tamam 
 2 nisan 
     telefon moduna iyi ayarla 
     login register sayfası ,siparis alma sayfası oradaki dialglar bunları yap 

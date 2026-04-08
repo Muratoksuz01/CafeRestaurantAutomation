@@ -9,15 +9,13 @@ import { API_BASE_URL, API_PATHS } from "@/lib/api";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetCategory } from "@/hooks/useGetCategory";
-import {Card,CardContent,CardFooter,CardHeader,CardTitle} from "@/components/ui/card";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
-import {Search,Plus,UtensilsCrossed,Pencil,Trash2} from "lucide-react";
+import { Search, Plus, UtensilsCrossed, Pencil, Trash2 } from "lucide-react";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import { Food } from "@/models/Food";
-import { useForm } from "react-hook-form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { foodEditSchema } from "@/models/Food"
+
 
 
 export default function AdminFoods() {
@@ -141,20 +139,22 @@ export default function AdminFoods() {
                   />
                 </div>
 
-                <div className="absolute top-2 right-2">
-                  <Badge variant="secondary" className="bg-black/50 text-white backdrop-blur-md border-none">
-                    {food.price} ₺
-                  </Badge>
-                </div>
+
               </div>
 
               <CardHeader className="p-4 pb-2">
                 <div className="flex justify-between items-start">
-                  <CardTitle className="text-xl font-bold line-clamp-1">{food.name}</CardTitle>
+                  {/* Sol taraf: isim ve kategori */}
+                  <div className="flex flex-col gap-2">
+                    <CardTitle className="text-xl font-bold line-clamp-1">{food.name}</CardTitle>
+                    <span className="text-[11px] font-medium uppercase px-3 py-1 border border-primary rounded-full text-primary bg-primary/5">
+                      {categoryName || "Kategori Yok"}
+                    </span>
+                  </div>
+
+                  {/* Sağ taraf: fiyat */}
+                  <div className="text-xl font-bold uppercase">{food.price}₺</div>
                 </div>
-                <Badge variant="outline" className="w-fit text-[10px] uppercase tracking-wider text-primary border-primary/30">
-                  {categoryName || "Kategori Yok"}
-                </Badge>
               </CardHeader>
 
               <CardContent className="p-4 pt-0">
@@ -187,7 +187,7 @@ export default function AdminFoods() {
       </div>
 
       {selectedFood && <EditFoodForm key={selectedFood._id} food={selectedFood} onUpdate={onSuccess} open={showEdit} setOpen={setShowEdit} />}
-      
+
 
       {/* Create Dialog */}
       <CreateFoodForm open={showCreate} setOpen={setShowCreate} onUpdate={onSuccess} />
@@ -195,7 +195,11 @@ export default function AdminFoods() {
 
       {/* Delete AlertDialog */}
       <CustomAlertDialog open={showDelete} onOpenChange={setShowDelete}
-        title={`${selectedFood?.name} adlı yemeği  silmek istediğine emin misin?`}
+        title={
+          <p >
+            <span className="text-destructive">{selectedFood?.name}</span> adlı yemeği silmek istediğine emin misin?
+          </p>
+        }        // title={`${selectedFood?.name} adlı yemeği  silmek istediğine emin misin?`}
         description="Bu işlem geri alınamaz."
         onConfirm={handleDelete}
       />

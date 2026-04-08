@@ -50,7 +50,7 @@ const TableFormDialog = ({ open, onOpenChange, onSuccess, table }: TableFormDial
       const res = await request
 
       // Backend'den dönen başarı flag'lerini kontrol et (status veya success)
-      if (res.data.status || res.data.success) {
+      if (res.data.status ) {
         toast.success(
           isEditMode ? "Masa güncellendi" : "Masa eklendi",
           successStyle

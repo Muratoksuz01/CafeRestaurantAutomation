@@ -10,7 +10,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
      
       throw err || new UnauthorizedException('Lütfen önce giriş yapın!');
     }
-    console.log("hande request user:",user)
+   // console.log("hande request user:",user)
     return user;
   }
 }

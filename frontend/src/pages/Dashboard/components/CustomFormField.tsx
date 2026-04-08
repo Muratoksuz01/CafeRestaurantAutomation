@@ -13,7 +13,7 @@ function CustomFormField({ control, children, name, title }: CustomFormFieldProp
             name={name}
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel className="text-slate-700 font-medium">{title}</FormLabel>
+                    <FormLabel className="text-muted-foreground font-medium">{title}</FormLabel>
                     <FormControl>
                         {children(field)}
                     </FormControl>

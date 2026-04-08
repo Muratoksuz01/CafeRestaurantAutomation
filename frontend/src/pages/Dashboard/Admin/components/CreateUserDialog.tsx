@@ -1,7 +1,5 @@
-import React, { useState } from 'react'
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
@@ -14,9 +12,10 @@ import axiosInstance from "@/lib/axiosInstance"
 import { API_PATHS } from "@/lib/api"
 import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
-import { Label } from 'recharts'
 import { Switch } from '@/components/ui/switch'
 import CustomDialog from '../../components/CustomDialog'
+import { DialogClose, DialogFooter } from '@/components/ui/dialog'
+import { Button } from '@/components/ui/button'
 
 function CreateUserDialog({ open, setOpen, onSuccess }: any) {
     const [showPassword, setShowPassword] = useState(false)
@@ -52,11 +51,11 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
             open={open}
             onOpenChange={setOpen}
             title="Kullanıcıyı olustur"
-            onConfirm={() => { handleSave(form.getValues()) }}
+            //  onConfirm={() => { handleSave(form.getValues()) }}
             description={
                 <Form {...form}>
-                    <form  className="space-y-5">
-                     
+                    <form onSubmit={form.handleSubmit(handleSave)} className="space-y-5">
+
                         <div className="grid grid-cols-2 gap-4">
                             <CustomFormField control={form.control} name="firstName" title="Ad">
                                 {(field: any) => (
@@ -72,7 +71,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                             </CustomFormField>
                         </div>
 
-                     
+
                         <CustomFormField control={form.control} name="email" title="E-posta">
                             {(field: any) => (
                                 <div className="relative">
@@ -82,7 +81,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                             )}
                         </CustomFormField>
 
-                       
+
                         <div className="grid grid-cols-2 gap-4">
                             <CustomFormField control={form.control} name="phoneNumber" title="Telefon Numarası">
                                 {(field: any) => (
@@ -103,7 +102,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                     </div>
                                 )}
                             </CustomFormField>
-                          
+
                             <CustomFormField control={form.control} name={"password"} title="Sifre"  >
                                 {(field: any) => (
                                     <div className="relative">
@@ -124,7 +123,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                 )}
                             </CustomFormField>
                         </div>
-                      
+
                         <CustomFormField control={form.control} name="roleName" title="Rol">
                             {(field: any) => (
                                 <div className="relative">
@@ -144,7 +143,7 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                             )}
                         </CustomFormField>
 
-                      
+
                         <CustomFormField control={form.control} name="isActive" title="Kullanıcı Durumu">
                             {(field: any) => (
                                 <div className="flex items-center justify-between rounded-lg border p-4 bg-muted/30">
@@ -165,11 +164,19 @@ function CreateUserDialog({ open, setOpen, onSuccess }: any) {
                                 </div>
                             )}
                         </CustomFormField>
+                        <DialogFooter className=" flex gap-2 ">
+                            <DialogClose asChild>
+                                <Button type="button" variant="outline">
+                                    İptal
+                                </Button>
+                            </DialogClose>
+                            <Button type="submit">Kaydet</Button>
+                        </DialogFooter>
 
-                        
                     </form>
                 </Form>
             }
+
         />
 
     )

@@ -22,18 +22,10 @@ export const foodEditSchema = z.object({
     description: z.string().optional(),
     categoryId: z.string("kategory secmelisiniz "),
     imgs: z
-        .any()
-        .optional()
-        .refine((files) => {
-            if (!files) return true;
-            if (!(files instanceof FileList)) return false;
-            if (files.length==0) return true;
-            return files.length > 0 && files.length <= 2;
-        }, {
-            message: "1 veya 2 resim seçmelisiniz!!"
-        })
-
-
+    .array(z.instanceof(File))
+    .max(2, { message: "En fazla 2 resim ekleyebilirsiniz" })
+    .optional(),
+    existingImgs: z.array(z.string()).optional()
 });
 export type Food = z.infer<typeof foodSchema>;
 

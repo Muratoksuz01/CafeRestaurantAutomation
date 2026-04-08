@@ -1,6 +1,9 @@
 yapılacaklar
-    - get admin stats da veri yoksa vite de veri cekilirhen hata mesajı var 
-    yapıyı duzelt dizin yapısı bozuk bunları duzelt 
+    - get admin stats da veri yoksa vite de veri cekilirhen hata mesajı var == tamma
+    - yapıyı duzelt dizin yapısı bozuk bunları duzelt 
+    - remove food ile var olan resimleri sil  tamam
+
+
     - email gonderme servisi yaz helper servisine 
     - adisyon cıktı formatı secebilmeli 58 ve 80 a gore formatlar secilebilmeli bunlar config da saklanmalı 
     - getir trendyol gibi servisler baglayabilmel 

@@ -1,6 +1,6 @@
 // src/lib/api.ts
-export const API_BASE_URL = "http://localhost:6001";
-// export const API_BASE_URL = "http://192.168.3.7:6001";
+// export const API_BASE_URL = "http://localhost:6001";
+export const API_BASE_URL = "http://10.239.250.63:6001"; // ipconfig sonra ipv4 kısımını buraya al 
 
 export const API_PATHS = {
   //auth

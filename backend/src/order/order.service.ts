@@ -98,7 +98,7 @@ export class OrderService {
           items: createdItems,
         },
       };
-    } catch (error) {
+    } catch (error:any) {
       console.error('Sipariş Oluşturma Hatası:', error);
       this.logger.error(`Order Create Hatası: Gelen Id:${userId} -Data:${JSON.stringify(createOrderDto)} -  Hata: ${error.message}`, error.stack)
 
@@ -125,12 +125,14 @@ export class OrderService {
       // 1. Günün başlangıç ve bitiş saatlerini ayarla (Senior Date Management)
       // 2. Sorguyu oluştur ve ilişkili dökümanları çek
       const orders = await this.orderModel
-        .find({
+        .find(
+          {
           createdAt: {
             $gte: start,
             $lte: end,
           },
-        })
+        }
+      )
         .populate('tableId', 'name') // Sadece masa adını getir
         .populate('waiterId', 'firstName lastName') // Sadece garson adını ve soyadını getir
         .sort({ createdAt: -1 })
@@ -147,10 +149,10 @@ export class OrderService {
           : 'Sistem',
         orderDate: o.createdAt,
       }));
-
+console.log(result)
       // Interceptor sayesinde { status: true, data: result } olarak paketlenecek
-      return result;
-    } catch (error) {
+      return {data:result};
+    } catch (error:any) {
       console.error('Order FindAll Hatası:', error);
       this.logger.error(`Order FindAll Hatası:Data:${JSON.stringify({ from, to })} -  Hata: ${error.message}`, error.stack)
 
@@ -202,7 +204,7 @@ export class OrderService {
       };
 
       return { status: true, data: result }; // Interceptor bunu { status: true, data: result } yapacaktır.
-    } catch (error) {
+    } catch (error:any) {
       if (error instanceof NotFoundException) throw error;
       this.logger.error(` Order FindOne Hatası: Gelen Id:${id} -  Hata: ${error.message}`, error.stack)
 
@@ -230,7 +232,7 @@ export class OrderService {
         message: 'Sipariş durumu güncellendi.',
         data: order
       };
-    } catch (error) {
+    } catch (error:any) {
       console.error('Order Update Hatası:', error);
       this.logger.error(`Order Update Hatası: Gelen Id:${id} -Data:${JSON.stringify(updateOrderDto)} -  Hata: ${error.message}`, error.stack)
 
@@ -239,7 +241,7 @@ export class OrderService {
     }
   }
   async editOrder(updateOrderDto: UpdateOrderDto) {
-    console.log("edit order sayfası ")
+ 
     const { orderId, basket, total } = updateOrderDto;
 
     try {
@@ -270,7 +272,7 @@ export class OrderService {
         message: 'Sipariş başarıyla güncellendi.',
         data: updatedOrder,
       };
-    } catch (error) {
+    } catch (error:any) {
       console.error('EditOrder Hatası:', error);
       this.logger.error(`Order EditOrder Hatası: Data:${JSON.stringify(updateOrderDto)} -  Hata: ${error.message}`, error.stack)
 
@@ -304,7 +306,7 @@ export class OrderService {
       await this.orderModel.findByIdAndDelete(id);
 
       return { status: true, message: 'Adisyon ve bağlı tüm veriler silindi.' };
-    } catch (error) {
+    } catch (error:any) {
       console.error('Order Remove Hatası:', error);
       this.logger.error(` Order GetUser Hatası: Gelen Id:${id} -  Hata: ${error.message}`, error.stack)
 
@@ -350,7 +352,7 @@ export class OrderService {
         message: 'Ödeme başarıyla alındı ve masa boşaltıldı.',
         data: { orderId: order._id }
       };
-    } catch (error) {
+    } catch (error:any) {
       console.error('getPaid Hatası:', error);
       this.logger.error(`Order Update Hatası: -Data:${JSON.stringify(updateOrderDto)} -  Hata: ${error.message}`, error.stack)
 
@@ -393,7 +395,7 @@ export class OrderService {
   //     }));
 
   //     return { status: true, data: result }; // Interceptor bunu { status: true, data: result } yapacaktır.
-  //   } catch (error) {
+  //   } catch (error:any) {
   //     console.error('getOrderByDate Hatası:', error);
   //     throw new InternalServerErrorException('Belirtilen tarihler arasında rapor alınamadı.');
   //   }
@@ -431,7 +433,7 @@ export class OrderService {
         return { message: "basral sekilde yazdırıldı " }
       else
         return { status: false, message: "yazdırma işleminde hat olustur " }
-    } catch (error) {
+    } catch (error:any) {
       console.error('getPaid Hatası:', error);
       this.logger.error(`Order PrintOrder Hatası: -Gelen ID ${orderId} -  Hata: ${error.message}`, error.stack)
 

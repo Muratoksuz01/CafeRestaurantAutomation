@@ -1,9 +1,8 @@
 "use client"
 
-import type React from "react"
 
 import { useEffect } from "react"
-import { Dialog, DialogClose, DialogContent, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog"
+import { DialogClose, DialogFooter } from "@/components/ui/dialog"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -79,10 +78,10 @@ function EditDialog({ open, setOpenEdit, user, onSuccess }: EditDialogProps) {
     open={open}
     onOpenChange={setOpenEdit}
     title="Kullanıcıyı Düzenle"
-    onConfirm={() => {handleSave(form.getValues())}}
+   // onConfirm={() => {handleSave(form.getValues())}}
     description={
-       <Form {...form}>
-          <form  className="space-y-5">
+       <Form  {...form}>
+          <form  onSubmit={form.handleSubmit(handleSave)}   className="space-y-5">
             {/* Name Fields Row */}
             <div className="grid grid-cols-2 gap-4">
               <CustomFormField control={form.control} name="firstName" title="Ad">
@@ -162,14 +161,14 @@ function EditDialog({ open, setOpenEdit, user, onSuccess }: EditDialogProps) {
               )}
             </CustomFormField>
 
-            {/* <DialogFooter className="gap-2 sm:gap-0">
+            <DialogFooter className=" flex gap-2 ">
               <DialogClose asChild>
                 <Button type="button" variant="outline">
                   İptal
                 </Button>
               </DialogClose>
               <Button type="submit">Kaydet</Button>
-            </DialogFooter> */}
+            </DialogFooter>
           </form>
         </Form>
     }

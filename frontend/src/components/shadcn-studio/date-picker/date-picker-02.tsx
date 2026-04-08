@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { CalendarIcon, ChevronDownIcon, X } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
+import { tr } from 'date-fns/locale'  // date-fns locale import
 
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
@@ -68,6 +69,7 @@ const DatePickerRangeDemo = ({
                 <PopoverContent className="w-auto p-0" align="start">
                     <Calendar
                         mode="range"
+                        locale={tr}
                         selected={range}
                         onSelect={(r) => {
                             setRange(r)

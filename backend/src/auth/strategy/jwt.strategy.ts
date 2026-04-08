@@ -17,7 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   async validate(payload: any) {
     // Payload içindeki veriler (sub, email vb.) artık req.user olarak döner
    //console.log("jwt.stag dosyası validate caliıtı:",payload)4
-   console.log("jwt strategy.ts dosyası ",payload)
+  //  console.log("jwt strategy.ts dosyası ",payload)
     return { 
     userId: payload.userId, // payload.sub yerine payload.userId
     roleName: payload.roleName // Payload'da ne varsa onu alıyoruz

@@ -149,71 +149,70 @@ function AdminOrders() {
 
 
   return (
-    <div className="container mx-auto py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle>Sipariş Yönetimi</CardTitle>
-          <CardDescription>Siparişleri durumlarına göre görüntüleyin ve yönetin</CardDescription>
-        </CardHeader>
-        <CardContent>
+   <div className="container mx-auto py-4 px-2 md:px-6">
+  <Card>
+    <CardHeader>
+      <CardTitle>Sipariş Yönetimi</CardTitle>
+      <CardDescription>Siparişleri durumlarına göre görüntüleyin ve yönetin</CardDescription>
+    </CardHeader>
+    <CardContent>
+      <CustomDataTable
+        columns={columns}
+        data={orders}
+        header={(table) => (
+          <div className="mb-3 flex flex-col md:flex-row justify-between gap-3">
+            <div className='w-full md:w-44'>
+              <Filter column={table.getColumn('tableName')!} />
+            </div>
+            <div className="flex flex-col md:flex-row gap-3">
+              <DatePickerRangeDemo onChange={setDateRange} />
+              <Button
+                className="mt-2 md:mt-6"
+                onClick={async () => {
+                  if (!dateRange?.from || !dateRange?.to) return
+                  await getOrdersByDate(dateRange)
+                }}
+              >
+                Getir
+              </Button>
+            </div>
+            <div className='w-full md:w-44'>
+              <Filter column={table.getColumn('status')!} />
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => {
+                const rows = table
+                  .getFilteredRowModel()
+                  .rows
+                  .map((r: Row<Order>, index: number) => ({
+                    "Sıra": index + 1,
+                    "Masa İsmi": r.original.tableName,
+                    "Sipariş Tarihi": new Date(r.original.orderDate).toLocaleString("tr-TR"),
+                    "Toplam": `${r.original.orderTotal.toFixed(2)} ₺`,
+                    "Durum": r.original.status,
+                    "Garson": r.original.waiterName,
+                  }))
 
-          <CustomDataTable
-            columns={columns}
-            data={orders}
-            header={(table) => (
-              <div className="mb-3 flex justify-between">
-                 <div className='w-44'>
-                  <Filter column={table.getColumn('tableName')!} />
-                </div>
-                {/* tarih secici */}
-                <div className="flex gap-3">
-                  <DatePickerRangeDemo onChange={setDateRange} />
-                  <Button
-                    className="mt-6"
-                    onClick={async () => {
-                      if (!dateRange?.from || !dateRange?.to) return
-                      await getOrdersByDate(dateRange)
-                    }}
-                  >
-                    Getir
-                  </Button>
-                </div>
-                
-                <div className='w-44'>
-                  <Filter column={table.getColumn('status')!} />
-                </div>
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    const rows = table
-                      .getFilteredRowModel()
-                      .rows
-                      .map((r: Row<Order>, index: number) => ({
-                        "Sıra": index + 1,
-                        "Masa İsmi": r.original.tableName,
-                        "Sipariş Tarihi": new Date(r.original.orderDate).toLocaleString("tr-TR"),
-                        "Toplam": `${r.original.orderTotal.toFixed(2)} ₺`,
-                        "Durum": r.original.status,
-                        "Garson": r.original.waiterName,
-                      }))
+                exportToExcel(rows, "orders.xlsx")
+              }}
+            >
+              Excel Export
+            </Button>
+          </div>
+        )}
+        footer={(table) => (
+          <div className="p-3">
+            <DataTablePagination table={table} />
+          </div>
+        )}
+      //  tableClassName="min-w-full overflow-x-auto block"
+      />
+    </CardContent>
+  </Card>
 
-                    exportToExcel(rows, "orders.xlsx")
-                  }}
-                >
-                  Excel Export
-                </Button>
-              </div>
-            )}
-
-            footer={(table) => (<div className="p-3">
-              <DataTablePagination table={table} />
-            </div>  )}
-          />
-        </CardContent>
-      </Card>
-
-      <OrderDetailsDialog orderId={selectedOrderId} open={dialogOpen} onOpenChange={setDialogOpen} />
-    </div>
+  <OrderDetailsDialog orderId={selectedOrderId} open={dialogOpen} onOpenChange={setDialogOpen} />
+</div>
   )
 }
 

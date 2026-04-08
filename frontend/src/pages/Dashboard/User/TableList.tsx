@@ -5,21 +5,15 @@ import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetTables } from "@/hooks/useGetTables";
 import { AllTable, tableCreateEditSchema } from "@/models/Tables";
-
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { ColumnDef, RowData } from "@tanstack/react-table";
 import CustomDataTable from "@/pages/Dashboard/components/CustomDataTable";
-
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import Filter from "@/pages/Dashboard/components/Filter";
 import TableFormDialog from "./TableFormDialog";
-import CustomDialog from "@/pages/Dashboard/components/CustomDialog";
-import { Form } from "@/components/ui/form";
-import CustomFormField from "@/pages/Dashboard/components/CustomFormField";
-import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 declare module '@tanstack/react-table' {
@@ -234,66 +228,70 @@ function TableList() {
     
   }, [ editOpen]);
   return (
-    <div className="p-5">
-      <div className="rounded-xl border bg-background shadow-sm overflow-hidden">
-        <CustomDataTable
-          header={(table) => (
-            <div className="flex justify-between mb-5 p-3 border-b">
-              <h2 className="text-xl font-semibold">Masalar</h2>
-              <div className="flex gap-3 items-center">
+  <div className=" ">
+    <div className="rounded-xl  bg-background shadow-sm overflow-hidden">
+      <CustomDataTable
+        header={(table) => (
+          <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-5 p-3 border-b">
+            
+            <h2 className="text-lg sm:text-xl font-semibold">
+              Masalar
+            </h2>
 
-                <div className='w-44'>
-                  <Filter column={table.getColumn('name')!} />
-                </div>
-                <div className='w-44'>
-                  <Filter column={table.getColumn('status')!} />
-                </div>
-
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+              <div className="w-full sm:w-44">
+                <Filter column={table.getColumn('name')!} />
               </div>
-              <Button onClick={() => setCreateOpen(true)}>Yeni Masa</Button>
-
+              <div className="w-full sm:w-44">
+                <Filter column={table.getColumn('status')!} />
+              </div>
             </div>
-          )}
-          data={tables} columns={column} />
 
+            <Button
+              onClick={() => setCreateOpen(true)}
+              className="w-full sm:w-auto"
+            >
+              Yeni Masa
+            </Button>
 
-      </div>
-     
-
-      <TableFormDialog
-        open={createOpen}
-        onOpenChange={setCreateOpen}
-        onSuccess={onSuccess}
-      />
-
-       <TableFormDialog
-        open={editOpen}
-        onOpenChange={setEditOpen}
-        table={selected} 
-        onSuccess={onSuccess}
-      />
-
-      <CustomAlertDialog
-        open={deleteOpen}
-        onOpenChange={setDeleteOpen}
-        title={
-          <span>
-            Bu masayı <strong className="text-destructive">silmek</strong> istiyor musun?
-          </span>
-        }
-        description={
-          <div className="text-sm text-muted-foreground">
-            <p>Bu işlem geri alınamaz.</p>
-            <p>Masa: <b>{selected ? selected.name : "veri gelmedi"}</b></p>
           </div>
-        }
-        onConfirm={() => deleteTable(selected)}
+        )}
+        data={tables}
+        columns={column}
       />
-
-
     </div>
 
-  );
+    <TableFormDialog
+      open={createOpen}
+      onOpenChange={setCreateOpen}
+      onSuccess={onSuccess}
+    />
+
+    <TableFormDialog
+      open={editOpen}
+      onOpenChange={setEditOpen}
+      table={selected}
+      onSuccess={onSuccess}
+    />
+
+    <CustomAlertDialog
+      open={deleteOpen}
+      onOpenChange={setDeleteOpen}
+      title={
+        <span>
+          Bu masayı <strong className="text-destructive">silmek</strong> istiyor musun?
+        </span>
+      }
+      description={
+        <div className="text-sm text-muted-foreground">
+          <p>Bu işlem geri alınamaz.</p>
+          <p>Masa: <b>{selected ? selected.name : "veri gelmedi"}</b></p>
+        </div>
+      }
+      onConfirm={() => deleteTable(selected)}
+    />
+  </div>
+);
 }
 
 export default TableList;

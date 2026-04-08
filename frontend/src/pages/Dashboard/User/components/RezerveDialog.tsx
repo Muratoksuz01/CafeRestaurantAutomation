@@ -11,8 +11,10 @@ import CustomDialog from "../../components/CustomDialog";
 import axiosInstance from "@/lib/axiosInstance";
 import { API_PATHS } from "@/lib/api";
 import { ApiResponse } from "@/lib/apiTypes";
+import { useState } from "react";
 
 function RezerveDialog({ masaId, showRezerveDialog, setShowRezerveDialog,onSuccess ,setOpen}: any) {
+    const [loading, setLoading] = useState(false)
     const now = new Date();
     const form = useForm({
         resolver: zodResolver(rezerveSchema),
@@ -28,16 +30,24 @@ function RezerveDialog({ masaId, showRezerveDialog, setShowRezerveDialog,onSucce
     const onSubmit = async (veri: any) => {
         console.log(masaId)
         console.log(veri);
-        const { data } = await axiosInstance.post<ApiResponse>(API_PATHS.handleBook, { masaId, ...veri })
-        if (data.status) {
-            setShowRezerveDialog(false);
-            toast.success("basrılı", successStyle)
-            form.reset()
-            onSuccess()
-            setOpen(false)
-        }else{
-            console.error("rezerve edilirken hata var:",data.message)
-            toast.warning(data.message || "rezerve edilirken hata olustu")
+        try {
+            setLoading(true)
+            const { data } = await axiosInstance.post<ApiResponse>(API_PATHS.handleBook, { masaId, ...veri })
+            if (data.status) {
+                setShowRezerveDialog(false);
+                toast.success("basrılı", successStyle)
+                form.reset()
+                onSuccess()
+                setOpen(false)
+            }else{
+                console.error("rezerve edilirken hata var:",data.message)
+                toast.warning(data.message || "rezerve edilirken hata olustu")
+            }
+            
+        } catch (error) {
+            console.error("rezerve edilirken bilinmeyen bir haat olustu:",error)
+        }finally{
+            setLoading(false)
         }
     };
 
@@ -86,6 +96,17 @@ function RezerveDialog({ masaId, showRezerveDialog, setShowRezerveDialog,onSucce
                     </form>
                 </Form>
             }
+            footer={
+        <div className="flex justify-end gap-4">
+
+          <Button onClick={form.handleSubmit(onSubmit)} type="submit" disabled={loading}>
+            {loading ? "Yükleniyor..." : "Oluştur"}
+          </Button>
+          <Button onClick={() => { setOpen(false) }} disabled={loading}>
+            İptal
+          </Button>
+        </div>
+      }
         />
 
     );

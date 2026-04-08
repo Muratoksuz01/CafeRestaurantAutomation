@@ -18,8 +18,8 @@ export class OrderController {
     @Query('from') from?: string, 
     @Query('to') to?: string
   ) {
-  console.log("burada:",from)
-  console.log("burada:",to)
+  console.log(" order findAll from:",from)
+  console.log("order findAll to:",to)
     return await this.orderService.findAll(from, to);
   }
   @Put("editOrder")

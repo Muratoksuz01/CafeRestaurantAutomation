@@ -20,6 +20,7 @@ export default function Login() {
 const {login,loading,user} =useAuthStore((state)=>state)
 useAuthControl();
   const [showPassword, setShowPassword] = useState(false)
+  const [error, setError] = useState("")
   const navigate = useNavigate()
  /*  useEffect(() => {
     const role = user ? user.role : null;
@@ -59,6 +60,7 @@ const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     }
   } else {
     toast.error(res.message || "Giriş başarısız", warningStyle);
+    setError(res.message ||"giris basrısız")
   }
 };
 
@@ -79,6 +81,7 @@ const onSubmit = async (data: z.infer<typeof loginSchema>) => {
             <div className="text-center">
               <h1 className="text-3xl font-bold text-slate-900">Cafe System</h1>
               <p className="text-sm text-slate-600 mt-2">Kahve dükkanınızı yönetin</p>
+              <p className="text-red-500">{error}</p>
             </div>
           </div>
 

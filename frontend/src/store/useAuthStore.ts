@@ -11,7 +11,7 @@ interface User {
   lastName?: string;
   phoneNumber?: string;
   // permissions: string[]
-  role: string ;
+  role: string;
 
 }
 
@@ -22,7 +22,7 @@ interface AuthState {
   loading: boolean;
   login: (credentials: any) => Promise<LoginResponse>;
   logout: () => void;
-  update:(veri:any)=> void;
+  update: (veri: any) => void;
 }
 interface LoginResponse {
   success: boolean;
@@ -64,7 +64,7 @@ export const useAuthStore = create<AuthState>()(
           return { success: false, message: result.message };
         } catch (error: any) {
           set({ loading: false });
-          return { success: false, message: "Sunucu hatası" };
+          return { success: false, message:  error.message || "Sunucu hatası" };
         }
       },
 

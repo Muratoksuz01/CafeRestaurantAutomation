@@ -15,6 +15,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { ColumnDef } from "@tanstack/react-table"
 import CustomDataTable from "@/pages/Dashboard/components/CustomDataTable"
 import { DataTableColumnHeader } from "../components/data-table-column-header"
+import CustomAlertDialog from "../components/CustomAlertDialog"
 
 
 
@@ -23,6 +24,7 @@ export default function AdminUsers() {
   const { users, getUsers, loading: userLoading } = useGetUsers()
   const [selectedUser, setSelectedUser] = useState<Users>({} as Users)
   const [openEdit, setOpenEdit] = useState(false)
+  const [openDel, setOpenDel] = useState(false)
   const [createDialog, setCreateDialog] = useState(false)
   const columns: ColumnDef<Users>[] = [
     {
@@ -77,9 +79,9 @@ export default function AdminUsers() {
       cell: ({ row }) => (
         <div>
           {row.original.isActive ? (
-            <Check className="text-green-600 w-5 h-5" />
+            <Check className="text-green-600 w-4 h-4" />
           ) : (
-            <X className="text-red-600 w-5 h-5" />
+            <X className="text-red-600 w-4 h-4" />
           )}
         </div>
 
@@ -101,20 +103,30 @@ export default function AdminUsers() {
           </DropdownMenuTrigger>
 
           <DropdownMenuContent align="end">
-            <DropdownMenuItem onClick={() => editUser(row.original)}>
+            <DropdownMenuItem onClick={() => {
+              setSelectedUser(row.original)
+              setOpenEdit(true)
+            }
+              // editUser(row.original)
+            }>
               <PencilLine className="mr-2 h-4 w-4" />
               Düzenle
             </DropdownMenuItem>
 
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
-              onClick={() => deleteUser(String(row.original._id))}
+              onClick={() => {
+                setSelectedUser(row.original)
+                setOpenDel(true)
+              }
+                // deleteUser(String(row.original._id))
+              }
             >
               <Trash2 className="mr-2 h-4 w-4" />
               Sil
             </DropdownMenuItem>
           </DropdownMenuContent>
-        </DropdownMenu>
+        </DropdownMenu >
       )
     }
 
@@ -138,7 +150,7 @@ export default function AdminUsers() {
     }
   }
 
-  const editUser = async (user: Users) => {
+  const editUser = (user: Users) => {
     setSelectedUser(user)
     setOpenEdit(true)
   }
@@ -177,7 +189,7 @@ export default function AdminUsers() {
     }
   }
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="container mx-auto p-4 md:p-6 space-y-6 overflow-x-auto">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Kullanıcı İzin Yönetimi</h1>
         <p className="text-foreground text-xl">Kullanıcı izinlerini görüntüleyin ve yönetin</p>
@@ -209,33 +221,49 @@ export default function AdminUsers() {
         </CardHeader>
         <CardContent>
           <div className="rounded-md border">
-            <CustomDataTable
-              columns={columns} data={users}
-              header={(table) => (
-                <div className="flex items-center justify-between mb-5 p-3 border-b">
-                  <div className="relative w-82">
-                    <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                    <Input
-                      placeholder="Ad, soyad, e-posta veya telefon ile ara..."
-                      value={table.getState().globalFilter ?? ""}
-                      onChange={(e) => table.setGlobalFilter(e.target.value)}
-                      disabled={userLoading}
-                      className="pl-9"
-                    />
+            <div className="rounded-md border overflow-x-auto">
+              <CustomDataTable
+                columns={columns} data={users}
+                header={(table) => (
+                  <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-5 p-3 border-b gap-2">
+                    <div className="relative w-full md:w-80">
+                      <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                      <Input
+                        placeholder="Ad, soyad, e-posta veya telefon ile ara..."
+                        value={table.getState().globalFilter ?? ""}
+                        onChange={(e) => table.setGlobalFilter(e.target.value)}
+                        disabled={userLoading}
+                        className="pl-9 w-full"
+                      />
+                    </div>
+                    <Button className="w-full md:w-auto" onClick={() => setCreateDialog(true)}>
+                      Yeni Eleman
+                    </Button>
                   </div>
-
-                  <Button onClick={() => { setCreateDialog(true) }}>Yeni Eleman</Button>
-                </div>
-              )}
-            />
+                )}
+              />
+            </div>
           </div>
         </CardContent>
       </Card>
 
-     
+
 
       <EditDialog open={openEdit} setOpenEdit={setOpenEdit} user={selectedUser} onSuccess={onSuccess} />
       <CreateUserDialog open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess} />
+      <CustomAlertDialog open={openDel} onOpenChange={() => {
+        setOpenDel(false)
+        setSelectedUser({} as Users)
+      }}
+        title={
+          <p> <span className="text-destructive">{selectedUser.firstName}</span> isimli kişiyi silmek istiyroumusunuz </p>
+        }
+        onConfirm={() => {
+          deleteUser(selectedUser._id.toString())
+          setSelectedUser({} as Users)
+          setOpenDel(false)
+        }}
+      />
     </div>
   )
 }

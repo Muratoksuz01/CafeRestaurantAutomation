@@ -39,9 +39,9 @@ export class FoodsService {
         isDeleted: false
       });
       return { data: food }
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Food Create Hatası:", error);
-      this.logger.error(`Food Create Hatası: -Data:${JSON.stringify(createFoodDto)} -  Hata: ${error.message}`,error.stack)
+      this.logger.error(`Food Create Hatası: -Data:${JSON.stringify(createFoodDto)} -  Hata: ${error.message}`, error.stack)
       throw new InternalServerErrorException("Yemek Olusturulurken hata olustu");
     }
   }
@@ -50,9 +50,9 @@ export class FoodsService {
     try {
       const foods = await this.foodModel.find({ isDeleted: false });
       return { status: true, data: foods }
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Food FindALl Hatası:", error);
-      this.logger.error( ` Food FindALl Hatası:  -  Hata: ${error.message}`,error.stack)
+      this.logger.error(` Food FindALl Hatası:  -  Hata: ${error.message}`, error.stack)
 
       throw new InternalServerErrorException("Yemekler getirilirken hata olustu");
     }
@@ -61,28 +61,54 @@ export class FoodsService {
 
 
   async update(
-    @UploadedFiles() files: Array<Express.Multer.File>,
+    files: Array<Express.Multer.File>,
     id: string,
     updateFoodDto: UpdateFoodDto
   ) {
     try {
-      const { name, price, description, categoryId } = updateFoodDto;
-      // multer files
+      const { name, price, description, categoryId, existingImgs } = updateFoodDto;
+
       const food = await this.foodModel.findById(id);
-      if (!food) return { status: false, message: "Food bulunamadı", };
-      let newImgs = food.imgs; // default olarak eski resimler
+      if (!food) {
+        return { status: false, message: "Food bulunamadı" };
+      }
 
-      // Yeni resim geldiyse işleme al
+      let finalImgs: string[] = [];
+
+      // normalize
+      let existingImgsArr: string[] = [];
+
+      if (existingImgs) {
+        existingImgsArr = Array.isArray(existingImgs)
+          ? existingImgs
+          : [existingImgs];
+      }
+
+      // 1. kalanlar
+      finalImgs = [...existingImgsArr];
+
+      // 2. silinenler
+      const deletedImgs = food.imgs.filter(
+        (img: string) => !existingImgsArr.includes(img)
+      );
+
+      for (const img of deletedImgs) {
+        try {
+          this.helperService.deleteImage(img);
+        } catch (e) { }
+      }
+
+      // 3. YENİ RESİMLERİ EKLE
       if (files && files.length > 0) {
-        // Eski resimleri sil
-        for (const img of food.imgs) {
-          try {
-            this.helperService.deleteImage(img) //  
-          } catch (e) { }
-        }
+        const uploaded = files.map((file) =>
+          this.helperService.saveLocalImage(file)
+        );
+        finalImgs = [...finalImgs, ...uploaded];
+      }
 
-        // Yeni resimleri kaydet
-        newImgs = files.map((file) => this.helperService.saveLocalImage(file));
+      // 4. MAX 2 GUARD (opsiyonel ama mantıklı)
+      if (finalImgs.length > 2) {
+        return { status: false, message: "En fazla 2 resim olabilir" };
       }
 
       const updated = await this.foodModel.findByIdAndUpdate(
@@ -92,19 +118,15 @@ export class FoodsService {
           price,
           description,
           categoryId,
-          imgs: newImgs
+          imgs: finalImgs
         },
         { new: true }
       );
-      return { status: true, data: updated }
 
+      return { status: true, data: updated };
 
-
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Food Update Hatası:", error);
-      this.logger.error(`Food Update Hatası: Gelen Id:${id} -Data:${JSON.stringify(updateFoodDto)} -  Hata: ${error.message}`,error.stack)
-
-
       throw new InternalServerErrorException("Yemek Guncellenirken bir hata olustu");
     }
   }
@@ -112,14 +134,17 @@ export class FoodsService {
   async remove(id: string) {
     try {
       const current = await this.foodModel.findById(id);
-      if (!current) return { status: false, message: "User bulunamadı", };
-      await this.foodModel.findByIdAndUpdate(id, {
-        isDeleted: true
-      });
+      if (!current) return { status: false, message: "Yemek bulunamadı", };
+      current.imgs.map(img=>{
+        this.helperService.deleteImage(img)
+      })
+
+      await this.foodModel.findByIdAndDelete(id)
+    
       return { status: true, message: "Food deleted" }
-    } catch (error:any) {
+    } catch (error: any) {
       console.error("Food Remove Hatası:", error);
-      this.logger.error( ` Food Remove Hatası: Gelen Id:${id} -  Hata: ${error.message}`,error.stack)
+      this.logger.error(` Food Remove Hatası: Gelen Id:${id} -  Hata: ${error.message}`, error.stack)
 
       throw new InternalServerErrorException("yemek Silinirken Hata Olustu");
     }
