@@ -14,8 +14,8 @@
     "sourceMap": true,
     "outDir": "./dist",
     "strictPropertyInitialization": false,
-  //  "rootDir": "./",
-    "baseUrl": "./",
+   "rootDir": "./",
+    // "baseUrl": "./",
    //  "ignoreDeprecations": "6.0",
     "types": ["node", "Multer"],
     "incremental": true,
@@ -26,6 +26,7 @@
     "strictBindCallApply": false,
     "noFallthroughCasesInSwitch": false,
   },
+  //"exclude":["test"]
   // "include": ["src/**/*"],
   // "exclude": ["node_modules", "test", "dist", "**/*spec.ts"]
 }

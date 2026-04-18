@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { User, UserSchema } from "src/schemas/User.schemas";
+import { User, UserSchema } from "../schemas/User.schemas";
 import { UsersService } from "./users.service";
-import { UserRole, UserRoleSchema } from "src/schemas/UserRole.schemas";
-import { Order, OrderSchema } from "src/schemas/Order.schemas";
-import { OrderItem, OrderItemSchema } from "src/schemas/OrderItem.schemas";
-import { Food, FoodSchema } from "src/schemas/Food.schemas";
+import { UserRole, UserRoleSchema } from "../schemas/UserRole.schemas";
+import { Order, OrderSchema } from "../schemas/Order.schemas";
+import { OrderItem, OrderItemSchema } from "../schemas/OrderItem.schemas";
+import { Food, FoodSchema } from "../schemas/Food.schemas";
 import { UsersController } from "./users.controller";
-import { Role, RoleSchema } from "src/schemas/Role.schemas";
-import { MyLogger } from "src/logger/logger.service";
-import { LoggerModule } from "src/logger/logger.module";
+import { Role, RoleSchema } from "../schemas/Role.schemas";
+import { MyLogger } from "../logger/logger.service";
+import { LoggerModule } from "../logger/logger.module";
 
 @Module({
     imports:[

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, HttpCode, HttpStatus, Param, Post, Put, 
 import { UsersService } from "./users.service";
 import { CreateUser } from "./dto/CreateUser.dto";
 import { UpdateUser } from "./dto/UpdateUser";
-import { JwtAuthGuard } from "src/auth/guard/jwt-auth.guard";
+import { JwtAuthGuard } from "../auth/guard/jwt-auth.guard";
 
 
 @Controller("users")

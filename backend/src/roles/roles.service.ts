@@ -1,10 +1,10 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Role, RoleDocument } from "src/schemas/Role.schemas";
+import { Role, RoleDocument } from "../schemas/Role.schemas";
 import { CreateRoles } from "./dto/CreateRoles";
 import { UpdateRoles } from "./dto/UpdateRoles";
-import { MyLogger } from "src/logger/logger.service";
+import { MyLogger } from "../logger/logger.service";
 
 @Injectable()
 export class RolesService {
@@ -20,7 +20,7 @@ export class RolesService {
         try {
             const role = new this.roleModel(createRole);
             return await role.save();
-        } catch (error) {
+        } catch (error:any) {
             console.error("Role Create Hatası:", error);
             this.logger.error(`Role Update Hatası: -Data:${JSON.stringify(createRole)} -  Hata: ${error.message}`,error.stack)
 
@@ -45,7 +45,7 @@ export class RolesService {
             }
 
             return role;
-        } catch (error) {
+        } catch (error:any) {
             console.error("Role Update Hatası:", error);
             this.logger.error(`Role Update Hatası: Gelen Id:${id} -Data:${JSON.stringify(updateRole)} -  Hata: ${error.message}`,error.stack)
 
@@ -66,7 +66,7 @@ export class RolesService {
             }
 
             return { status: true, message: "Role deleted" };
-        } catch (error) {
+        } catch (error:any) {
             console.error("Role Delete Hatası:", error);
             this.logger.error( ` Role Delete Hatası: Gelen Id:${id} -  Hata: ${error.message}`,error.stack)
 
@@ -77,7 +77,7 @@ export class RolesService {
     async getRoles() {
         try {
             return await this.roleModel.find().lean();
-        } catch (error) {
+        } catch (error:any) {
             console.error("Roles Get Hatası:", error);
             this.logger.error( ` Role GetUser Hatası  Hata: ${error.message}`,error.stack)
 
@@ -97,7 +97,7 @@ export class RolesService {
             }
 
             return role;
-        } catch (error) {
+        } catch (error:any) {
             console.error("Role GetRole Hatası:", error);
             this.logger.error( ` Role GetRole Hatası: Gelen Id:${id} -  Hata: ${error.message}`,error.stack)
 

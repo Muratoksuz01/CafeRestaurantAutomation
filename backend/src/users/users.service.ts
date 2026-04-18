@@ -1,15 +1,16 @@
 import { HttpException, HttpStatus, Injectable, Delete, Param, Body, InternalServerErrorException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from 'src/schemas/User.schemas';
+import { User, UserDocument } from '../schemas/User.schemas';
 import { UpdateUser } from './dto/UpdateUser';
 import { CreateUser } from './dto/CreateUser.dto';
-import { UserRole } from 'src/schemas/UserRole.schemas';
-import { Order } from 'src/schemas/Order.schemas';
-import { OrderItem } from 'src/schemas/OrderItem.schemas';
-import { Food } from 'src/schemas/Food.schemas';
-import { Role } from 'src/schemas/Role.schemas';
-import { MyLogger } from 'src/logger/logger.service';
+import { UserRole } from '../schemas/UserRole.schemas';
+import { Order } from '../schemas/Order.schemas';
+import { OrderItem } from '../schemas/OrderItem.schemas';
+import { Food } from '../schemas/Food.schemas';
+import { Role } from '../schemas/Role.schemas';
+import { MyLogger } from '../logger/logger.service';
+// import { MyLogger } from '../logger/logger.service';
 
 @Injectable()
 export class UsersService {

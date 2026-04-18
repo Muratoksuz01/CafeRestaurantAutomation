@@ -1,7 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
 import type { IPrinter } from "./printer.interface"; // 'type' kelimesini ekledik
 import { IPrintOrderData } from "./dto/adisyonModel";
-import { MyLogger } from "src/logger/logger.service";
+import { MyLogger } from "../logger/logger.service";
 @Injectable()
 export class PrinterService {
   constructor(
@@ -19,7 +19,7 @@ export class PrinterService {
     try {
       // Hangi strateji aktifse (PDF veya Termal) onun printOrder metodu çalışır
       return await this.printerStrategy.printOrder(orderData);
-    } catch (error) {
+    } catch (error:any) {
       console.error("Yazdırma servisinde hata:", error);
       this.logger.error("yazdırma servisinde hata var :"+error.message,error.stack)
       return false;

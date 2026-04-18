@@ -2,9 +2,11 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as fs from "fs";
 import * as path from "path";
 
+const ROOT = path.resolve(__dirname, "..", "..");
 @Injectable()
 export class HelperService {
-  private readonly uploadPath = path.join(process.cwd(), "assets", "foods");
+
+private readonly uploadPath = path.join(ROOT, "assets", "foods");
 
   constructor() {
     // Klasör yoksa oluştur
@@ -29,7 +31,7 @@ export class HelperService {
 
       // Veritabanına kaydedilecek URL yolunu dönüyoruz
       return `/assets/foods/${filename}`;
-    } catch (error) {
+    } catch (error:any) {
       throw new InternalServerErrorException("Dosya kaydedilirken hata oluştu");
     }
   }

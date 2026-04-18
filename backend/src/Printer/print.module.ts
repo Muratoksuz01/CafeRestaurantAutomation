@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
-import { MyLogger } from "src/logger/logger.service";
+import { MyLogger } from "../logger/logger.service";
 import { PrinterService } from "./printer.service";
 import { StandardPrinterService } from "./provider/standard-printer.provider";
 import { UsbThermalPrinterService } from "./provider/usb-thermal-printer.provider";
 import { ConsolePrinterService } from "./provider/console-printer.provider";
-import { LoggerModule } from "src/logger/logger.module";
+import { LoggerModule } from "../logger/logger.module";
 
 @Module({
   imports: [], // MyLogger'ın export edildiğinden emin ol

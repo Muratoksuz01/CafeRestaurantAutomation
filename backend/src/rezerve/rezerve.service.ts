@@ -1,11 +1,11 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
-import { Table, TableDocument } from 'src/schemas/table.schemas';
+import { Table, TableDocument } from '../schemas/table.schemas';
 import { CreateRezerveDto } from './dto/create-rezerve.dto';
 import { UpdateRezerveDto } from './dto/update-rezerve.dto';
-import { Rezerve, RezerveDocument } from 'src/schemas/Rezerve.schemas';
-import { MyLogger } from 'src/logger/logger.service';
+import { Rezerve, RezerveDocument } from '../schemas/Rezerve.schemas';
+import { MyLogger } from '../logger/logger.service';
 
 @Injectable()
 export class RezerveService {
@@ -43,7 +43,7 @@ export class RezerveService {
       });
       await rezerve.save()
       return rezerve
-    } catch (error) {
+    } catch (error:any) {
       this.logger.error(
         `Rezervasyon Create Hatası! User: ${userId}, Data: ${JSON.stringify(createRezerveDto)} - Hata: ${error.message}`,
         error.stack,

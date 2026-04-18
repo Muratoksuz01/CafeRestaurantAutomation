@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { RezerveService } from './rezerve.service';
 import { RezerveController } from './rezerve.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Table, TableSchema } from 'src/schemas/table.schemas';
-import { Rezerve, RezerveSchema } from 'src/schemas/Rezerve.schemas';
-import { LoggerModule } from 'src/logger/logger.module';
+import { Table, TableSchema } from '../schemas/table.schemas';
+import { Rezerve, RezerveSchema } from '../schemas/Rezerve.schemas';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [

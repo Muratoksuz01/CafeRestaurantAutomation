@@ -2,12 +2,12 @@ import { HttpException, HttpStatus, Injectable, InternalServerErrorException } f
 import { InjectModel } from '@nestjs/mongoose';
 import { CreateTableDto } from './dto/create-table.dto';
 import { UpdateTableDto } from './dto/update-table.dto';
-import { Table } from 'src/schemas/table.schemas';
+import { Table } from '../schemas/table.schemas';
 import { Model } from 'mongoose';
-import { Order } from 'src/schemas/Order.schemas';
-import { OrderItem } from 'src/schemas/OrderItem.schemas';
-import { User } from 'src/schemas/User.schemas';
-import { MyLogger } from 'src/logger/logger.service';
+import { Order } from '../schemas/Order.schemas';
+import { OrderItem } from '../schemas/OrderItem.schemas';
+import { User } from '../schemas/User.schemas';
+import { MyLogger } from '../logger/logger.service';
 
 @Injectable()
 export class TablesService {
@@ -33,7 +33,7 @@ export class TablesService {
       await newTable.save();
 
       return newTable;
-    } catch (error) {
+    } catch (error:any) {
       console.error("Table Create Hatası:", error); // Hatayı konsolda gör
       this.logger.error(`Table Update Hatası:  -Data:${JSON.stringify(createTableDto)} -  Hata: ${error.message}`,error.stack)
 
@@ -86,7 +86,7 @@ export class TablesService {
       }
 
       return {status:true,data:result};
-    } catch (error) {
+    } catch (error:any) {
       console.error("Table  FindAll Hatası:", error); // Hatayı konsolda gör
       this.logger.error(`  Table FindAll Hatası:  -  Hata: ${error.message}`,error.stack)
 
@@ -157,7 +157,7 @@ export class TablesService {
           adisyon: items,
         },
       };
-    } catch (error) {
+    } catch (error:any) {
       console.error("Table FindOne Hatası:", error); // Hatayı konsolda gör
       this.logger.error(`  Table FindOne Hatası: Gelen Id:${id} -  Hata: ${error.message}`,error.stack)
 
@@ -189,7 +189,7 @@ export class TablesService {
         success: true,
         data: updated,
       };
-    } catch (error) {
+    } catch (error:any) {
       console.error("Table Update Hatası:", error); // Hatayı konsolda gör
       this.logger.error(`Table Update Hatası: Gelen Id:${id} -Data:${JSON.stringify(updateTableDto)} -  Hata: ${error.message}`,error.stack)
 
@@ -217,7 +217,7 @@ export class TablesService {
         message: "Masa silindi",
       };
 
-    } catch (error) {
+    } catch (error:any) {
       console.error("Table Remove Hatası:", error); // Hatayı konsolda gör
       this.logger.error( ` Table Remove Hatası: Gelen Id:${id} -  Hata: ${error.message}`,error.stack)
 
@@ -273,7 +273,7 @@ export class TablesService {
         message: "Masa başarılı şekilde değiştirildi",
       };
 
-    } catch (error) {
+    } catch (error:any) {
       console.error("Table ReassignTable Hatası:", error); // Hatayı konsolda gör
       this.logger.error( ` Table ReassignTable Hatası: Gelen OrderId:${orderId} - Data:${body} Hata: ${error.message}`,error.stack)
 

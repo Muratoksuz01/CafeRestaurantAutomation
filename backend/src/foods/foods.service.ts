@@ -2,10 +2,10 @@ import { HttpException, HttpStatus, Injectable, InternalServerErrorException, Up
 import { CreateFoodDto } from './dto/create-food.dto';
 import { UpdateFoodDto } from './dto/update-food.dto';
 import { InjectModel } from '@nestjs/mongoose';
-import { Food } from 'src/schemas/Food.schemas';
+import { Food } from '../schemas/Food.schemas';
 import { Model } from 'mongoose';
-import { HelperService } from 'src/helper/helper.service';
-import { MyLogger } from 'src/logger/logger.service';
+import { HelperService } from '../helper/helper.service';
+import { MyLogger } from '../logger/logger.service';
 
 @Injectable()
 export class FoodsService {

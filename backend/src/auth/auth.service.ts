@@ -1,14 +1,14 @@
 import { HttpException, HttpStatus, Injectable, InternalServerErrorException } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
-import { Role } from "src/schemas/Role.schemas";
-import { User, UserDocument } from "src/schemas/User.schemas";
-import { UserRole } from "src/schemas/UserRole.schemas";
+import { Role } from "../schemas/Role.schemas";
+import { User, UserDocument } from "../schemas/User.schemas";
+import { UserRole } from "../schemas/UserRole.schemas";
 import { LoginDTO } from "./dto/Login.dto";
 import { RegisterDTO } from "./dto/Register.dto";
 import jwt from "jsonwebtoken"
 import { JwtService } from '@nestjs/jwt';
-import { MyLogger } from "src/logger/logger.service";
+import { MyLogger } from "../logger/logger.service";
 
 @Injectable()
 export class AuthService {
@@ -76,7 +76,7 @@ export class AuthService {
             }
          
 
-        } catch (error) {
+        } catch (error:any) {
             console.error("Login Hatası:", error); 
             this.logger.error(` Login Hatası: -Data:${JSON.stringify(loginDTO)} -  Hata: ${error.message}`, error.stack)
             throw new InternalServerErrorException("Auth login hata var "); 
@@ -142,7 +142,7 @@ export class AuthService {
                     message: "Kayıt başarılı. Hesabınız admin onayı bekliyor.",
                 };
             }
-        } catch (error) {
+        } catch (error:any) {
             console.error("Register Hatası:", error); 
             this.logger.error(` Hatası: Gelen  -Data:${JSON.stringify(registerDTO)} -  Hata: ${error.message}`, error.stack)
             throw new InternalServerErrorException("Auth register hata var "); 
@@ -175,7 +175,7 @@ export class AuthService {
             );
 
             return { status: true, data: result };
-        } catch (error) {
+        } catch (error:any) {
             this.logger.error(`GetUsers Hatası: -  Hata: ${error.message}`, error.stack)
             throw new InternalServerErrorException("Auth getUserda hata var ");
 

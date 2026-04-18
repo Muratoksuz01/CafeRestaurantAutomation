@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { MongooseModule } from "@nestjs/mongoose";
-import { Role, RoleSchema } from "src/schemas/Role.schemas";
-import { User, UserSchema } from "src/schemas/User.schemas";
-import { UserRole, UserRoleSchema } from "src/schemas/UserRole.schemas";
+import { Role, RoleSchema } from "../schemas/Role.schemas";
+import { User, UserSchema } from "../schemas/User.schemas";
+import { UserRole, UserRoleSchema } from "../schemas/UserRole.schemas";
 import { AuthService } from "./auth.service";
 import { AuthController } from "./auth.controller";
 import { PassportModule } from "@nestjs/passport";
 import { JwtStrategy } from "./strategy/jwt.strategy";
-import { LoggerModule } from "src/logger/logger.module";
+import { LoggerModule } from "../logger/logger.module";
 @Module({
     imports:[
         PassportModule,

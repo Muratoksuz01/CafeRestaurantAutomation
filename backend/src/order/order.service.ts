@@ -1,15 +1,15 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
-import { Order } from 'src/schemas/Order.schemas';
-import { OrderItem } from 'src/schemas/OrderItem.schemas';
+import { Order } from '../schemas/Order.schemas';
+import { OrderItem } from '../schemas/OrderItem.schemas';
 import { InjectModel } from '@nestjs/mongoose';
-import { Table } from 'src/schemas/table.schemas';
+import { Table } from '../schemas/table.schemas';
 import { Model } from 'mongoose';
-import { Rezerve } from 'src/schemas/Rezerve.schemas';
-import { PrinterService } from 'src/Printer/printer.service';
-import { IPrintOrderData } from 'src/Printer/dto/adisyonModel';
-import { MyLogger } from 'src/logger/logger.service';
+import { Rezerve } from '../schemas/Rezerve.schemas';
+import { PrinterService } from '../Printer/printer.service';
+import { IPrintOrderData } from '../Printer/dto/adisyonModel';
+import { MyLogger } from '../logger/logger.service';
 @Injectable()
 export class OrderService {
   constructor(

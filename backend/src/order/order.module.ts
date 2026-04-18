@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { OrderService } from './order.service';
 import { OrderController } from './order.controller';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Order, OrderSchema } from 'src/schemas/Order.schemas';
-import { OrderItem, OrderItemSchema } from 'src/schemas/OrderItem.schemas';
-import { Table, TableSchema } from 'src/schemas/table.schemas';
-import { Food, FoodSchema } from 'src/schemas/Food.schemas';
-import { Rezerve, RezerveSchema } from 'src/schemas/Rezerve.schemas';
-import { PrintModule } from 'src/Printer/print.module';
-import { MyLogger } from 'src/logger/logger.service';
-import { LoggerModule } from 'src/logger/logger.module';
+import { Order, OrderSchema } from '../schemas/Order.schemas';
+import { OrderItem, OrderItemSchema } from '../schemas/OrderItem.schemas';
+import { Table, TableSchema } from '../schemas/table.schemas';
+import { Food, FoodSchema } from '../schemas/Food.schemas';
+import { Rezerve, RezerveSchema } from '../schemas/Rezerve.schemas';
+import { PrintModule } from '../Printer/print.module';
+import { MyLogger } from '../logger/logger.service';
+import { LoggerModule } from '../logger/logger.module';
 
 @Module({
   imports: [

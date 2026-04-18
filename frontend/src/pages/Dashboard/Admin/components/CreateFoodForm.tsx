@@ -12,6 +12,8 @@ import { Select, SelectContent , SelectItem, SelectTrigger, SelectValue, } from 
 import { Form } from "@/components/ui/form";
 import CustomFormField from "@/pages/Dashboard/components/CustomFormField";
 import CustomDialog from "../../components/CustomDialog";
+import { toast } from "sonner";
+import { successStyle } from "@/lib/toastStyle";
 
 export default function CreateFoodForm({ onUpdate, open, setOpen }: any) {
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,7 @@ export default function CreateFoodForm({ onUpdate, open, setOpen }: any) {
       console.log("Yemek oluşturuldu");
       onUpdate?.();
       setOpen(false)
+      toast.success("temek basrılı seklide eklendi ",successStyle)
     } catch (err) {
       console.log(err);
     } finally {

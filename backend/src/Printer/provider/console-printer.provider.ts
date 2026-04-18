@@ -1,4 +1,4 @@
-import { MyLogger } from "src/logger/logger.service";
+import { MyLogger } from "../../logger/logger.service";
 import { IPrinter } from "../printer.interface";
 
 export class ConsolePrinterService implements IPrinter {
@@ -57,7 +57,7 @@ this.logger
     console.log(doubleLine + "\n");
 
     return true;
-  } catch (error) {
+  } catch (error:any) {
     console.error("Yazdırma hatası:", error);
     this.logger.error( ` PrinterConsole Hatası: GelenData: ${JSON.stringify(orderData)}-  Hata: ${error.message}`,error.stack)
 

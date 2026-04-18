@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Param, Delete, Put, Request, UseGuards } f
 import { RezerveService } from './rezerve.service';
 import { CreateRezerveDto } from './dto/create-rezerve.dto';
 import { UpdateRezerveDto } from './dto/update-rezerve.dto';
-import { JwtAuthGuard } from 'src/auth/guard/jwt-auth.guard';
+import { JwtAuthGuard } from '../auth/guard/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('rezerve')
