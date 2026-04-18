@@ -3,7 +3,7 @@ import { PrinterService } from "./printer.service";
 import { PrinterController } from "./printer.controller";
 
 @Module({
-  imports: [], // MyLogger'ın export edildiğinden emin ol
+  imports: [], 
   providers:[PrinterService],
   controllers:[PrinterController],
 })

@@ -1,9 +1,8 @@
+import { useEffect, useState } from 'react'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button"; import { Input } from "@/components/ui/input";
 import { toast } from "sonner"; import { ApiResponse } from "@/lib/apiTypes";
-import { useEffect, useState } from 'react'
-import { useGetCategory } from "@/hooks/useGetCategory"; import { useGetFoods } from "@/hooks/useGetFoods";
 import { Food } from "@/models/Food"; import { AllTable } from "@/models/Tables";
 import { API_BASE_URL, API_PATHS } from "@/lib/api"; import axiosInstance from "@/lib/axiosInstance";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
@@ -12,10 +11,13 @@ import useAuthStore from "@/store/useAuthStore";
 import { CalendarCheck, CalendarX, Printer, X } from "lucide-react";
 import RezerveDialog from "./RezerveDialog";
 import { useIsMobile } from "@/lib/use-mobile";
+import { useGetCategory } from "@/hooks/useGetCategory"; import { useGetFoods } from "@/hooks/useGetFoods";
+import { useGetPrinter } from "@/hooks/useGetPrinter";
 
 type Basket = Food & { qty: number };
 function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, setSelectedTable }: { selectedTable: AllTable, open: boolean, setOpen: any, onChange: any, allTable: AllTable[], setSelectedTable: any }) {
   const { categories, getCategories } = useGetCategory();
+  const {printers,getPrinters} =useGetPrinter()
   const { getFoods, foods, } = useGetFoods();
   const isMobile =useIsMobile()
   const user = useAuthStore((state) => state.user);
@@ -171,6 +173,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
         await fetchTable(selectedTable._id)
         await getFoods()
         await getCategories()
+        await getPrinters()
       }
     };
 
@@ -219,11 +222,12 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     }
   };
   const handlePrint = async (orderId: string) => {
-    console.log("yazdırılıan orderID:", orderId)
-    const res = await axiosInstance.get<ApiResponse>(API_PATHS.printAdisyon(orderId))
-    if (res.data.status)
-      return toast.success("fiş basaılı sekilde yazdırıldı ", successStyle)
-    return toast.warning("yazdırma işleminde bir soun olustu:" + res.data.message || "hata gelmedi", warningStyle)
+    // TODO burada diger printServide projeine istek atacagız 
+    // console.log("yazdırılıan orderID:", orderId)
+    // const res = await axiosInstance.get<ApiResponse>(API_PATHS.printAdisyon(orderId))
+    // if (res.data.status)
+    //   return toast.success("fiş basaılı sekilde yazdırıldı ", successStyle)
+    // return toast.warning("yazdırma işleminde bir soun olustu:" + res.data.message || "hata gelmedi", warningStyle)
 
   }
   return (

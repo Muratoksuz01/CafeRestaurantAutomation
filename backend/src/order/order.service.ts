@@ -7,8 +7,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Table } from '../schemas/table.schemas';
 import { Model } from 'mongoose';
 import { Rezerve } from '../schemas/Rezerve.schemas';
-import { PrinterService } from '../Printer/printer.service';
-import { IPrintOrderData } from '../Printer/dto/adisyonModel';
 import { MyLogger } from '../logger/logger.service';
 @Injectable()
 export class OrderService {
@@ -18,7 +16,6 @@ export class OrderService {
     @InjectModel(Order.name) private orderModel: Model<Order>,
     @InjectModel(OrderItem.name) private orderItemModel: Model<OrderItem>,
     @InjectModel(Rezerve.name) private rezerveModel: Model<Rezerve>,
-    private readonly printerService: PrinterService
 
 
   ) {
@@ -79,18 +76,18 @@ export class OrderService {
         status: 'dolu',
         currentOrderId: savedOrder._id,
       });
-      await this.printerService.printOrder({
-        orderNo: savedOrder._id.toString().slice(-4),
-        tableName: table.name,
-        date: savedOrder.createdAt,
-        items: basket.map(item => ({
-          name: item.name,
-          qty: Number(item.qty),
-          price: Number(item.price),
-          total: Number(item.qty) * Number(item.price)
-        })),
-        totalAmount: Number(total)
-      });
+      // await this.printerService.printOrder({
+      //   orderNo: savedOrder._id.toString().slice(-4),
+      //   tableName: table.name,
+      //   date: savedOrder.createdAt,
+      //   items: basket.map(item => ({
+      //     name: item.name,
+      //     qty: Number(item.qty),
+      //     price: Number(item.price),
+      //     total: Number(item.qty) * Number(item.price)
+      //   })),
+      //   totalAmount: Number(total)
+      // });
       return {
         message: 'Sipariş başarıyla oluşturuldu.',
         data: {
@@ -415,21 +412,21 @@ console.log(result)
       const table = await this.tableModel.findById(order.tableId);
       if (!table) return { status: false, message: "Masa Bulunamadı" };
 
-      const printData: IPrintOrderData = {
-        orderNo: order._id.toString().slice(-4),
-        tableName: table.name,
-        date: order.createdAt,
-        items: order.orderItems.map((item: any) => ({
-          name: item.foodId.name,
-          qty: Number(item.qty),
-          price: Number(item.unitprice),
-          total: Number(item.total)
-        })),
-        totalAmount: Number(order.total) as number
-      };
-
-      const status = await this.printerService.printOrder(printData);
-      if (status)
+      // const printData: IPrintOrderData = {
+      //   orderNo: order._id.toString().slice(-4),
+      //   tableName: table.name,
+      //   date: order.createdAt,
+      //   items: order.orderItems.map((item: any) => ({
+      //     name: item.foodId.name,
+      //     qty: Number(item.qty),
+      //     price: Number(item.unitprice),
+      //     total: Number(item.total)
+      //   })),
+      //   totalAmount: Number(order.total) as number
+      // };
+          // TODO burada axios ile diger servi 
+      // const status = await this.printerService.printOrder(printData);
+      if (true)
         return { message: "basral sekilde yazdırıldı " }
       else
         return { status: false, message: "yazdırma işleminde hat olustur " }

@@ -42,7 +42,10 @@ export const categorySchema = z.object({
 export type Category = z.infer<typeof categorySchema>;
 
 
-
+export interface Printers{
+    name:string
+    id:string
+}
 
 export const rezerveSchema=z.object({
     employeeName:z.string(),

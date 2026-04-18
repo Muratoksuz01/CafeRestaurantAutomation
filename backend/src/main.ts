@@ -21,8 +21,8 @@ async function bootstrap() {
   });
   app.useGlobalInterceptors(new TransformInterceptor());
   app.useGlobalFilters(new AllExceptionsFilter());
-  app.use('/assets', express.static(join(__dirname, '..', 'assets')));
-  app.useLogger(app.get(MyLogger));
+  app.use('/assets', express.static(join(process.cwd(), 'assets')));
+  //app.useLogger(app.get(MyLogger));
   await app.listen(process.env.PORT ?? 6002,"0.0.0.0"); // 6001 de calişiyor 
 // console.log(`Application is running on: ${await app.getUrl()}`);
 

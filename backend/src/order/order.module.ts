@@ -7,7 +7,6 @@ import { OrderItem, OrderItemSchema } from '../schemas/OrderItem.schemas';
 import { Table, TableSchema } from '../schemas/table.schemas';
 import { Food, FoodSchema } from '../schemas/Food.schemas';
 import { Rezerve, RezerveSchema } from '../schemas/Rezerve.schemas';
-import { PrintModule } from '../Printer/print.module';
 import { MyLogger } from '../logger/logger.service';
 import { LoggerModule } from '../logger/logger.module';
 
@@ -20,7 +19,6 @@ import { LoggerModule } from '../logger/logger.module';
       { name: Food.name, schema: FoodSchema },
       { name: Rezerve.name, schema: RezerveSchema },
     ]),
-    PrintModule
   ],
   controllers: [OrderController],
   providers: [OrderService],

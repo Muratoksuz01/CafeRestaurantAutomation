@@ -6,6 +6,7 @@ export interface IPrintOrderItem {
 }
 
 export interface IPrintOrderData {
+  printId:string
   orderNo: string;
   tableName: string;
   date: Date | string;

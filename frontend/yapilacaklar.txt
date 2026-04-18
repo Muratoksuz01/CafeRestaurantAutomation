@@ -1,10 +1,7 @@
-31 mart 
-    - login register sayfası bunu dusun 
-    - app.tsx de iki tane dashboardLayout var oradaki yonlendirme sistemi iyi degil bunu duzelt
-7 nisan 
+
 
 yapılacaklar
-    - useroverviewdialog sayfası kaldı telefon entegresi icin 
+    - useroverviewdialog sayfası kaldı telefon entegresi icin  tamam 
     - config sayfasını ayarla 
         printer sevis baslayacak get printer geleceker birden fazla ise dropdown seklinde yoksa direk
         bu sayfada printer servisi port numarası yer alacak 

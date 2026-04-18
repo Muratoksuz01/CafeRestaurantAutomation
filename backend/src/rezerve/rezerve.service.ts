@@ -14,7 +14,6 @@ export class RezerveService {
     @InjectModel(Rezerve.name) private rezerveModel: Model<RezerveDocument>,
     @InjectModel(Table.name) private tableModel: Model<TableDocument>,
   ) { 
-    this.logger.setContext("RezerveService")
   }
 
   async create(req: any, createRezerveDto: CreateRezerveDto) {
@@ -27,7 +26,7 @@ export class RezerveService {
       const table = await this.tableModel.findById(masaId);
       if (!table) {
         // Hata değil, bir iş kuralı ihlali (Uyarı/Warn)
-        this.logger.warn(`Rezervasyon başarısız: Masa bulunamadı. MasaID: ${masaId}`);
+        this.logger.warn("RezerveService",`Rezervasyon başarısız: Masa bulunamadı. MasaID: ${masaId}`);
         return { status: false, message: 'Masa bulunamadı' };
       }
       // Masa durumunu "rezerve" yap

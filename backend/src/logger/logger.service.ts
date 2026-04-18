@@ -1,46 +1,51 @@
-    import { ConsoleLogger, Injectable, Scope } from '@nestjs/common';
-import * as fs from 'fs';
-import * as path from 'path';
+import { Injectable, LoggerService } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { Logs } from "../schemas/Logs.schemas";
+import { InjectModel } from "@nestjs/mongoose";
+import { Model } from "mongoose";
 
 @Injectable()
-export class MyLogger extends ConsoleLogger {
-  private readonly logDir = 'logs';
-  private readonly logFile = 'app.log';
+export class MyLogger implements LoggerService {
+  private context = "App";
 
-  constructor() {
-    super();
-    // Log klasörü yoksa oluştur
-    if (!fs.existsSync(this.logDir)) {
-      fs.mkdirSync(this.logDir);
-    }
-  }
-
-  // Tüm log türlerini yakalamak için ana yazma fonksiyonunu override ediyoruz
-  private writeToFile(level: string, message: any, context?: string) {
-    const timestamp = new Date().toLocaleString('tr-TR');
-    const logEntry = `[${timestamp}] [${level.toUpperCase()}] [${context || 'App'}] ${message}\n`;
+  constructor(
     
-    const filePath = path.join(this.logDir, this.logFile);
-    fs.appendFileSync(filePath, logEntry, 'utf8');
+    @InjectModel(Logs.name) private logModel: Model<Logs>
+  ) {}
+
+  setContext(context: string) {
+    this.context = context;
   }
 
-  log(message: any, context?: string) {
-    super.log(message, context); // Konsola yazdırır
-    this.writeToFile('log', message, context); // Dosyaya yazdırır
+  log(context: string,message: any) {
+    this.save("info", message, context);
   }
 
-  error(message: any, stack?: string, context?: string) {
-    super.error(message, stack, context);
-    this.writeToFile('error', `${message} - Stack: ${stack}`, context);
+  error(context: string,message: any,  stack?: string) {
+    this.save("error", message,"",stack);
   }
 
-  warn(message: any, context?: string) {
-    super.warn(message, context);
-    this.writeToFile('warn', message, context);
+  warn(context: string,message: any, ) {
+    this.save("warn", message, context);
   }
 
-  debug(message: any, context?: string) {
-    super.debug(message, context);
-    this.writeToFile('debug', message, context);
+  debug(context: string, message: any, ) {
+    this.save("debug", message, context);
+  }
+
+  private async save(
+    level: string,
+    message: any,
+    context?: string,
+    stack?: string,
+  ) {
+    await this.logModel.create({
+      source: context || this.context,
+      message: String(message),
+      context: context || this.context,
+      stack: stack || null,
+      status: level,
+    });
   }
 }

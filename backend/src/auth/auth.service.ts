@@ -6,7 +6,6 @@ import { User, UserDocument } from "../schemas/User.schemas";
 import { UserRole } from "../schemas/UserRole.schemas";
 import { LoginDTO } from "./dto/Login.dto";
 import { RegisterDTO } from "./dto/Register.dto";
-import jwt from "jsonwebtoken"
 import { JwtService } from '@nestjs/jwt';
 import { MyLogger } from "../logger/logger.service";
 
@@ -58,9 +57,9 @@ export class AuthService {
                 .populate('roleId')
 
             const roleName = (userRoleId?.roleId as any)?.name
+            await this.logger.log("AuthService","auth basarılı ")
             console.log("Kullanıcının Rolü:", roleName); // 'Yonetici', 'User' vb. çıkar
             const token = await this.jwtService.signAsync({ userId: user._id.toString(), roleName })
-            //  const token = this.generateToken(user._id.toString(), roleName);
             return {
                 data: {
                     user: {

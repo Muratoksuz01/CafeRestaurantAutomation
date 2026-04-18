@@ -1,13 +1,13 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { IprinterService } from './iprinter/iprinter.service';
 import { LoggerModule } from './logger/logger.module';
 import { PrinterService } from './Printer/printer.service';
+import { PrintModule } from './Printer/print.module';
 
 @Module({
-  imports: [LoggerModule,PrinterService],
+  imports: [LoggerModule,PrintModule],
   controllers: [AppController],
-  providers: [AppService, IprinterService],
+  providers: [AppService, ],
 })
 export class AppModule {}
