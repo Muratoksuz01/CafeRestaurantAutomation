@@ -1,13 +1,12 @@
-import { MyLogger } from "../../logger/logger.service";
+import { Injectable } from "@nestjs/common";
+import { MyLogService } from "../../logger/logger.service";
 import { IPrinter } from "../printer.interface";
-
+@Injectable()
 export class ConsolePrinterService implements IPrinter {
   constructor(
-    private readonly logger: MyLogger,
+    private readonly logger: MyLogService,
 
   ) {
-    // Konsol servisi için ekstra bir kurulum gerekmiyor
-    this.logger.setContext("PrinterServiceConsole")
 
   }
 

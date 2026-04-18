@@ -1,5 +1,5 @@
 import { Global, Module } from '@nestjs/common';
-import { MyLogger } from './logger.service';
+import { MyLogService } from './logger.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Logs, LogsSchema } from '../schemas/Logs.schemas';
 
@@ -10,7 +10,7 @@ import { Logs, LogsSchema } from '../schemas/Logs.schemas';
       { name: Logs.name, schema: LogsSchema },
     ])
   ],
-  providers: [MyLogger],
-  exports: [MyLogger],
+  providers: [MyLogService],
+  exports: [MyLogService],
 })
 export class LoggerModule { }

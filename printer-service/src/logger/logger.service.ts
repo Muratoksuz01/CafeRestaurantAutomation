@@ -1,17 +1,14 @@
 import { Injectable, LoggerService } from "@nestjs/common";
-import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
-import { Logs } from "../schemas/Logs.schemas";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
+import { Logs } from "../schemas/Logs.schemas";
 
 @Injectable()
-export class MyLogger implements LoggerService {
+export class MyLogService implements LoggerService {
   private context = "App";
 
   constructor(
-    @InjectRepository(Logs)
-    private readonly logRepo: Repository<Logs>,
+   
     @InjectModel(Logs.name) private logModel: Model<Logs>
   ) {}
 
