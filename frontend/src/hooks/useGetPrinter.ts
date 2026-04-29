@@ -16,7 +16,7 @@ export function useGetPrinter() {
     setError(null);
 
     try {
-      const res = await axiosInstance.get<ApiResponse<Printers[]>>(API_PATHS.getCategories);
+      const res = await axiosInstance.get<ApiResponse<Printers[]>>(API_PATHS.getPrinters);
 
       if (res.data.status) {
         setPrinters(res.data.data || []);

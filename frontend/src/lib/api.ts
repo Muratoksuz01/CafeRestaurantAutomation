@@ -1,6 +1,6 @@
 // src/lib/api.ts
-// export const API_BASE_URL = "http://localhost:6001";
-export const API_BASE_URL = "http://10.186.113.63:6001"; // ipconfig sonra ipv4 kısımını buraya al 
+export const API_BASE_URL = "http://localhost:6001";
+// export const API_BASE_URL = "http://10.186.113.63:6001"; // ipconfig sonra ipv4 kısımını buraya al 
 
 export const API_PATHS = {
   //auth
@@ -54,4 +54,12 @@ export const API_PATHS = {
   getRezervasyon: (id: string) => `${API_BASE_URL}/rezerve/` + id,
   createRezervasyon: `${API_BASE_URL}/rezerve`,
   deleteRezervasyon: (id: string) => `${API_BASE_URL}/rezerve/` + id,
+
+  // printer
+  getPrinters: `${API_BASE_URL}/printer`,
+  getPrinter: (id: string) => `${API_BASE_URL}/printer/` + id,
+  createPrinter: `${API_BASE_URL}/printer`,
+  deletePrinter: (id: string) => `${API_BASE_URL}/printer/` + id,
+  updatePrinter: (id: string) => `${API_BASE_URL}/printer/` + id,
+
 };

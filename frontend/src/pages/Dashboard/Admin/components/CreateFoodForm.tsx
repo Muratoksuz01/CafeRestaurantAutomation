@@ -62,7 +62,10 @@ export default function CreateFoodForm({ onUpdate, open, setOpen }: any) {
 
     <CustomDialog
       open={open}
-      onOpenChange={setOpen}
+      onOpenChange={() => {
+        form.reset()
+        setOpen(false)
+      }}
       title="Yeni Yemek Ekle"
       description={
         <Form {...form}>

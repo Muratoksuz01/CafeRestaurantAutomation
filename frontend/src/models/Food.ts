@@ -43,9 +43,17 @@ export type Category = z.infer<typeof categorySchema>;
 
 
 export interface Printers{
+    _id:number
     name:string
-    id:string
+    printerIp:string
+    printerType:string
 }
+export const printerCreateEditSchema=z.object({
+    name:z.string(),
+    printerIp:z.string(),
+    printerType:z.string(),
+   
+})
 
 export const rezerveSchema=z.object({
     employeeName:z.string(),

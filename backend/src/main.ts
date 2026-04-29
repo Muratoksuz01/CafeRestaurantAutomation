@@ -1,11 +1,10 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { TransformInterceptor } from './shared/interceptors/transform.interceptor';
 import { join } from 'path';
 import * as express from 'express';
-import { MyLogger } from './logger/logger.service';
-import { AllExceptionsFilter } from './common/interceptors/http-exception.filter';
+import { AllExceptionsFilter } from './shared/interceptors/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -24,7 +23,7 @@ async function bootstrap() {
   app.use('/assets', express.static(join(process.cwd(), 'assets')));
   //app.useLogger(app.get(MyLogger));
   await app.listen(process.env.PORT ?? 6002,"0.0.0.0"); // 6001 de calişiyor 
-// console.log(`Application is running on: ${await app.getUrl()}`);
+ console.log(`Application is running on: ${await app.getUrl()}`);
 
 }
 bootstrap();

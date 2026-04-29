@@ -8,9 +8,10 @@ type Props<T> = {
     pageSize?: number
     header?: (table: any) => React.ReactNode
     footer?: (table: any) => React.ReactNode
+    emptyRowText?:string
 
 }
-function CustomDataTable<T>({ columns, data, pageSize, header, footer, }: Props<T>) {
+function CustomDataTable<T>({ columns, data, pageSize, header, footer,emptyRowText }: Props<T>) {
     const [pagination, setPagination] = React.useState({
         pageIndex: 0, //initial page index
         pageSize: pageSize || 10, //default page size
@@ -82,7 +83,7 @@ function CustomDataTable<T>({ columns, data, pageSize, header, footer, }: Props<
                                     colSpan={columns.length}
                                     className="h-24 text-center"
                                 >
-                                    gösterilecek sonuç yok
+                                    { emptyRowText ||"gösterilecek sonuç yok"}
                                 </TableCell>
                             </TableRow>
                         )}

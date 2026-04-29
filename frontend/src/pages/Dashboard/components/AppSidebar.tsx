@@ -1,26 +1,10 @@
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton, useSidebar,
+import { Sidebar,SidebarContent,SidebarFooter, SidebarGroup,SidebarGroupContent,
+  SidebarGroupLabel,SidebarHeader,SidebarMenu,SidebarMenuButton, useSidebar,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import {
-  LuLayoutDashboard,
-  LuUsers,
-  LuUtensilsCrossed,
-  LuLayers,
-  LuClipboardList,
-  LuSettings,
-  LuChefHat,
-  LuListOrdered,
-  LuShoppingBag,
-  LuLogOut
+import {LuLayoutDashboard,LuUsers,LuUtensilsCrossed,
+  LuLayers,LuClipboardList,LuSettings,LuChefHat,LuListOrdered,
+  LuShoppingBag,LuLogOut
 } from "react-icons/lu";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import useAuthStore from "@/store/useAuthStore";
@@ -33,7 +17,8 @@ const MENU_CONFIG = {
       { title: "Yemek Menüsü", url: "/admin/yemekler", icon: LuUtensilsCrossed },
       { title: "Kategoriler", url: "/admin/kategoriler", icon: LuLayers },
       { title: "Sipariş Yönetimi", url: "/admin/siparisler", icon: LuClipboardList },
-      { title: "Rol Tanımları", url: "/admin/roller", icon: LuSettings },
+      { title: "Adisyon ayarları", url: "/admin/yazıcılar", icon: LuClipboardList },
+    //  { title: "Rol Tanımları", url: "/admin/roller", icon: LuSettings },
     ]
   },
   Kasiyer: {
@@ -41,6 +26,7 @@ const MENU_CONFIG = {
     items: [
       { title: "Kasa / Satış", url: "/user/satis", icon: LuShoppingBag },
       { title: "Günlük İşlemler", url: "/user/masa", icon: LuListOrdered },
+      { title: "Yazıcı ayarları", url: "/user/yazıcılar", icon: LuListOrdered },
     ]
   },
   Garson: {

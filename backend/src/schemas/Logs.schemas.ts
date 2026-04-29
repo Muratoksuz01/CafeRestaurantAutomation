@@ -26,8 +26,7 @@ export class Logs {
   @Prop({ required: true, trim: true })
   message: string;
 
-  @Prop({ trim: true })
-  context: string;
+ 
 
   @Prop({ trim: true })
   stack: string;

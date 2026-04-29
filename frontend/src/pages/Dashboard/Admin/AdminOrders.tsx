@@ -157,6 +157,7 @@ function AdminOrders() {
     </CardHeader>
     <CardContent>
       <CustomDataTable
+      emptyRowText="Bugun icin Verilen bir Sipariş yok"
         columns={columns}
         data={orders}
         header={(table) => (

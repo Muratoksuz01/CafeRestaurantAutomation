@@ -2,21 +2,21 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { MongooseModule } from '@nestjs/mongoose';
-import { UsersModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
-import { RolesModule } from './roles/roles.module';
-import { TablesModule } from './tables/tables.module';
-import { CategoriesModule } from './categories/categories.module';
-import { FoodsModule } from './foods/foods.module';
 import { JwtModule } from "@nestjs/jwt";
-import { OrderModule } from './order/order.module';
-import { RezerveModule } from './rezerve/rezerve.module';
-import { LoggerModule } from './logger/logger.module';
+import { MongooseModule } from '@nestjs/mongoose';
+import { LoggerModule } from './shared/logger/logger.module';
 import { User, UserSchema } from './schemas/User.schemas';
 import { Role, RoleSchema } from './schemas/Role.schemas';
 import { UserRole, UserRoleSchema } from './schemas/UserRole.schemas';
-import { SeedService } from './database/seed.service';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { RolesModule } from './modules/roles/roles.module';
+import { TablesModule } from './modules/tables/tables.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { FoodsModule } from './modules/foods/foods.module';
+import { OrderModule } from './modules/order/order.module';
+import { RezerveModule } from './modules/rezerve/rezerve.module';
+import { PrinterModule } from './modules/printer/printer.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -40,7 +40,7 @@ import { SeedService } from './database/seed.service';
       useFactory: (configService: ConfigService) => ({
        
         secret: configService.get<string>('JWT_SECRET'), // .env'den okur
-        signOptions: { expiresIn: '7d'  as const }, // 60s çok kısa olabilir, 1h (1 saat) daha yaygındır
+        signOptions: { expiresIn: '1d'  as const }, // 60s çok kısa olabilir, 1h (1 saat) daha yaygındır
       }),
     }),
     LoggerModule,
@@ -52,6 +52,7 @@ import { SeedService } from './database/seed.service';
     FoodsModule,
     OrderModule,
     RezerveModule,
+    PrinterModule,
   ],
   controllers: [AppController],
   providers: [

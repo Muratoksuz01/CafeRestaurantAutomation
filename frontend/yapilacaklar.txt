@@ -1,12 +1,16 @@
 
 
 yapılacaklar
-    - useroverviewdialog sayfası kaldı telefon entegresi icin  tamam 
     - config sayfasını ayarla 
+    - printer saysıs ekle burada 
+        tum yazıcılar eklenecek sonra birisi secilecek  bunu varsayılan yap bunu localst sakla 
+        sipariş onayla btn sorna print et 
+        sipariş onayla btn sonra ascı print et (yakında )
+        
         printer sevis baslayacak get printer geleceker birden fazla ise dropdown seklinde yoksa direk
         bu sayfada printer servisi port numarası yer alacak 
-
-    profil sayfası tasarla
+        bu sayfada yazıcılar gorunsun hepsi birini secsin ona gore 56 80 ayarını yapsın sonra bunu kayıt ile localstorage kayıt etsin 
+            yazdırma asamasında varsa bu bilgi onu kullanırız yoksa bir taen olusturmasını isteriz bir tane toast olusturasını isteriz 
         suanlık email alanını basit yap sonra email servisi yapalom email dogrulaması yapalım
     login sayfasında unuttum ekle 
     user create işelminde yonetici rolu icin emial dogrulaması ekle 

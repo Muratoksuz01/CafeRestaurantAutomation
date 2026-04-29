@@ -12,6 +12,8 @@ import AdminOrders from "./pages/Dashboard/Admin/AdminOrders";
 import useAuthStore from "./store/useAuthStore";
 import TableList from "./pages/Dashboard/User/TableList";
 import Profile from "./pages/Landing/Profile";
+import AdminPrinter from "./pages/Dashboard/Admin/AdminPrinter";
+import UserPrinter from "./pages/Dashboard/User/UserPrinter";
 
 
 
@@ -44,6 +46,7 @@ function AppRoutes() {
           <Route path="kategoriler" element={<AdminCategory />} />
           <Route path="siparisler" element={<AdminOrders />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="yazıcılar" element={<AdminPrinter />} />
 
         </Route>
 
@@ -56,6 +59,8 @@ function AppRoutes() {
           <Route path="satis" element={<UserOverview />} />
           <Route path="masa" element={<TableList />} />
           <Route path="profile" element={<Profile />} />
+          <Route path="yazıcılar" element={<UserPrinter />} />
+
 
         </Route>
       )}
