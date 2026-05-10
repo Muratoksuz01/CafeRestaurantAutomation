@@ -48,17 +48,19 @@ export interface Printers{
     printerIp:string
     printerType:string
 }
-export const printerCreateEditSchema=z.object({
-    name:z.string(),
-    printerIp:z.string(),
-    printerType:z.string(),
-   
-})
+export const printerCreateEditSchema = z.object({
+    name: z.string().min(1, "Yazıcı ismi zorunludur"),
+    printerIp: z.string().ipv4({ 
+        //version: "v4", 
+        message: "Geçerli bir IPv4 adresi giriniz (Örn: 192.168.1.1)" 
+    }),
+    printerType: z.string().min(1, "Lütfen bir tip seçin"),
+});
 
 export const rezerveSchema=z.object({
     employeeName:z.string(),
     employeePhone:z.string(),
     description:z.string(),
-    startDate:z.date(),
+    //startDate:z.date(),
     endDate:z.date(),
 })

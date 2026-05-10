@@ -39,8 +39,11 @@ function CreatePrinter({ open, setOpen, onSuccess }: any) {
   return (
     <CustomDialog
       open={open}
-      onOpenChange={setOpen}
-      title="Yazıcı olustur"
+      onOpenChange={() => {
+        form.reset()
+        setOpen(false)
+      }}
+      title="Yazıcı olusvfvdtur"
       //  onConfirm={() => { handleSave(form.getValues()) }}
       description={
         <Form  {...form}>
@@ -51,19 +54,42 @@ function CreatePrinter({ open, setOpen, onSuccess }: any) {
                 {(field: any) => (
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                    <Input {...field} className="pl-9" />
+                    <Input {...field} className="pl-9" placeholder="Kasiyer 1 yazıcı" />
                   </div>
                 )}
               </CustomFormField>
 
               <CustomFormField control={form.control} name="printerIp" title="Yazıcı Ip">
-                {(field: any) => <Input {...field} />}
+                {(field: any) => (
+                  <Input
+                    {...field}
+                    placeholder="192.168.1.100"
+                    onChange={(e) => {
+                      let value = e.target.value.replace(/[^0-9.]/g, ""); // Sadece rakam ve nokta
+
+                      const blocks = value.split(".");
+
+                      // 1. En fazla 4 blok olabilir (1.2.3.4 gibi)
+                      if (blocks.length > 4) return;
+
+                      // 2. Her blok 0-255 arası olmalı ve en fazla 3 haneli olmalı
+                      const isValid = blocks.every((block) => {
+                        if (block === "") return true; // Yazma anında boş olabilir
+                        const num = parseInt(block, 10);
+                        return num >= 0 && num <= 255 && block.length <= 3;
+                      });
+
+                      if (isValid) {
+                        field.onChange(value);
+                      }
+                    }}
+                  />
+                )}
               </CustomFormField>
             </div>
 
 
 
-            {/* Role Field */}
             <CustomFormField control={form.control} name="printerType" title="Yazıcı Tipi">
               {(field: any) => (
                 <div className="relative">

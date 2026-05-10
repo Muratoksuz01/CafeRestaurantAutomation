@@ -1,17 +1,24 @@
 import { Model } from "mongoose";
-import { CreatePrinterDto } from "./dto/create-printer.dto";
+import { CreatePrinterDto, printAdisyonDto } from "./dto/create-printer.dto";
 import { UpdatePrinterDto } from "./dto/update-printer.dto";
 import { InjectModel } from "@nestjs/mongoose";
-import { Injectable } from "@nestjs/common";
+import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { MyLogger } from "../../shared/logger/logger.service";
 import { Printer } from "../../schemas/Printer.schemas";
+import { PrintingService } from "../../shared/printing/printing.service";
+import { Order } from "../../schemas/Order.schemas";
+import { Table } from "../../schemas/table.schemas";
 
 @Injectable()
 export class PrinterService {
   constructor(
     private readonly logger: MyLogger,
     @InjectModel(Printer.name) private printerModel: Model<Printer>,
-  ) {}
+    @InjectModel(Order.name) private orderModel: Model<Order>,
+    @InjectModel(Table.name) private tableModel: Model<Table>,
+    private readonly printingService: PrintingService
+
+  ) { }
 
   private logError(context: string, error: unknown) {
     if (error instanceof Error) {
@@ -24,7 +31,7 @@ export class PrinterService {
   async create(createPrinterDto: CreatePrinterDto) {
     try {
       const { printerIp } = createPrinterDto;
-console.log(createPrinterDto)
+      console.log(createPrinterDto)
       const existing = await this.printerModel.findOne({ printerIp });
 
       if (existing) {
@@ -167,6 +174,55 @@ console.log(createPrinterDto)
         status: false,
         message: 'Silme sırasında hata oluştu',
       };
+    }
+  }
+
+  async printAdisyon(printAdisyonDto: printAdisyonDto) {
+    try {
+
+      const order = await this.orderModel.findById(printAdisyonDto.orderId)
+        .populate({
+          path: 'orderItems',
+          model: 'OrderItem',
+          populate: {
+            path: 'foodId',
+            model: 'Food'
+          }
+        })
+        .exec();
+
+      if (!order) return { status: false, message: "Sipariş Bulunamadı" };
+      const printer = await this.printerModel.findById(printAdisyonDto.printerId)
+      if (!printer) return { status: false, message: "Yazıcı bilgilerine ulasılamadı" };
+      
+      //console.log(order)
+      const table = await this.tableModel.findById(order.tableId);
+      if (!table) return { status: false, message: "Masa Bulunamadı" };
+
+      const printData = {
+        orderNo: order._id.toString().slice(-4),
+        tableName: table.name,
+        date: order.createdAt,
+        items: order.orderItems.map((item: any) => ({
+          name: item.foodId?.name || 'Bilinmeyen Ürün',
+          qty: Number(item.qty),
+          price: Number(item.unitprice),
+          total: Number(item.total)
+        })),
+        totalAmount: Number(order.total) as number
+      };
+      // TODO burada axios ile diger servi 
+      const status = await this.printingService.printData(printer.printerIp, printer.printerType, printData);
+      if (true)
+        return { message: "basral sekilde yazdırıldı " }
+      else
+        return { status: false, message: "yazdırma işleminde hat olustur " }
+    } catch (error: any) {
+      console.error('PrintData Hatası:', error);
+      this.logger.error(`Order PrintOrder Hatası: -Gelen ID ${printAdisyonDto.orderId} -  Hata: ${error.message}`, error.stack)
+
+
+      throw new InternalServerErrorException('Sipariş yazdırılırken hata olustu ');
     }
   }
 }

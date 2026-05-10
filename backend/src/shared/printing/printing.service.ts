@@ -12,13 +12,13 @@ export class PrintingService {
         private readonly consolePrinter: ConsolePrinter
     ) { }
     printTest(printerIP: string, printerType: string) {
-        printerType == "thermal" && this.thermalPrinter.printTest(printerIP)
+        (printerType === "58" || printerType === "80") && this.thermalPrinter.printTest(printerIP)
         printerType == "console" && this.consolePrinter.printTest(printerIP)
         printerType == "esc" && this.escPrinter.printTest(printerIP)
 
     }
-    printData(printerIP: string, printerType: string,data:object) {
-        printerType == "thermal" && this.thermalPrinter.printData(printerIP, data)
+    printData(printerIP: string, printerType: string, data: object) {
+        (printerType === "58" || printerType === "80")  && this.thermalPrinter.printData(printerIP, data)
         printerType == "console" && this.consolePrinter.printData(printerIP, data)
         printerType == "esc" && this.escPrinter.printData(printerIP, data)
     }

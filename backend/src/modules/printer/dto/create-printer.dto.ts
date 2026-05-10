@@ -4,3 +4,7 @@ export class CreatePrinterDto {
     type:string
   //  printerId?:string
 }
+export class printAdisyonDto{
+   printerId: string
+    orderId: string
+}

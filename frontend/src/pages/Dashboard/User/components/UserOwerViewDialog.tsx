@@ -138,15 +138,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
     }
   }
 
-  /*  const onClose = () => {
-     const changed = JSON.stringify(basket) !== JSON.stringify(originalBasket);
-     if (changed) {
-       toast.warning("degiişklikler kaydediilmedi", warningStyle)
-     } else {
-       setOpen(false)
-       setBasket([])
-     }
-   } */
+  
   const fetchTable = async (id: string) => {
     const res = await axiosInstance.get(API_PATHS.getTable(id))
     if (res.data.status) {
@@ -222,24 +214,24 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
       toast.warning(error.res.data.message || "Sistemsel bir hata var Rezervasyon Silinemedi", warningStyle)
     }
   };
-const handlePrint = async (printerId: number) => {
-  try {
-    const orderId = selectedTable.currentOrderId;
-    if (!orderId) return;
+  const handlePrint = async (printerId: number) => {
+    try {
+      const orderId = selectedTable.currentOrderId;
+      if (!orderId) return;
 
-    const response = await axiosInstance.post('/api/orders/print', {
-      printerId,
-      orderId
-    });
+      const response = await axiosInstance.post(API_PATHS.printAdisyon, {
+        printerId,
+        orderId
+      });
 
-    if (response.status === 200) {
-      console.log("Yazdırma işlemi başarılı");
-      // İstersen burada bir toast mesajı gösterebilirsin
+      if (response.status === 200) {
+        console.log("Yazdırma işlemi başarılı");
+        // İstersen burada bir toast mesajı gösterebilirsin
+      }
+    } catch (error) {
+      console.error("Yazdırma hatası:", error);
     }
-  } catch (error) {
-    console.error("Yazdırma hatası:", error);
-  }
-};
+  };
   return (
     <>
       <Dialog
@@ -289,7 +281,7 @@ const handlePrint = async (printerId: number) => {
               </Select>
 
               {/* MASAÜSTÜNDE GÖRÜNÜR: Kategori seçiminin sağında */}
-              <DialogClose asChild className="hidden sm:flex">
+              <DialogClose asChild className="flex sm:hidden">
                 <Button variant="ghost" size="icon" className="h-10 w-10 shrink-0">
                   <X className="h-4 w-4" />
                 </Button>

@@ -1,6 +1,7 @@
 yapılacaklar
     auth contolerde jwt toenlar vs bunları ayır oradan 
-   
+   - printer servisi hatalı mesajı kullanıcıya dondur 
+   - zod regex olayını bir yap 
     - sayfa lisanlamaya bak nasıl yapılır 
 Onceliklie
         tasarım kısmını disa bagımlı yap belki ileride degişme sansı var 

@@ -48,14 +48,14 @@ export const API_PATHS = {
   editOrder: `${API_BASE_URL}/order/editOrder`,
   deleteOrder: `${API_BASE_URL}/order`,
   paidOrder: `${API_BASE_URL}/order/paidOrder`,
-  printAdisyon: (id: string) => `${API_BASE_URL}/order/print/` + id,
   //rezerve
   getRezervasyonlar: `${API_BASE_URL}/rezerve`,
   getRezervasyon: (id: string) => `${API_BASE_URL}/rezerve/` + id,
   createRezervasyon: `${API_BASE_URL}/rezerve`,
   deleteRezervasyon: (id: string) => `${API_BASE_URL}/rezerve/` + id,
-
+  
   // printer
+  printAdisyon: `${API_BASE_URL}/printer/print/` ,
   getPrinters: `${API_BASE_URL}/printer`,
   getPrinter: (id: string) => `${API_BASE_URL}/printer/` + id,
   createPrinter: `${API_BASE_URL}/printer`,

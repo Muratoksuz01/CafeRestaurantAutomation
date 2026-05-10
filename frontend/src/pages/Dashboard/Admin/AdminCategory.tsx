@@ -20,6 +20,7 @@ import CustomFormField from "../components/CustomFormField";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
+import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/components/ui/select"
 type SelectedCategory = Category & {
     newCategoryId?: string
 }
@@ -40,7 +41,7 @@ export default function AdminCategory() {
     const onSuccess = () => {
         getCategories()
     }
-  
+
 
 
 
@@ -88,7 +89,7 @@ export default function AdminCategory() {
                                 size="sm"
                                 onClick={() => {
                                     setSelectedCategory(cat);
-                                    setNameInput(cat.name);
+                                   // setNameInput(cat.name);
                                     setShowEdit(true);
                                 }}
                             >
@@ -114,7 +115,7 @@ export default function AdminCategory() {
             </div>
 
 
-          
+
             <CreateCategoryDialog
                 open={showCreate}
                 setOpenCreate={setShowCreate}
@@ -160,51 +161,55 @@ export default function AdminCategory() {
                                     Kategoriyi ve bağlı tüm ürünleri sil
                                 </Button>
 
-                                {/* OPTION 2 */}
-                                <div className="space-y-2">
-                                    <p>Bu kategoriye bağlı ürünlerin yeni kategorisini seç:</p>
-                                    <select
-                                        className="border p-2 w-full rounded"
-                                        onChange={(e) => setSelectedCategory((prev: any) => ({ ...prev, newCategoryId: e.target.value }))}
+                                {/* OPTION 2 - Shadcn UI Select */}
+                                <div className="space-y-3">
+                                    <p className="text-sm font-medium">Bu kategoriye bağlı ürünlerin yeni kategorisini seç:</p>
+
+                                    <Select
+                                        onValueChange={(value) => setSelectedCategory((prev: any) => ({ ...prev, newCategoryId: value }))}
                                     >
-                                        <option value="">Kategori seç</option>
-                                        {categories
-                                            .filter(c => c._id !== selectedCategory._id)
-                                            .map(c => (
-                                                <option key={c._id} value={c._id}>{c.name}</option>
-                                            ))
-                                        }
-                                    </select>
+                                        <SelectTrigger className="w-full">
+                                            <SelectValue placeholder="Kategori seç" />
+                                        </SelectTrigger>
+
+                                        <SelectContent>
+                                            {categories
+                                                .filter(c => c._id !== selectedCategory._id)
+                                                .map(c => (
+                                                    <SelectItem key={c._id} value={String(c._id)}>
+                                                        {c.name}
+                                                    </SelectItem>
+                                                ))
+                                            }
+                                        </SelectContent>
+                                    </Select>
 
                                     <Button
                                         disabled={!selectedCategory.newCategoryId}
                                         className="w-full"
+                                        variant="destructive" // Silme işlemi olduğu için görsel uyarı sağlar
                                         onClick={async () => {
                                             const response = await axiosInstance.put<ApiResponse>(
                                                 API_PATHS.reassignFoods(String(selectedCategory._id)),
                                                 { newCategoryId: selectedCategory.newCategoryId }
                                             );
-
                                             if (response.status) {
                                                 toast.success("Ürünler yeni kategoriye taşındı", successStyle);
                                                 handleDelete(String(selectedCategory._id));
                                             }
                                         }}
                                     >
-                                        Kategoriyi sil ve ürünleri bu kategoriye taşı
+                                        Kategoriyi sil ve ürünleri taşı
                                     </Button>
                                 </div>
                                 <AlertDialogFooter>
                                     <AlertDialogCancel>İptal</AlertDialogCancel>
-                                    {/* <Button variant="outline" onClick={() => setShowDelete(false)}>İptal</Button> */}
-
                                 </AlertDialogFooter>
                             </div>
                         ) :
                         (
                             <AlertDialogFooter>
                                 <AlertDialogCancel>İptal</AlertDialogCancel>
-                                {/* <Button variant="outline" onClick={() => setShowDelete(false)}>İptal</Button> */}
                                 <Button
                                     variant="destructive"
                                     onClick={() => handleDelete(String(selectedCategory!._id))}
@@ -215,8 +220,6 @@ export default function AdminCategory() {
                         )
                 }
             />
-
-
         </div>
     );
 }
@@ -233,9 +236,9 @@ function EditCategoryDialog({ open, setOpenEdit, category, onSuccess }: EditDial
             name: category?.name || ""
         }
     })
-    useEffect(()=>{
-        form.reset({name:category.name})
-    },[open])
+    useEffect(() => {
+        form.reset({ name: category.name })
+    }, [open])
     const handleEdit = async (data: any) => {
         try {
             const response = await axiosInstance.put<ApiResponse>(API_PATHS.updateCategory(String(category._id)),
@@ -253,10 +256,10 @@ function EditCategoryDialog({ open, setOpenEdit, category, onSuccess }: EditDial
     return (
         <CustomDialog
             open={open}
-            onOpenChange={()=>{
-                form.reset({name:""})
-        setOpenEdit(false)
-    }}
+            onOpenChange={() => {
+                form.reset({ name: "" })
+                setOpenEdit(false)
+            }}
             title="Kategorriyi Düzenle"
             description={
                 <Form  {...form}>
@@ -311,10 +314,10 @@ function CreateCategoryDialog({ open, setOpenCreate, onSuccess }: CreateDialogPr
         <CustomDialog
             open={open}
             onOpenChange={
-                ()=>{
-                form.reset({name:""})
-        setOpenCreate(false)
-    }}
+                () => {
+                    form.reset({ name: "" })
+                    setOpenCreate(false)
+                }}
             title="Kategorriyi Olustur "
             description={
                 <Form  {...form}>

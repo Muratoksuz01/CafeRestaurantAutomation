@@ -20,15 +20,15 @@ import CreatePrinter from "./components/CreatePrinter"
 
 
 function AdminPrinter() {
-     const [selectedPrinter, setSelectedPrinter] = useState<Printers>({} as Printers)
+  const [selectedPrinter, setSelectedPrinter] = useState<Printers>({} as Printers)
   const [openEdit, setOpenEdit] = useState(false)
   const [openDel, setOpenDel] = useState(false)
   const [createDialog, setCreateDialog] = useState(false)
-useEffect(()=>{
+  useEffect(() => {
     getPrinters()
-},[])
+  }, [])
   const onSuccess = async () => {
-     getPrinters()
+    getPrinters()
   }
   const deletePrinter = async (id: string) => {
     try {
@@ -38,8 +38,8 @@ useEffect(()=>{
       console.error("[v0] Error deleting printer:", error)
     }
   }
-const {printers,getPrinters,loading:printerLoading} =useGetPrinter()
- const columns: ColumnDef<Printers>[] = [
+  const { printers, getPrinters, loading: printerLoading } = useGetPrinter()
+  const columns: ColumnDef<Printers>[] = [
     {
       id: "Sıra",
       header: "Sıra",
@@ -57,7 +57,7 @@ const {printers,getPrinters,loading:printerLoading} =useGetPrinter()
         const printer = row.original;
         return (
           <div className="capitalize">
-            {printer.name} 
+            {printer.name}
           </div>
         );
       },
@@ -79,8 +79,8 @@ const {printers,getPrinters,loading:printerLoading} =useGetPrinter()
         <div>{row.getValue("printerType")}</div>
       ),
     },
-    
-    
+
+
     {
       id: "İşlemler",
       header: "İşlemler",
@@ -125,7 +125,7 @@ const {printers,getPrinters,loading:printerLoading} =useGetPrinter()
     }
 
   ]
- return (
+  return (
     <div className="container mx-auto p-4 md:p-6 space-y-6 overflow-x-auto">
       <div className="space-y-2">
         <h1 className="text-3xl font-bold tracking-tight">Yazıcı Yönetimi</h1>
@@ -160,7 +160,7 @@ const {printers,getPrinters,loading:printerLoading} =useGetPrinter()
           <div className="rounded-md border">
             <div className="rounded-md border overflow-x-auto">
               <CustomDataTable
-              emptyRowText="herhangi bir YAzıcı yok"
+                emptyRowText="herhangi bir YAzıcı yok"
                 columns={columns} data={printers}
                 header={(table) => (
                   <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-5 p-3 border-b gap-2">

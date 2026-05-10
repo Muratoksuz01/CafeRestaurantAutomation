@@ -1,11 +1,11 @@
 import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
 import { PrinterService } from './printer.service';
-import { CreatePrinterDto } from './dto/create-printer.dto';
+import { CreatePrinterDto,printAdisyonDto } from './dto/create-printer.dto';
 import { UpdatePrinterDto } from './dto/update-printer.dto';
 
 @Controller('printer')
 export class PrinterController {
-  constructor(private readonly printerService: PrinterService) {}
+  constructor(private readonly printerService: PrinterService) { }
 
   @Post()
   create(@Body() createPrinterDto: CreatePrinterDto) {
@@ -30,5 +30,9 @@ export class PrinterController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.printerService.remove(id);
+  }
+  @Post("print")
+  printAdisyon(@Body() printAdisyonDto: printAdisyonDto){
+    return this.printerService.printAdisyon(printAdisyonDto)
   }
 }

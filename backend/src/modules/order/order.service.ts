@@ -8,7 +8,7 @@ import { Table } from '../../schemas/table.schemas';
 import { Order } from '../../schemas/Order.schemas';
 import { OrderItem } from '../../schemas/OrderItem.schemas';
 import { Rezerve } from '../../schemas/Rezerve.schemas';
-import { PrintingService } from '../../shared/printing/printing.service';
+// import { PrintingService } from '../../shared/printing/printing.service';
 import { Food } from '../../schemas/Food.schemas';
 @Injectable()
 export class OrderService {
@@ -19,7 +19,7 @@ export class OrderService {
     @InjectModel(OrderItem.name) private orderItemModel: Model<OrderItem>,
     @InjectModel(Rezerve.name) private rezerveModel: Model<Rezerve>,
     @InjectModel(Food.name) private foodModel: Model<Food>,
-    private readonly printingService: PrintingService
+    // private readonly printingService: PrintingService
 
   ) {
 
@@ -401,49 +401,7 @@ export class OrderService {
   // }
   async printOrder(orderId: string) {
 
-    try {
-
-      const order = await this.orderModel.findById(orderId)
-        .populate({
-          path: 'orderItems',
-          model: 'OrderItem',
-          populate: {
-            path: 'foodId',
-            model: 'Food'
-          }
-        })
-        .exec();
-
-      if (!order) return { status: false, message: "Sipariş Bulunamadı" };
-      //console.log(order)
-      const table = await this.tableModel.findById(order.tableId);
-      if (!table) return { status: false, message: "Masa Bulunamadı" };
-
-      const printData = {
-        orderNo: order._id.toString().slice(-4),
-        tableName: table.name,
-        date: order.createdAt,
-        items: order.orderItems.map((item: any) => ({
-          name: item.foodId?.name || 'Bilinmeyen Ürün',
-          qty: Number(item.qty),
-          price: Number(item.unitprice),
-          total: Number(item.total)
-        })),
-        totalAmount: Number(order.total) as number
-      };
-      // TODO burada axios ile diger servi 
-      const status = await this.printingService.printData("1243", "console", printData);
-      if (true)
-        return { message: "basral sekilde yazdırıldı " }
-      else
-        return { status: false, message: "yazdırma işleminde hat olustur " }
-    } catch (error: any) {
-      console.error('PrintData Hatası:', error);
-      this.logger.error(`Order PrintOrder Hatası: -Gelen ID ${orderId} -  Hata: ${error.message}`, error.stack)
-
-
-      throw new InternalServerErrorException('Sipariş yazdırılırken hata olustu ');
-    }
+   
   }
 
 
