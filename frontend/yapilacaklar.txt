@@ -1,10 +1,11 @@
 
 
 yapılacaklar
-    - config sayfasını ayarla 
-    - printer saysıs ekle burada 
-        tum yazıcılar eklenecek sonra birisi secilecek  bunu varsayılan yap bunu localst sakla 
-        sipariş onayla btn sorna print et 
+    - config sayfasını ayarla   tamam
+    - printer saysıs ekle burada  tamam
+        tum yazıcılar eklenecek sonra birisi secilecek  bunu varsayılan yap bunu localst sakla   tamam 
+        sipariş onayla btn sorna print et  tamam
+        admin categori sayfaısn birkac kusur var yeni kate gecerken dropdown kotu goruntu var onu dzuelt 
         sipariş onayla btn sonra ascı print et (yakında )
         
         printer sevis baslayacak get printer geleceker birden fazla ise dropdown seklinde yoksa direk

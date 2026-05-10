@@ -21,8 +21,8 @@ export function useGetPrinter() {
       if (res.data.status) {
         setPrinters(res.data.data || []);
       } else {
-        setPrinters([]);
         setError("Başarısız istek");
+        setPrinters([]);
       }
     } catch (err: any) {
       setError(err.message || "Veri alınamadı");

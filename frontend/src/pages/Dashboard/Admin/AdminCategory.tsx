@@ -1,10 +1,8 @@
-"use client";
 
 import { useState, useEffect } from "react";
 import { useGetCategory } from "@/hooks/useGetCategory";
 import { Button } from "@/components/ui/button";
 import { AlertDialogFooter, AlertDialogDescription, AlertDialogCancel } from "@/components/ui/alert-dialog";
-
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import { API_PATHS } from "@/lib/api";
@@ -14,7 +12,14 @@ import { useGetFoods } from "@/hooks/useGetFoods";
 import { Pencil, X } from "lucide-react";
 import CustomDialog from "@/pages/Dashboard/components/CustomDialog";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
-import { Category, } from "@/models/Food";
+import { Category, categoryCreateEditSchema, categorySchema, } from "@/models/Food";
+import { zodResolver } from "@hookform/resolvers/zod";
+import z from "zod";
+import { ApiResponse } from "@/lib/apiTypes";
+import CustomFormField from "../components/CustomFormField";
+import { DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { Form } from "@/components/ui/form";
+import { useForm } from "react-hook-form";
 type SelectedCategory = Category & {
     newCategoryId?: string
 }
@@ -32,40 +37,12 @@ export default function AdminCategory() {
         getCategories();
         getFoods()
     }, []);
+    const onSuccess = () => {
+        getCategories()
+    }
+  
 
-    const handleCreate = async () => {
-        try {
-            const { data } = await axiosInstance.post(API_PATHS.createCategory, { name: nameInput });
-            if (data.status) {
-                getCategories();
-                toast.success("Kategori oluşturuldu", successStyle);
-            }
-        } catch (err: any) {
-            toast.warning(err.message || "Hata", warningStyle);
-        } finally {
-            setShowCreate(false);
-            setNameInput("");
-        }
-    };
 
-    const handleEdit = async () => {
-        if (!selectedCategory) return toast.warning("Hata:seçili kategori yok", warningStyle);
-        if (!nameInput) return toast.warning("Hata:yeni kategori ismi girilmedi", warningStyle);
-        try {
-            const { data } = await axiosInstance.put(API_PATHS.updateCategory(String(selectedCategory._id)),
-                { name: nameInput });
-            if (data.status) {
-                getCategories();
-                toast.success("Kategori güncellendi", successStyle);
-            }
-        } catch (err: any) {
-            toast.warning(err.message || "Hata", warningStyle);
-        } finally {
-            setShowEdit(false);
-            setSelectedCategory(undefined);
-            setNameInput("");
-        }
-    };
 
     const handleDelete = async (id: string) => {
         try {
@@ -137,35 +114,23 @@ export default function AdminCategory() {
             </div>
 
 
-            {/* Create Dialog */}
-            <CustomDialog open={showCreate} onOpenChange={setShowCreate}
-                title={"Yeni Kategori Oluştur"}
-                description={
-                    <Input
-                        placeholder="Kategori adı"
-                        value={nameInput}
-                        onChange={e => setNameInput(e.target.value)}
-                        className="mt-2 mb-4"
-                    />
-                }
-                onConfirm={handleCreate}
+          
+            <CreateCategoryDialog
+                open={showCreate}
+                setOpenCreate={setShowCreate}
+                onSuccess={onSuccess}
             />
 
 
             {/* Edit Dialog */}
-            <CustomDialog open={showEdit} onOpenChange={setShowEdit}
-                title={"Kategoriyi Düzenle"}
-                description={
-                    <Input
-                        placeholder="Kategori adı"
-                        value={nameInput}
-                        onChange={e => setNameInput(e.target.value)}
-                        className="mt-2 mb-4"
-                    />
-                }
-                onConfirm={handleEdit}
-            />
-
+            {selectedCategory && (
+                <EditCategoryDialog
+                    open={showEdit}
+                    setOpenEdit={setShowEdit}
+                    category={selectedCategory}
+                    onSuccess={onSuccess}
+                />
+            )}
 
             {/* DELETE CATEGORY DIALOG WITH OPTIONS */}
             <CustomAlertDialog open={showDelete} onOpenChange={setShowDelete}
@@ -215,12 +180,12 @@ export default function AdminCategory() {
                                         disabled={!selectedCategory.newCategoryId}
                                         className="w-full"
                                         onClick={async () => {
-                                            const { data } = await axiosInstance.put(
+                                            const response = await axiosInstance.put<ApiResponse>(
                                                 API_PATHS.reassignFoods(String(selectedCategory._id)),
                                                 { newCategoryId: selectedCategory.newCategoryId }
                                             );
 
-                                            if (data.success) {
+                                            if (response.status) {
                                                 toast.success("Ürünler yeni kategoriye taşındı", successStyle);
                                                 handleDelete(String(selectedCategory._id));
                                             }
@@ -254,4 +219,124 @@ export default function AdminCategory() {
 
         </div>
     );
+}
+interface EditDialogProps {
+    open: boolean
+    setOpenEdit: (open: boolean) => void
+    category: SelectedCategory
+    onSuccess: () => void
+}
+function EditCategoryDialog({ open, setOpenEdit, category, onSuccess }: EditDialogProps) {
+    const form = useForm<z.infer<typeof categoryCreateEditSchema>>({
+        resolver: zodResolver(categoryCreateEditSchema),
+        defaultValues: {
+            name: category?.name || ""
+        }
+    })
+    useEffect(()=>{
+        form.reset({name:category.name})
+    },[open])
+    const handleEdit = async (data: any) => {
+        try {
+            const response = await axiosInstance.put<ApiResponse>(API_PATHS.updateCategory(String(category._id)),
+                data);
+            if (response.status) {
+                onSuccess();
+                toast.success("Kategori güncellendi", successStyle);
+            }
+        } catch (err: any) {
+            toast.warning(err.message || "Hata", warningStyle);
+        } finally {
+            setOpenEdit(false);
+        }
+    };
+    return (
+        <CustomDialog
+            open={open}
+            onOpenChange={()=>{
+                form.reset({name:""})
+        setOpenEdit(false)
+    }}
+            title="Kategorriyi Düzenle"
+            description={
+                <Form  {...form}>
+                    <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-5">
+                        <div className="">
+                            <CustomFormField control={form.control} name="name" title="Kategori İsmi">
+                                {(field: any) => <Input {...field} placeholder="Soğuk İçecekler" />}
+                            </CustomFormField>
+                        </div>
+                        <DialogFooter className=" flex gap-2 ">
+                            <DialogClose asChild>
+                                <Button type="button" variant="outline">
+                                    İptal
+                                </Button>
+                            </DialogClose>
+                            <Button type="submit">Kaydet</Button>
+                        </DialogFooter>
+                    </form>
+                </Form>
+            }
+        >
+
+        </CustomDialog>
+    )
+}
+interface CreateDialogProps {
+    open: boolean
+    setOpenCreate: (open: boolean) => void
+    onSuccess: () => void
+}
+function CreateCategoryDialog({ open, setOpenCreate, onSuccess }: CreateDialogProps) {
+    const form = useForm<z.infer<typeof categoryCreateEditSchema>>({
+        resolver: zodResolver(categoryCreateEditSchema),
+        defaultValues: {
+            name: ""
+        }
+    })
+    const handleCreate = async (data: any) => {
+        try {
+            const response = await axiosInstance.post<ApiResponse>(API_PATHS.createCategory, data);
+            if (response.status) {
+                onSuccess();
+                toast.success("Kategori kayıt edildi", successStyle);
+            }
+        } catch (err: any) {
+            toast.warning(err.message || "Hata", warningStyle);
+        } finally {
+            setOpenCreate(false);
+        }
+    };
+    return (
+        <CustomDialog
+            open={open}
+            onOpenChange={
+                ()=>{
+                form.reset({name:""})
+        setOpenCreate(false)
+    }}
+            title="Kategorriyi Olustur "
+            description={
+                <Form  {...form}>
+                    <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-5">
+                        <div className="">
+                            <CustomFormField control={form.control} name="name" title="Kategori İsmi">
+                                {(field: any) => <Input {...field} placeholder="Soğuk İçecekler" />}
+                            </CustomFormField>
+                        </div>
+                        <DialogFooter className=" flex gap-2 ">
+                            <DialogClose asChild>
+                                <Button type="button" variant="outline">
+                                    İptal
+                                </Button>
+                            </DialogClose>
+                            <Button type="submit">Kaydet</Button>
+                        </DialogFooter>
+                    </form>
+                </Form>
+            }
+        >
+
+        </CustomDialog>
+    )
 }

@@ -88,6 +88,14 @@ const TableFormDialog = ({ open, onOpenChange, onSuccess, table }: TableFormDial
                 />
               )}
             </CustomFormField>
+              <div className="flex justify-end gap-2">
+              <Button variant="outline" type="button" onClick={() => {
+                onOpenChange(false)
+              }}>
+                İptal
+              </Button>
+              <Button type="submit">Kaydet</Button>
+            </div>
 
             
           </form>
