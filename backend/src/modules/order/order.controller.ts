@@ -49,9 +49,6 @@ export class OrderController {
   // async getOrderByDate(from?: string, to?: string) {
   //   return await this.orderService.getOrderByDate(from, to)
   // }
-  @Get("print/:id")
-  async  printAdisyon(@Param("id") id :string) {
-    return await this.orderService.printOrder(id)
-  }
+ 
   
 }

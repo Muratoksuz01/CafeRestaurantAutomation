@@ -52,14 +52,17 @@ export class RezerveService {
   }
 
   async findAll() {
-    try{
-    const results = await this.rezerveModel.find().lean()
+   try {
+    // find() içerisine filtreleme kriterini ekliyoruz
+    const results = await this.rezerveModel
+      .find({ status: 'pending' }) 
+      .lean();
 
     return { data: results };
-    } catch (error) {
-      console.error("Rezervasyon findAll Hatası:", error);
-      throw error;
-    }
+  } catch (error) {
+    console.error("Rezervasyon findAllPending Hatası:", error);
+    throw error;
+  }
   }
 
   async findOne(id: string) {
@@ -88,24 +91,42 @@ export class RezerveService {
     }
   }
 
-  async remove(id: string) {
-    try{
+ async remove(id: string) {
+  try {
+    // 1. Masayı bul
     const masa = await this.tableModel.findById(id);
     if (!masa) return { message: 'Masa bulunamadı', status: false };
-    masa.status = "bos"
 
-    const rezerve = await this.rezerveModel.findOne({ masaId: masa._id });
-    if (!rezerve) return { message: 'Rezervasyon bulunamadı', status: false };
+    // 2. SADECE aktif (pending veya arrived) olan rezervasyonu bul
+    // Eğer sadece masaya göre aratırsanız eski bir iptal edilmiş kaydı bulup 
+    // tekrar iptal etmeye çalışıyor olabilir.
+    const rezerve = await this.rezerveModel.findOne({ 
+      masaId: masa._id, 
+      status: { $ne: "cancelled" } // İptal edilmemiş olanı bul
+    });
 
-    rezerve.status = "cancelled"
-    await rezerve.save()
-    await masa.save()
-
-
-    return masa;
-    } catch (error) {
-      console.error("Rezervasyon remove Hatası:", error);
-      throw new InternalServerErrorException('Rezervasyon silinirken teknik bir hata oluştu.');
+    if (!rezerve) {
+      // Eğer rezervasyon yoksa ama masa dolu görünüyorsa masayı boşa çıkaralım
+      masa.status = "bos";
+      await masa.save();
+      return { message: 'Aktif rezervasyon bulunamadı, masa boşa çıkarıldı', status: true };
     }
+
+    // 3. Statüleri güncelle
+    rezerve.status = "cancelled";
+    masa.status = "bos";
+
+    // 4. Değişiklikleri kaydet (Promise.all ile daha hızlı ve güvenli)
+    await Promise.all([
+      rezerve.save(),
+      masa.save()
+    ]);
+
+    return { message: 'Rezervasyon iptal edildi ve masa boşaltıldı', status: true };
+    
+  } catch (error) {
+    console.error("Rezervasyon remove Hatası:", error);
+    throw new InternalServerErrorException('İşlem sırasında teknik bir hata oluştu.');
   }
+}
 }

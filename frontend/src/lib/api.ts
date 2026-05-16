@@ -46,7 +46,7 @@ export const API_PATHS = {
   getOrder: (id: string) => `${API_BASE_URL}/order/` + id,
   updateOrder: (id: string) => `${API_BASE_URL}/order/` + id,
   editOrder: `${API_BASE_URL}/order/editOrder`,
-  deleteOrder: `${API_BASE_URL}/order`,
+  deleteOrder: (id: string) => `${API_BASE_URL}/order/` + id,
   paidOrder: `${API_BASE_URL}/order/paidOrder`,
   //rezerve
   getRezervasyonlar: `${API_BASE_URL}/rezerve`,

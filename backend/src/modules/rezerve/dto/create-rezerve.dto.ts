@@ -3,6 +3,6 @@ export class CreateRezerveDto {
         employeeName:string
         employeePhone:string
         description:string
-        startDate:Date
+       //user startDate:Date
         endDate:Date
 }

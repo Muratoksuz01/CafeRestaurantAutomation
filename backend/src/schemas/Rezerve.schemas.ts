@@ -21,8 +21,8 @@ export class Rezerve {
   @Prop({  trim: true })
   description: string;
 
-  @Prop({ required: true })
-  startDate: Date;
+  // @Prop({ required: true })
+  // startDate: Date;
   
   @Prop({ required: true })
   endDate: Date;

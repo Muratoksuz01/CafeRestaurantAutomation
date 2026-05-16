@@ -131,7 +131,7 @@ export default function TableCard({ table, onClick, rezerve }: { table: AllTable
                   <div className="flex justify-between items-center text-amber-300">
                     <span className="opacity-60 flex items-center gap-1"><Clock size={12} /> Saat:</span>
                     <span className="font-bold">
-                      {new Date(reservationDetail.startDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {new Date(reservationDetail.endDate).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </span>
                   </div>
                   {reservationDetail.description && (

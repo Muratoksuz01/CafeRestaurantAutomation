@@ -2,6 +2,7 @@ yapılacaklar
     auth contolerde jwt toenlar vs bunları ayır oradan 
    - printer servisi hatalı mesajı kullanıcıya dondur 
    - zod regex olayını bir yap 
+   - rezerve edildikten sonra hemen goremiyorum rezervasyonu 
     - sayfa lisanlamaya bak nasıl yapılır 
 Onceliklie
         tasarım kısmını disa bagımlı yap belki ileride degişme sansı var 

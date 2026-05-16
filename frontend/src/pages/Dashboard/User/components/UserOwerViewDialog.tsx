@@ -103,7 +103,7 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
       toast.warning("once siparis olusturmalısınız", warningStyle)
       return;
     }
-    const res = await axiosInstance.delete(API_PATHS.deleteOrder, {
+    const res = await axiosInstance.delete(API_PATHS.deleteOrder(selectedTable?.currentOrderId), {
       data: { orderId: selectedTable?.currentOrderId }
     });
     console.log(res.data)
@@ -219,14 +219,18 @@ function UserOwerViewDialog({ selectedTable, open, setOpen, onChange, allTable, 
       const orderId = selectedTable.currentOrderId;
       if (!orderId) return;
 
-      const response = await axiosInstance.post(API_PATHS.printAdisyon, {
+      const response = await axiosInstance.post<ApiResponse>(API_PATHS.printAdisyon, {
         printerId,
         orderId
       });
 
-      if (response.status === 200) {
+      if (response.data.status) {
         console.log("Yazdırma işlemi başarılı");
         // İstersen burada bir toast mesajı gösterebilirsin
+        toast.success("sipariş yazdırılıyor ",successStyle)
+      }
+      else{
+        toast.warning(response.data.message || "yazdırma işleminde bir hata olustu ",warningStyle)
       }
     } catch (error) {
       console.error("Yazdırma hatası:", error);

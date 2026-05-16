@@ -399,10 +399,7 @@ export class OrderService {
   //     throw new InternalServerErrorException('Belirtilen tarihler arasında rapor alınamadı.');
   //   }
   // }
-  async printOrder(orderId: string) {
-
-   
-  }
+  
 
 
 
