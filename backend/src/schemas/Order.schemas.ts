@@ -12,7 +12,7 @@ export class Order {
   @Prop({ required: true })
   total: number;
 
-  @Prop({ required: true, enum: ["hazirlaniyor", "tamamlandi", "iptal edildi"] })
+  @Prop({ required: true, enum: ["SiparisAlindi", "Tamamlandi", "IptalEdildi"] })
   status: string;
 
   @Prop({ type: [{ type: Types.ObjectId, ref: "OrderItem" }], required: false })

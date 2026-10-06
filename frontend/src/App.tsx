@@ -14,6 +14,7 @@ import TableList from "./pages/Dashboard/User/TableList";
 import Profile from "./pages/Landing/Profile";
 import AdminPrinter from "./pages/Dashboard/Admin/AdminPrinter";
 import UserPrinter from "./pages/Dashboard/User/UserPrinter";
+import AnaSayfa from "./pages/Dashboard/User/AnaSayfa";
 
 
 
@@ -56,7 +57,7 @@ function AppRoutes() {
       {user?.role == "Kasiyer" && (
         <Route path="user" element={<DashboardLayout />}>
           <Route index element={<Navigate to="satis" />} />
-          <Route path="satis" element={<UserOverview />} />
+          <Route path="satis" element={<AnaSayfa />} />
           <Route path="masa" element={<TableList />} />
           <Route path="profile" element={<Profile />} />
           <Route path="yazıcılar" element={<UserPrinter />} />
@@ -69,7 +70,7 @@ function AppRoutes() {
       {user?.role == "Garson" && (
         <Route path="user" element={<DashboardLayout />}>
           <Route index element={<Navigate to="satis" />} />
-          <Route path="satis" element={<UserOverview />} />
+          <Route path="satis" element={<AnaSayfa />} />
           <Route path="profile" element={<Profile />} />
 
         </Route>

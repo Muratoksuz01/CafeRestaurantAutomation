@@ -9,3 +9,14 @@ yapılacaklar
     - adisyon yazdırma 
     - getir trendyol baglama
 
+ben PC muhendisiyim bir proje olusturuyorum kafe otomasyonu projeyı %80 bitirdim ama tasarımı guncellemek 
+istiyorum suanki hali ile userOverview.tsx de tum masalar geliyor dolu bos rezerve seklinde ve tıklandıgında 
+bir pencere acılıyor UserOverviewDialog.tsx burada yemek listesi cagırlıyor her seferinde 
+senden istedigim tasarım ise useroverview sayfasını 2 ye bol sol tarafta yemekler listelensin resmi, adı ,
+varsa acıklaması ,fiyati seklinde sag tarafın solunda ise action butonları yer alsın ama burası masa secili 
+degilse gorunmesin bir masa secildiginde gorunur hale gelsin  sayfanın solunda ise masalar listelensin tıklandıgında 
+dialog acılmasın sayfanın sol tarafı temizlensin baslık olarak mesela "salon 1" masası duzenleniyor  sayfanın solunda bulunan 
+yemeklerin action butonları aktif hale gelsin sepette ne kadar urun varsa gosterilsin .sayfanın solunda masa acıldıgında asagıda
+ siparisi onayla ,iptal et ,kapat,vs. bu butonlar bulunsun 
+solid prensiplerine uygun sekilde yaz degişken tiplerini yazmayı unutma ,işlemlere baslamadan sormak istedigin soru varsa sor
+sol tarafı ilgilendiren foksiyonları o compenentte yaz  mesela confirmOrder,odemeAl,vs. 

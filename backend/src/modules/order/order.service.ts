@@ -36,21 +36,21 @@ export class OrderService {
     if (table.status == "dolu") {
       return { status: false, message: 'Bu Masa Dolu oldugu icin tekrar sipariş verilemez ' };
     }
-    if (table.status == "rezerve") {
-      const rezerve = await this.rezerveModel.findOne({ masaId: table._id })
-      if (!rezerve) {
-        return { status: false, message: 'Rezervasyon bulunamadı.' };
-      }
-      rezerve.status = "arrived"
-      await rezerve.save()
-    }
+    // if (table.status == "rezerve") {
+    //   const rezerve = await this.rezerveModel.findOne({ masaId: table._id })
+    //   if (!rezerve) {
+    //     return { status: false, message: 'Rezervasyon bulunamadı.' };
+    //   }
+    //   rezerve.status = "arrived"
+    //   await rezerve.save()
+    // }
 
     try {
       // 2. Yeni Siparişi (Order) oluştur
       const newOrder = new this.orderModel({
         tableId,
         total,
-        status: 'hazirlaniyor',
+        status: 'siparisAlindi',
         waiterId: userId,
         orderItems: [], // Şimdilik boş, birazdan ID'leri ekleyeceğiz
       });
@@ -217,15 +217,13 @@ export class OrderService {
       // sadece ascı rolu icin kullanılıyor
       const order = await this.orderModel.findByIdAndUpdate(
         id,
-        { $set: { status: 'tamamlandi' } },
+        { $set: { status: 'Tamamlandi' } },
         { new: true }
       ).lean();
 
       if (!order) {
         return { status: false, message: 'Sipariş bulunamadı.' };
       }
-
-
 
       return {
         message: 'Sipariş durumu güncellendi.',
@@ -328,12 +326,12 @@ export class OrderService {
       }
 
       // 3. Idempotency Check: Zaten ödenmişse işlem yapma
-      if (order.status === 'tamamlandi') {
+      if (order.status === 'Tamamlandi') {
         return { status: false, message: 'Bu adisyon zaten kapatılmış ve ödemesi alınmış.' };
       }
 
       // 4. Sipariş Durumunu Güncelle
-      order.status = 'tamamlandi';
+      order.status = 'Tamamlandi';
       // Opsiyonel: Buraya paymentMethod (Nakit/Kredi Kartı) alanı eklenebilir
       await order.save();
 

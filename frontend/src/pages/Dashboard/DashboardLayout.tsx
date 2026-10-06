@@ -21,16 +21,12 @@ function DashboardLayout() {
               <SidebarTrigger />
               <h2 className="text-sm font-medium text-muted-foreground">{title}</h2>
             </div>
-
-      
-             
-
               <ModeToggle />
            
           </header>
 
           {/* İçerik alanına hafif bir ton farkı vererek kartları öne çıkarıyoruz */}
-          <main className="flex-1 p-6 bg-muted/20">
+          <main className="flex-1  bg-muted/20">
             <Outlet />
           </main>
         </SidebarInset>

@@ -4,7 +4,7 @@ export interface Order {
   orderDate: string
   orderTotal: number
   waiterName:string
-  status: "hazirlaniyor" | "tamamlandi" | "iptal edildi"
+  status: string
   orderItems?: OrderItem[]
 }
 
@@ -14,5 +14,5 @@ export interface OrderItem {
   qty: number
   unitPrice: number
   total:number
-  imgs?: string
+  img?: string
 }

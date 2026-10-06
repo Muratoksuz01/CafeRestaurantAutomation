@@ -23,7 +23,7 @@ export function OrderDetailsDialog({ orderId, open, onOpenChange }: OrderDetails
         try {
             setLoading(true)
             const res = await axiosInstance.get(API_PATHS.getOrder(id))
-            if (res.data.success) {
+            if (res.data.status) {
                 setOrder(res.data.data)
             } else {
                 toast.warning(res.data.message || " sipariş getirilirken bir hata olustu", warningStyle)
@@ -91,8 +91,8 @@ export function OrderDetailsDialog({ orderId, open, onOpenChange }: OrderDetails
                                         >
                                             {/* Sol taraf */}
                                             <div className="flex items-center gap-4">
-                                                <img
-                                                    src={`http://localhost:5000/file?path=${item.imgs}`}
+                                                <img //http://localhost:6001/assets/foods/cay-1764854641221-1775648438811.jpg
+                                                    src={`http://localhost:6001${item.img}`}
                                                     alt=""
                                                     className="w-16 h-16 rounded-lg object-cover border"
                                                 />
