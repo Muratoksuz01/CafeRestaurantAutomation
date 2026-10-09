@@ -10,6 +10,7 @@ import {
   Trash2,
   Utensils,
   Loader2,
+  ArrowLeft,
 } from "lucide-react";
 import { useGetTables } from "@/hooks/useGetTables";
 import { useGetFoods } from "@/hooks/useGetFoods";
@@ -290,17 +291,18 @@ export default function AnaSayfa() {
     "[scrollbar-width:thin] [scrollbar-color:#cbd7d0_transparent] dark:[scrollbar-color:#3f4d45_transparent] [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-thumb]:bg-[#cbd7d0] dark:[&::-webkit-scrollbar-thumb]:bg-[#3f4d45] [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-track]:bg-transparent";
 
   return (
-    <div className="relative w-full h-[calc(100vh-130px)] max-h-[calc(100vh-130px)] overflow-hidden bg-[#f7f9f7] dark:bg-background p-3 sm:p-4 select-none transition-colors duration-200">
+    <div className="relative w-full h-[calc(100vh-50px)] max-h-[calc(100vh-50px)] overflow-hidden bg-[#f7f9f7] dark:bg-background p-3 sm:p-4 select-none transition-colors duration-200">
       {/* 3 Kolonlu Masaüstü Grid (Masaüstü: Menü | Salon | Sepet; Mobilde: Sadece Salon) */}
-      <div className="grid grid-cols-1 md:grid-cols-[1.3fr_0.85fr_0.85fr] gap-4 h-full min-h-0">
-        
+      <div className="grid grid-cols-1 md:grid-cols-[1.3fr_0.7fr] gap-4 h-full min-h-0">
+
         {/* ========================================================= */}
         {/* 1. SOL KOLON (MENÜ PANELİ) - Mobilde Gizli (hidden md:flex) */}
         {/* ========================================================= */}
         <section
-          className={`hidden md:flex flex-col min-h-0 h-full rounded-[12px] bg-white dark:bg-card border border-[#e4e9e5] dark:border-border p-3.5 shadow-xs transition-opacity duration-200 ${
-            !selectedTable ? "opacity-50 pointer-events-none select-none" : ""
-          }`}
+          className={`hidden md:flex flex-col min-h-0 h-full rounded-[12px] bg-white dark:bg-card border
+             border-[#e4e9e5] dark:border-border p-3.5 shadow-xs transition-opacity duration-200
+              `
+          }
         >
           {/* Üst Başlık & Ürün Sayısı Rozeti */}
           <div className="flex items-center justify-between mb-3 shrink-0">
@@ -348,11 +350,10 @@ export default function AnaSayfa() {
               <button
                 onClick={() => setSelectedCategory("all")}
                 disabled={!selectedTable}
-                className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                  selectedCategory === "all"
-                    ? "bg-[#255f4b] dark:bg-emerald-600 text-white border-[#255f4b] dark:border-emerald-600 shadow-xs"
-                    : "bg-white dark:bg-card text-[#78847e] dark:text-muted-foreground border-[#e4e9e5] dark:border-border hover:bg-[#e8f2ed] dark:hover:bg-muted/50 hover:text-[#255f4b] dark:hover:text-emerald-400"
-                }`}
+                className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${selectedCategory === "all"
+                  ? "bg-[#255f4b] dark:bg-emerald-600 text-white border-[#255f4b] dark:border-emerald-600 shadow-xs"
+                  : "bg-white dark:bg-card text-[#78847e] dark:text-muted-foreground border-[#e4e9e5] dark:border-border hover:bg-[#e8f2ed] dark:hover:bg-muted/50 hover:text-[#255f4b] dark:hover:text-emerald-400"
+                  }`}
               >
                 Tümü
               </button>
@@ -363,11 +364,10 @@ export default function AnaSayfa() {
                     key={c._id}
                     onClick={() => setSelectedCategory(String(c._id))}
                     disabled={!selectedTable}
-                    className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                      isSelected
-                        ? "bg-[#255f4b] dark:bg-emerald-600 text-white border-[#255f4b] dark:border-emerald-600 shadow-xs"
-                        : "bg-white dark:bg-card text-[#78847e] dark:text-muted-foreground border-[#e4e9e5] dark:border-border hover:bg-[#e8f2ed] dark:hover:bg-muted/50 hover:text-[#255f4b] dark:hover:text-emerald-400"
-                    }`}
+                    className={`shrink-0 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${isSelected
+                      ? "bg-[#255f4b] dark:bg-emerald-600 text-white border-[#255f4b] dark:border-emerald-600 shadow-xs"
+                      : "bg-white dark:bg-card text-[#78847e] dark:text-muted-foreground border-[#e4e9e5] dark:border-border hover:bg-[#e8f2ed] dark:hover:bg-muted/50 hover:text-[#255f4b] dark:hover:text-emerald-400"
+                      }`}
                   >
                     {c.name}
                   </button>
@@ -396,8 +396,8 @@ export default function AnaSayfa() {
                     food.imgs && Array.isArray(food.imgs) && food.imgs.length > 0
                       ? food.imgs[0]
                       : typeof food.imgs === "string"
-                      ? food.imgs
-                      : null;
+                        ? food.imgs
+                        : null;
                   const imgUrl = imgPath ? `${API_BASE_URL}${imgPath}` : null;
 
                   return (
@@ -411,7 +411,7 @@ export default function AnaSayfa() {
                           <img
                             src={imgUrl}
                             alt={food.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="w-full  h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
                               // Resim yüklenemezse ikon göster
                               (e.target as HTMLElement).style.display = "none";
@@ -442,14 +442,16 @@ export default function AnaSayfa() {
                         <span className="text-xs font-extrabold text-[#255f4b] dark:text-emerald-400">
                           {food.price} ₺
                         </span>
-                        <button
-                          onClick={() => handleAddToCart(food)}
-                          disabled={!selectedTable}
-                          aria-label={`${food.name} ekle`}
-                          className="w-7 h-7 rounded-lg bg-[#255f4b] dark:bg-emerald-600 hover:bg-[#1e4e3d] dark:hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center transition-all shadow-xs cursor-pointer"
-                        >
-                          <Plus size={15} />
-                        </button>
+                        {selectedTable &&
+                          <button
+                            onClick={() => handleAddToCart(food)}
+                            disabled={!selectedTable}
+                            aria-label={`${food.name} ekle`}
+                            className="w-7 h-7 rounded-lg bg-[#255f4b] dark:bg-emerald-600 hover:bg-[#1e4e3d] dark:hover:bg-emerald-700 active:scale-95 text-white flex items-center justify-center transition-all shadow-xs cursor-pointer"
+                          >
+                            <Plus size={15} />
+                          </button>
+                        }
                       </div>
                     </div>
                   );
@@ -462,232 +464,246 @@ export default function AnaSayfa() {
         {/* ========================================================= */}
         {/* 2. ORTA KOLON (SALON / MASA PANELİ) - Masaüstü & Mobil   */}
         {/* ========================================================= */}
-        <section className="flex flex-col min-h-0 h-full rounded-[12px] bg-white dark:bg-card border border-[#e4e9e5] dark:border-border p-3.5 shadow-xs">
-          {/* Üst Başlık & Renk Lejantı */}
-          <div className="flex items-center justify-between mb-3 shrink-0">
-            <div>
-              <span className="text-[10px] font-extrabold tracking-wider text-[#98a29d] dark:text-muted-foreground uppercase">
-                Salon Düzeni
-              </span>
-              <h2 className="text-base font-bold text-[#1d2a24] dark:text-foreground leading-tight">
-                Masalar ({tables.length})
-              </h2>
+        {!selectedTable ? (
+          <section className="flex flex-col min-h-0 h-full rounded-[12px] bg-white dark:bg-card border border-[#e4e9e5] dark:border-border p-3.5 shadow-xs">
+            {/* Üst Başlık & Renk Lejantı */}
+            <div className="flex items-center justify-between mb-3 shrink-0">
+              <div>
+                <span className="text-[10px] font-extrabold tracking-wider text-[#98a29d] dark:text-muted-foreground uppercase">
+                  Salon Düzeni
+                </span>
+                <h2 className="text-base font-bold text-[#1d2a24] dark:text-foreground leading-tight">
+                  Masalar ({tables.length})
+                </h2>
+              </div>
+
+              {/* Boş / Dolu Lejantı */}
+              <div className="flex items-center gap-2.5 text-[10px] font-semibold text-[#78847e] dark:text-muted-foreground">
+                <div className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-white dark:bg-card border border-[#cbd7d0] dark:border-border inline-block" />
+                  <span>Boş</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <span className="w-2.5 h-2.5 rounded-sm bg-[#d9eaff] dark:bg-sky-950/70 border border-[#c1dcef] dark:border-sky-800 inline-block" />
+                  <span className="text-[#316da7] dark:text-sky-300">Dolu</span>
+                </div>
+              </div>
             </div>
 
-            {/* Boş / Dolu Lejantı */}
-            <div className="flex items-center gap-2.5 text-[10px] font-semibold text-[#78847e] dark:text-muted-foreground">
-              <div className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm bg-white dark:bg-card border border-[#cbd7d0] dark:border-border inline-block" />
-                <span>Boş</span>
-              </div>
-              <div className="flex items-center gap-1">
-                <span className="w-2.5 h-2.5 rounded-sm bg-[#d9eaff] dark:bg-sky-950/70 border border-[#c1dcef] dark:border-sky-800 inline-block" />
-                <span className="text-[#316da7] dark:text-sky-300">Dolu</span>
-              </div>
-            </div>
-          </div>
+            {/* 3 Kolonlu Masa Grid'i - YALNIZCA KENDİ İÇİNDE KAYAR */}
+            <div className={`flex-1 min-h-0 overflow-y-auto pr-1 ${scrollbarClasses}`}>
+              {tablesLoading ? (
+                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[#78847e] dark:text-muted-foreground">
+                  <Loader2 size={24} className="animate-spin mb-2 text-[#255f4b] dark:text-emerald-400" />
+                  <p className="text-xs">Masalar yükleniyor...</p>
+                </div>
+              ) : tables.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[#78847e] dark:text-muted-foreground">
+                  <p className="text-xs font-medium">Masa kaydı bulunamadı.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-3 gap-2 pb-2">
+                  {tables.map((table, index) => {
+                    // const isSelected = selectedTable?._id === table._id;
+                    const isOccupied = table.status === "dolu";
 
-          {/* 3 Kolonlu Masa Grid'i - YALNIZCA KENDİ İÇİNDE KAYAR */}
-          <div className={`flex-1 min-h-0 overflow-y-auto pr-1 ${scrollbarClasses}`}>
-            {tablesLoading ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[#78847e] dark:text-muted-foreground">
-                <Loader2 size={24} className="animate-spin mb-2 text-[#255f4b] dark:text-emerald-400" />
-                <p className="text-xs">Masalar yükleniyor...</p>
-              </div>
-            ) : tables.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-6 text-[#78847e] dark:text-muted-foreground">
-                <p className="text-xs font-medium">Masa kaydı bulunamadı.</p>
-              </div>
-            ) : (
-              <div className="grid grid-cols-3 gap-2 pb-2">
-                {tables.map((table, index) => {
-                  const isSelected = selectedTable?._id === table._id;
-                  const isOccupied = table.status === "dolu";
+                    // Boş, Dolu, Seçili stil mantığı (Dark & Light uyumlu)
+                    let cardStyle =
+                      "bg-white dark:bg-card border-[#e4e9e5] dark:border-border text-[#1d2a24] dark:text-foreground hover:border-[#255f4b]/50 dark:hover:border-emerald-500/50";
+                    let badgeStyle =
+                      "border-[#cbd7d0] dark:border-border bg-[#f7f9f7] dark:bg-muted/30 text-[#6b8174] dark:text-muted-foreground";
 
-                  // Boş, Dolu, Seçili stil mantığı (Dark & Light uyumlu)
-                  let cardStyle =
-                    "bg-white dark:bg-card border-[#e4e9e5] dark:border-border text-[#1d2a24] dark:text-foreground hover:border-[#255f4b]/50 dark:hover:border-emerald-500/50";
-                  let badgeStyle =
-                    "border-[#cbd7d0] dark:border-border bg-[#f7f9f7] dark:bg-muted/30 text-[#6b8174] dark:text-muted-foreground";
+                    if (isOccupied) {
+                      cardStyle =
+                        "bg-[#d9eaff] dark:bg-sky-950/60 border-[#c1dcef] dark:border-sky-800 text-[#316da7] dark:text-sky-300";
+                      badgeStyle =
+                        "border-[#c1dcef] dark:border-sky-700 bg-white/70 dark:bg-sky-900/40 text-[#316da7] dark:text-sky-300";
+                    }
 
-                  if (isOccupied) {
-                    cardStyle =
-                      "bg-[#d9eaff] dark:bg-sky-950/60 border-[#c1dcef] dark:border-sky-800 text-[#316da7] dark:text-sky-300";
-                    badgeStyle =
-                      "border-[#c1dcef] dark:border-sky-700 bg-white/70 dark:bg-sky-900/40 text-[#316da7] dark:text-sky-300";
-                  }
+                    // if (isSelected) {
+                    //   cardStyle =
+                    //     "ring-2 ring-[#255f4b] dark:ring-emerald-500 border-[#255f4b] dark:border-emerald-500 shadow-md bg-white dark:bg-card";
+                    // }
 
-                  if (isSelected) {
-                    cardStyle =
-                      "ring-2 ring-[#255f4b] dark:ring-emerald-500 border-[#255f4b] dark:border-emerald-500 shadow-md bg-white dark:bg-card";
-                  }
-
-                  return (
-                    <button
-                      key={table._id}
-                      onClick={() => handleSelectTable(table)}
-                      className={`relative min-h-[88px] sm:min-h-[96px] rounded-[12px] border p-2 flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer ${cardStyle}`}
-                    >
-                      {/* Masa Numarası Rozeti */}
-                      <div
-                        className={`w-9 h-7 rounded-md border flex items-center justify-center text-xs font-bold ${badgeStyle}`}
+                    return (
+                      <button
+                        key={table._id}
+                        onClick={() => handleSelectTable(table)}
+                        className={`relative min-h-[88px] sm:min-h-[96px] rounded-[12px] border p-2 flex flex-col items-center justify-center gap-1 transition-all text-center cursor-pointer ${cardStyle}`}
                       >
-                        {(index + 1).toString().padStart(2, "0")}
-                      </div>
+                        {/* Masa Numarası Rozeti */}
+                        <div
+                          className={`w-9 h-7 rounded-md border flex items-center justify-center text-xs font-bold ${badgeStyle}`}
+                        >
+                          {(index + 1).toString().padStart(2, "0")}
+                        </div>
 
-                      <strong className="text-xs font-semibold leading-tight line-clamp-1">
-                        {table.name}
-                      </strong>
+                        <strong className="text-xs font-semibold leading-tight line-clamp-1">
+                          {table.name}
+                        </strong>
 
-                      <span className="text-[10px] text-[#78847e] dark:text-muted-foreground font-medium">
-                        {isOccupied ? "Dolu Masa" : "Boş Masa"}
-                      </span>
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-          </div>
-        </section>
-
-        {/* ========================================================= */}
-        {/* 3. SAĞ KOLON (AKTİF SİPARİŞ / SEPET) - Mobilde Gizli      */}
-        {/* ========================================================= */}
-        <section className="hidden md:flex flex-col min-h-0 h-full rounded-[12px] bg-white dark:bg-card border border-[#e4e9e5] dark:border-border p-3.5 shadow-xs">
-          {/* Üst Seçili Masa Başlığı */}
-          <div className="flex items-center justify-between pb-3 border-b border-[#f0f3f1] dark:border-border/60 shrink-0">
-            <div>
-              <span className="text-[10px] font-extrabold tracking-wider text-[#98a29d] dark:text-muted-foreground uppercase">
-                Aktif Sipariş
-              </span>
-              <h2 className="text-base font-bold text-[#1d2a24] dark:text-foreground leading-tight">
-                {selectedTable ? selectedTable.name : "Masa Seçilmedi"}
-              </h2>
+                        <span className="text-[10px] text-[#78847e] dark:text-muted-foreground font-medium">
+                          {isOccupied ? "Dolu Masa" : "Boş Masa"}
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </div>
-            {selectedTable && (
-              <span
-                className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                  selectedTable.status === "dolu"
+          </section>
+        ) : (
+
+
+          <section className="hidden md:flex flex-col min-h-0 h-full rounded-[12px] bg-white dark:bg-card border border-[#e4e9e5] dark:border-border p-3.5 shadow-xs">
+
+            {/* Üst Seçili Masa Başlığı */}
+            <div className="flex items-center justify-between pb-3 border-b border-[#f0f3f1] dark:border-border/60 shrink-0">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={() => { setSelectedTable(null) }}
+                  className="flex items-center justify-center w-9 h-9 rounded-lg border border-[#f0f3f1] dark:border-border/60 hover:bg-[#f0f3f1] dark:hover:bg-muted transition-colors"
+                  aria-label="Geri"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+
+                <div>
+                  <span className="text-[10px] font-extrabold tracking-wider text-[#98a29d] dark:text-muted-foreground uppercase">
+                    Aktif Sipariş
+                  </span>
+                  <h2 className="text-base font-bold text-[#1d2a24] dark:text-foreground leading-tight">
+                    {selectedTable ? selectedTable.name : "Masa Seçilmedi"}
+                  </h2>
+                </div>
+              </div>
+
+              {selectedTable && (
+                <span
+                  className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${selectedTable.status === "dolu"
                     ? "bg-[#d9eaff] dark:bg-sky-950/60 text-[#316da7] dark:text-sky-300"
                     : "bg-[#e8f2ed] dark:bg-emerald-950/60 text-[#255f4b] dark:text-emerald-400 border border-transparent dark:border-emerald-800/40"
-                }`}
-              >
-                {selectedTable.status === "dolu" ? "Dolu Masa" : "Boş Masa"}
-              </span>
-            )}
-          </div>
+                    }`}
+                >
+                  {selectedTable.status === "dolu" ? "Dolu Masa" : "Boş Masa"}
+                </span>
+              )}
+            </div>
 
-          {/* Sepet Ürün Listesi - YALNIZCA KENDİ İÇİNDE KAYAR */}
-          <div className={`flex-1 min-h-0 overflow-y-auto pr-1 my-2.5 ${scrollbarClasses}`}>
-            {basket.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center p-4 text-[#78847e] dark:text-muted-foreground">
-                <div className="w-11 h-11 rounded-full bg-[#f1f5f2] dark:bg-muted/40 text-[#9aa49f] dark:text-muted-foreground flex items-center justify-center mb-2">
-                  <Coffee size={22} />
-                </div>
-                <strong className="text-xs font-semibold text-[#1d2a24] dark:text-foreground">
-                  {selectedTable ? "Sepetiniz Boş" : "Lütfen Masa Seçin"}
-                </strong>
-                <p className="text-[11px] text-[#9aa49f] dark:text-muted-foreground mt-1 max-w-[160px]">
-                  Menüden ürün ekleyerek siparişi oluşturun.
-                </p>
-              </div>
-            ) : (
-              <div className="flex flex-col divide-y divide-[#f0f3f1] dark:divide-border/60">
-                {basket.map((item) => (
-                  <div
-                    key={item._id}
-                    className="py-2.5 flex items-center justify-between gap-2"
-                  >
-                    <div className="min-w-0 flex-1">
-                      <h4 className="text-xs font-semibold text-[#1d2a24] dark:text-foreground truncate">
-                        {item.name}
-                      </h4>
-                      <span className="text-[10px] text-[#78847e] dark:text-muted-foreground">
-                        {item.price} ₺ × {item.qty} ={" "}
-                        <strong className="text-[#255f4b] dark:text-emerald-400 font-bold">
-                          {item.price * item.qty} ₺
-                        </strong>
-                      </span>
-                    </div>
 
-                    {/* Adet Artır / Azalt Butonları */}
-                    <div className="flex items-center gap-1.5 shrink-0 bg-[#f7f9f7] dark:bg-muted/40 border border-[#e4e9e5] dark:border-border rounded-lg p-0.5">
-                      <button
-                        onClick={() => handleUpdateQuantity(item._id, -1)}
-                        className="w-6 h-6 rounded-md bg-white dark:bg-card hover:bg-[#e8f2ed] dark:hover:bg-muted text-[#1d2a24] dark:text-foreground flex items-center justify-center text-xs font-bold transition-colors active:scale-95 border border-[#e4e9e5] dark:border-border cursor-pointer"
-                        aria-label="Azalt"
-                      >
-                        <Minus size={12} />
-                      </button>
-                      <span className="w-5 text-center text-xs font-bold text-[#1d2a24] dark:text-foreground">
-                        {item.qty}
-                      </span>
-                      <button
-                        onClick={() => handleUpdateQuantity(item._id, 1)}
-                        className="w-6 h-6 rounded-md bg-white dark:bg-card hover:bg-[#e8f2ed] dark:hover:bg-muted text-[#1d2a24] dark:text-foreground flex items-center justify-center text-xs font-bold transition-colors active:scale-95 border border-[#e4e9e5] dark:border-border cursor-pointer"
-                        aria-label="Artır"
-                      >
-                        <Plus size={12} />
-                      </button>
-                    </div>
+            {/* Sepet Ürün Listesi - YALNIZCA KENDİ İÇİNDE KAYAR */}
+            <div className={`flex-1 min-h-0 overflow-y-auto pr-1 my-2.5 ${scrollbarClasses}`}>
+              {basket.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center p-4 text-[#78847e] dark:text-muted-foreground">
+                  <div className="w-11 h-11 rounded-full bg-[#f1f5f2] dark:bg-muted/40 text-[#9aa49f] dark:text-muted-foreground flex items-center justify-center mb-2">
+                    <Coffee size={22} />
                   </div>
-                ))}
+                  <strong className="text-xs font-semibold text-[#1d2a24] dark:text-foreground">
+                    {selectedTable ? "Sepetiniz Boş" : "Lütfen Masa Seçin"}
+                  </strong>
+                  <p className="text-[11px] text-[#9aa49f] dark:text-muted-foreground mt-1 max-w-[160px]">
+                    Menüden ürün ekleyerek siparişi oluşturun.
+                  </p>
+                </div>
+              ) : (
+                <div className="flex flex-col divide-y divide-[#f0f3f1] dark:divide-border/60">
+                  {basket.map((item) => (
+                    <div
+                      key={item._id}
+                      className="py-2.5 flex items-center justify-between gap-2"
+                    >
+                      <div className="min-w-0 flex-1">
+                        <h4 className="text-xs font-semibold text-[#1d2a24] dark:text-foreground truncate">
+                          {item.name}
+                        </h4>
+                        <span className="text-[10px] text-[#78847e] dark:text-muted-foreground">
+                          {item.price} ₺ × {item.qty} ={" "}
+                          <strong className="text-[#255f4b] dark:text-emerald-400 font-bold">
+                            {item.price * item.qty} ₺
+                          </strong>
+                        </span>
+                      </div>
+
+                      {/* Adet Artır / Azalt Butonları */}
+                      <div className="flex items-center gap-1.5 shrink-0 bg-[#f7f9f7] dark:bg-muted/40 border border-[#e4e9e5] dark:border-border rounded-lg p-0.5">
+                        <button
+                          onClick={() => handleUpdateQuantity(item._id, -1)}
+                          className="w-6 h-6 rounded-md bg-white dark:bg-card hover:bg-[#e8f2ed] dark:hover:bg-muted text-[#1d2a24] dark:text-foreground flex items-center justify-center text-xs font-bold transition-colors active:scale-95 border border-[#e4e9e5] dark:border-border cursor-pointer"
+                          aria-label="Azalt"
+                        >
+                          <Minus size={12} />
+                        </button>
+                        <span className="w-5 text-center text-xs font-bold text-[#1d2a24] dark:text-foreground">
+                          {item.qty}
+                        </span>
+                        <button
+                          onClick={() => handleUpdateQuantity(item._id, 1)}
+                          className="w-6 h-6 rounded-md bg-white dark:bg-card hover:bg-[#e8f2ed] dark:hover:bg-muted text-[#1d2a24] dark:text-foreground flex items-center justify-center text-xs font-bold transition-colors active:scale-95 border border-[#e4e9e5] dark:border-border cursor-pointer"
+                          aria-label="Artır"
+                        >
+                          <Plus size={12} />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            {/* Alt Sabit Bölüm: Toplam Tutar ve İşlem Butonları */}
+            <div className="pt-3 border-t border-[#f0f3f1] dark:border-border/60 flex flex-col gap-2 shrink-0">
+              {/* Toplam Tutar Satırı */}
+              <div className="flex items-baseline justify-between mb-1">
+                <span className="text-xs text-[#78847e] dark:text-muted-foreground font-semibold">
+                  Toplam Tutar ({totalItemCount} ürün)
+                </span>
+                <strong className="text-lg font-black text-[#1d2a24] dark:text-foreground tracking-tight">
+                  {totalAmount} ₺
+                </strong>
               </div>
-            )}
-          </div>
 
-          {/* Alt Sabit Bölüm: Toplam Tutar ve İşlem Butonları */}
-          <div className="pt-3 border-t border-[#f0f3f1] dark:border-border/60 flex flex-col gap-2 shrink-0">
-            {/* Toplam Tutar Satırı */}
-            <div className="flex items-baseline justify-between mb-1">
-              <span className="text-xs text-[#78847e] dark:text-muted-foreground font-semibold">
-                Toplam Tutar ({totalItemCount} ürün)
-              </span>
-              <strong className="text-lg font-black text-[#1d2a24] dark:text-foreground tracking-tight">
-                {totalAmount} ₺
-              </strong>
-            </div>
+              {/* İşlem Butonları ("Siparişi Sil" & "Onayla & Yazdır") */}
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={handleDeleteOrder}
+                  disabled={!selectedTable || isSubmitting}
+                  className="h-9 px-3 rounded-lg border border-[#e4e9e5] dark:border-border bg-white dark:bg-card hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-800 text-[#78847e] dark:text-muted-foreground text-xs font-bold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  <Trash2 size={14} />
+                  <span>Siparişi Sil</span>
+                </button>
 
-            {/* İşlem Butonları ("Siparişi Sil" & "Onayla & Yazdır") */}
-            <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={handleConfirmAndPrint}
+                  disabled={!selectedTable || basket.length === 0 || isSubmitting}
+                  className="h-9 px-3 rounded-lg bg-[#255f4b] dark:bg-emerald-600 hover:bg-[#1e4e3d] dark:hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                >
+                  {isSubmitting ? (
+                    <Loader2 size={14} className="animate-spin" />
+                  ) : (
+                    <Printer size={14} />
+                  )}
+                  <span>Onayla & Yazdır</span>
+                </button>
+              </div>
+
+              {/* Ödeme Al Butonu */}
               <button
-                onClick={handleDeleteOrder}
-                disabled={!selectedTable || isSubmitting}
-                className="h-9 px-3 rounded-lg border border-[#e4e9e5] dark:border-border bg-white dark:bg-card hover:bg-rose-50 dark:hover:bg-rose-950/30 hover:text-rose-600 dark:hover:text-rose-400 hover:border-rose-200 dark:hover:border-rose-800 text-[#78847e] dark:text-muted-foreground text-xs font-bold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
+                onClick={handleTakePayment}
+                disabled={
+                  !selectedTable ||
+                  isSubmitting ||
+                  (basket.length === 0 && selectedTable.status === "bos")
+                }
+                className="w-full h-9 rounded-lg bg-[#e8f2ed] dark:bg-emerald-950/60 hover:bg-[#d6e7de] dark:hover:bg-emerald-900/60 text-[#255f4b] dark:text-emerald-300 border border-[#c9ddd2] dark:border-emerald-800/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
-                <Trash2 size={14} />
-                <span>Siparişi Sil</span>
-              </button>
-
-              <button
-                onClick={handleConfirmAndPrint}
-                disabled={!selectedTable || basket.length === 0 || isSubmitting}
-                className="h-9 px-3 rounded-lg bg-[#255f4b] dark:bg-emerald-600 hover:bg-[#1e4e3d] dark:hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-              >
-                {isSubmitting ? (
-                  <Loader2 size={14} className="animate-spin" />
-                ) : (
-                  <Printer size={14} />
-                )}
-                <span>Onayla & Yazdır</span>
+                <CreditCard size={15} />
+                <span>Ödeme Al</span>
               </button>
             </div>
-
-            {/* Ödeme Al Butonu */}
-            <button
-              onClick={handleTakePayment}
-              disabled={
-                !selectedTable ||
-                isSubmitting ||
-                (basket.length === 0 && selectedTable.status === "bos")
-              }
-              className="w-full h-9 rounded-lg bg-[#e8f2ed] dark:bg-emerald-950/60 hover:bg-[#d6e7de] dark:hover:bg-emerald-900/60 text-[#255f4b] dark:text-emerald-300 border border-[#c9ddd2] dark:border-emerald-800/40 text-xs font-bold flex items-center justify-center gap-1.5 transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
-            >
-              <CreditCard size={15} />
-              <span>Ödeme Al</span>
-            </button>
-          </div>
-        </section>
+          </section>
+        )}
       </div>
 
       {/* ========================================================= */}
