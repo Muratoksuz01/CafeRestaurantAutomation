@@ -180,7 +180,7 @@ function TableList() {
   ]
 
 
-  const handleCreate = async (data: any) => {
+ /*  const handleCreate = async (data: any) => {
     try {
       console.log(data)
       const res = await axiosInstance.post(API_PATHS.createTable, data)
@@ -211,7 +211,7 @@ function TableList() {
     } catch (error) {
       toast.error("İşlem sırasında bir hata oluştu")
     }
-  }
+  } */
 
   const form = useForm({
     resolver: zodResolver(tableCreateEditSchema),
@@ -228,7 +228,7 @@ function TableList() {
     
   }, [ editOpen]);
   return (
-  <div className=" ">
+  <div className=" p-2">
     <div className="rounded-xl  bg-background shadow-sm overflow-hidden">
       <CustomDataTable
         header={(table) => (

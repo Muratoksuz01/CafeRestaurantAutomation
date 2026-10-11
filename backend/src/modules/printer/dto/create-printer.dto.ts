@@ -6,5 +6,6 @@ export class CreatePrinterDto {
 }
 export class printAdisyonDto{
    printerId: string
+   title:string
     orderId: string
 }

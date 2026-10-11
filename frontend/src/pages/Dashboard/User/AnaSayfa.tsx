@@ -1,10 +1,10 @@
 import { useState, useMemo, useEffect } from "react";
-import {Search,Plus,Minus,
-  Coffee,X,Printer,CreditCard,
-  Trash2,Utensils,Loader2,
-  ArrowLeft,Settings,
+import {Search, Plus, Minus,
+  Coffee, X, Printer, CreditCard,
+  Trash2, Utensils, Loader2,
+  ArrowLeft,
 } from "lucide-react";
-import {Tooltip,TooltipContent,TooltipProvider,TooltipTrigger,} from "@/components/ui/tooltip";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, } from "@/components/ui/tooltip";
 import { useGetTables } from "@/hooks/useGetTables";
 import { useGetFoods } from "@/hooks/useGetFoods";
 import { useGetCategory } from "@/hooks/useGetCategory";
@@ -15,6 +15,9 @@ import { API_BASE_URL, API_PATHS } from "@/lib/api";
 import axiosInstance from "@/lib/axiosInstance";
 import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
+import CustomAlertDialog from '@/pages/Dashboard/components/CustomAlertDialog';
+import { CreateOrder, EditOrder, GetTable } from "@/lib/apiResponseTypes";
+import { ApiResponse } from "@/lib/apiTypes";
 
 // Sepet Öğesi Arayüzü
 export interface BasketItem {
@@ -40,6 +43,7 @@ export default function AnaSayfa() {
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [printAlert, setPrintAlert] = useState(false);
 
   // 1. Sayfa yüklendiğinde verileri çek & sayfa dışı kaydırmayı kilitle
   useEffect(() => {
@@ -63,8 +67,9 @@ export default function AnaSayfa() {
   useEffect(() => {
     const fetchTableAdisyon = async (tableId: string) => {
       try {
-        const res = await axiosInstance.get(API_PATHS.getTable(tableId));
-        if (res.data.status && res.data.data?.adisyon) {
+        const res = await axiosInstance.get<ApiResponse<GetTable>>(API_PATHS.getTable(tableId));
+        console.log(res.data.data)
+        if (res.data.status && res.data.data.adisyon) {
           const remoteItems: BasketItem[] =
             res.data.data.adisyon.map((item: any) => ({
               _id: item.foodId || item._id,
@@ -119,25 +124,33 @@ export default function AnaSayfa() {
       setMobileOpen(true);
     }
   };
- const handlePrinter = async (title: string, selectedTableId: string) => {
-  try {
-    const res = await axiosInstance.post(API_PATHS.printAdisyon, {
-      title,
-      tableId: selectedTableId,
-    });
+  const handlePrinter = async (title: string, selectedOrderId: string) => {
+    try {
+      const savedSettings = localStorage.getItem("printer_settings");
+      
+      const printerSettings = savedSettings ? JSON.parse(savedSettings) : null;
 
-    if (res.data?.success) {
-      toast.success(res.data?.message || "Adisyon yazdırma işlemi başarılı.", successStyle);
-    } else {
-      toast.error(res.data?.message || "Adisyon yazdırılamadı.", warningStyle);
+      const res = await axiosInstance.post(API_PATHS.printAdisyon, {
+        printerId: printerSettings?.printer?._id || printerSettings?.id,
+        title,
+        orderId: selectedOrderId,
+      });
+
+      if (res.data?.status) {
+        toast.success("Adisyon yazdırma işlemi başarılı.",successStyle);
+      } else {
+        toast.error(
+          res.data?.message || "Adisyon yazdırılamadı.",
+          warningStyle
+        );
+      }
+    } catch (error: any) {
+      toast.error(
+        error.response?.data?.message || "Yazdırma işlemi sırasında bir hata oluştu.",
+        warningStyle
+      );
     }
-  } catch (error: any) {
-    toast.error(
-      error.response?.data?.message || "Yazdırma işlemi sırasında bir hata oluştu.",
-      warningStyle
-    );
-  }
-};
+  };
   // Sepete Ürün Ekle
   const handleAddToCart = (food: Food) => {
     if (!selectedTable) {
@@ -180,52 +193,80 @@ export default function AnaSayfa() {
         .filter((item): item is BasketItem => item !== null)
     );
   };
+  const saveOrder = async (shouldPrint = false) => {
+    if (!selectedTable) return;
 
+    setIsSubmitting(true);
+
+    try {
+      const hasOriginal = originalBasket && originalBasket.length > 0;
+      let orderId=null
+      if (!hasOriginal) {
+        let res=await axiosInstance.post<ApiResponse<CreateOrder>>(API_PATHS.createOrder, {
+          tableId: selectedTable._id,
+          basket,
+          total: totalAmount,
+        });
+        orderId=res.data.data.order._id
+
+      } else {
+        let res=await axiosInstance.put<ApiResponse<EditOrder>>(API_PATHS.editOrder, {
+          tableId: selectedTable._id,
+          basket,
+          total: totalAmount,
+          orderId: selectedTable.currentOrderId,
+        });
+        orderId=res.data.data._id
+      }
+      toast.success(`${selectedTable.name} siparişi kaydedildi`, successStyle);
+
+      if (shouldPrint) {
+        await handlePrinter("Yeni sipariş geldi", orderId || "1");
+      }
+
+      getTables();
+      setOriginalBasket(basket);
+      setSelectedTable(null);
+      setPrintAlert(false);
+    } catch (err: any) {
+      toast.error(
+        err.response?.data?.message || "Sipariş kaydedilirken bir hata oluştu.",
+        warningStyle
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
   // Siparişi Sıfırla / İptal Et
   const handleClearBasket = () => {
     setBasket(originalBasket);
     toast.info("Değişiklikler sıfırlandı.");
   };
 
-  // Onayla & Yazdır
+  // Onayla 
   const handleConfirm = async () => {
     if (!selectedTable) return;
+
     if (basket.length === 0) {
       toast.warning("Sepet boş, lütfen ürün ekleyiniz.", warningStyle);
       return;
     }
 
-    setIsSubmitting(true);
+    let printerSettings = null;
+
     try {
-      const hasOriginal = originalBasket && originalBasket.length > 0;
-      if (!hasOriginal) {
-        // Yeni sipariş oluştur
-        await axiosInstance.post(API_PATHS.createOrder, {
-          tableId: selectedTable._id,
-          basket,
-          total: totalAmount,
-        });
-      } else {
-        // Mevcut siparişi güncelle
-        await axiosInstance.put(API_PATHS.editOrder, {
-          tableId: selectedTable._id,
-          basket,
-          total: totalAmount,
-          orderId: selectedTable.currentOrderId,
-        });
-      }
-
-      toast.success(`${selectedTable.name} siparişi kaydedildi `, successStyle);
-      getTables();
-      setOriginalBasket(basket);
-
-
-      setMobileOpen(false);
-    } catch (err: any) {
-      toast.error(err.response?.data?.message || "Sipariş kaydedilirken bir hata oluştu.", warningStyle);
-    } finally {
-      setIsSubmitting(false);
+      const savedSettings = localStorage.getItem("printer_settings");
+      printerSettings = savedSettings ? JSON.parse(savedSettings) : null;
+    } catch {
+      printerSettings = null;
     }
+
+    if (printerSettings?.behavior === "ask_every_order") {
+      setPrintAlert(true);
+      return;
+    }
+
+    await saveOrder(printerSettings?.behavior === "print_every_order");
   };
 
   // Ödeme Al
@@ -239,7 +280,7 @@ export default function AnaSayfa() {
     setIsSubmitting(true);
     try {
       if (selectedTable.currentOrderId) {
-        const res = await axiosInstance.post(API_PATHS.paidOrder, {
+        const res = await axiosInstance.post<ApiResponse>(API_PATHS.paidOrder, {
           tableId: selectedTable._id,
           basket,
           total: totalAmount,
@@ -275,7 +316,7 @@ export default function AnaSayfa() {
 
     setIsSubmitting(true);
     try {
-      const res = await axiosInstance.delete(
+      const res = await axiosInstance.delete<ApiResponse>(
         API_PATHS.deleteOrder(selectedTable.currentOrderId),
         {
           data: { orderId: selectedTable.currentOrderId },
@@ -287,7 +328,8 @@ export default function AnaSayfa() {
         setBasket([]);
         setOriginalBasket([]);
         setSelectedTable(null);
-        setMobileOpen(false);
+        //setMobileOpen(false);
+        setSelectedTable(null)
       } else {
         toast.warning(res.data.message || "İstek hatası", warningStyle);
       }
@@ -590,7 +632,7 @@ export default function AnaSayfa() {
               </div>
 
               <div className="flex items-center gap-2">
-                {localStorage.getItem("printer_settings") && (
+                {selectedTable.currentOrderId &&  localStorage.getItem("printer_settings") && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -598,7 +640,7 @@ export default function AnaSayfa() {
                           size={20}
                           className="hidden sm:block cursor-pointer text-gray-500 dark:text-gray-400"
                           onClick={() => {
-                            handlePrinter("Test Fişi",selectedTable._id)
+                            handlePrinter("Test Fişi", selectedTable.currentOrderId)
                           }}
                         />
                       </TooltipTrigger>
@@ -774,7 +816,7 @@ export default function AnaSayfa() {
                 </div>
               </div>
               <button
-                onClick={() => setMobileOpen(false)}
+                onClick={() => setSelectedTable(null)}
                 className="w-8 h-8 rounded-full bg-white dark:bg-muted/40 border border-[#e4e9e5] dark:border-border text-[#78847e] dark:text-muted-foreground hover:text-[#1d2a24] dark:hover:text-foreground flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Kapat"
               >
@@ -905,7 +947,16 @@ export default function AnaSayfa() {
         </div>
       )}
 
-
+      <CustomAlertDialog open={printAlert} onOpenChange={setPrintAlert}
+        title={
+          <p >
+            <span className="text-destructive">
+              {JSON.parse(localStorage.getItem("printer_settings") || "{}").printer?.name || "Yazıcı seçilmedi"}
+            </span>          </p>
+        }
+        description="Bu işlem geri alınamaz."
+        onConfirm={() => saveOrder(true)}
+      />
     </div>
   );
 }

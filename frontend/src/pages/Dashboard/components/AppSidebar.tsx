@@ -77,7 +77,7 @@ function AppSidebar({ settitle }: any) {
           <SidebarGroupLabel>{open && "Menü"}</SidebarGroupLabel>
           <SidebarGroupContent>
             {config.items.map((item) => (
-              <SidebarMenuItem key={item.title}>
+              <SidebarMenuItem key={item.title} className="mb-1">
                 <SidebarMenuButton
                   asChild
                   isActive={location.pathname === item.url}

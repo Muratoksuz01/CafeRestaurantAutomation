@@ -1,25 +1,9 @@
 yapılacaklar
-    auth contolerde jwt toenlar vs bunları ayır oradan 
-   - printer servisi hatalı mesajı kullanıcıya dondur 
-   - zod regex olayını bir yap 
-   - rezerve edildikten sonra hemen goremiyorum rezervasyonu 
     - sayfa lisanlamaya bak nasıl yapılır 
-Onceliklie
-        tasarım kısmını disa bagımlı yap belki ileride degişme sansı var 
-        frontentde yazıcı sayfası ekle normal yazıcı kurulumu yapıdıktan sonra burada ip adresnini yazacaklar sonra buna isim verecekler bunun tipini belirtecekler (58-80 ) gibi 
-        sonra bu yazıcıyı varsayılan yap diye bir buton koy 
-    - sonra yonetici icin genel bilgiler kkısımı guncelle belki daha fazla bilgi yazmaya calıs 
-    - token suresini bir gun yap 
-    - telefonda isunucudunun ip adresini biliyorsa misafir burayı gormemeli burayı bir arastır sadece calısanların girdiginden emin olalım 
-
-    - data seed gibi bir yapı role ve ilk user lar icin 
-
     - getir trendyol gibi servisler baglayabilmel 
-    - config sayfası icin 
-        cıktı formatı 58 mi 80 mı sorusu 
-        otomatik adisyon yazdıırlsın mı 
-        hangi PC ye hangi yazıcı baglı 
     - redis kur 
-    - loggeri digerlerinede yaz 
-    - config sayfası gibi bir sey olacak bunu dusun nasıl yapılır 
-    birde sirketten sirkete aidsyon goruntusu degişebilir bunu farklı bir sekilde dusunmeliyiz 
+
+11.10.2026 TODO
+- gercek yazıcı kodlarını aktif et thermal.engine.ts  
+- data seed gibi bir yapı role ve ilk user lar icin 
+-
