@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
-import { Search, Trash2, PencilLine, Check, X, MoreVertical } from "lucide-react"
+import { Search, Trash2, PencilLine, Check, X, MoreVertical, User, Mail, Phone, Shield, Power, EyeOff, Eye } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -8,24 +8,38 @@ import { Input } from "@/components/ui/input"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useGetUsers } from "@/hooks/useGetUsers"
 import { API_PATHS } from "@/lib/api"
-import type { Users } from "@/models/User"
+import { userCreateSchema, Users } from "@/models/User"
 import EditDialog from "./components/EditDialog"
-import CreateUserDialog from "./components/CreateUserDialog"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, } from "@/components/ui/dropdown-menu"
 import { ColumnDef } from "@tanstack/react-table"
 import CustomDataTable from "@/pages/Dashboard/components/CustomDataTable"
 import { DataTableColumnHeader } from "../components/data-table-column-header"
 import CustomAlertDialog from "../components/CustomAlertDialog"
+import { useForm } from "react-hook-form"
+import { zodResolver } from "@hookform/resolvers/zod"
+import z from "zod"
+import CustomDialog from "../components/CustomDialog"
+import { Form } from "@/components/ui/form"
+import CustomFormField from "../components/CustomFormField"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Label } from "@/components/ui/label"
+import { Switch } from "@/components/ui/switch"
+import { DialogClose, DialogFooter } from "@/components/ui/dialog"
+import { toast } from "sonner"
+import { successStyle, warningStyle } from "@/lib/toastStyle"
+import { ApiResponse } from "@/lib/apiTypes"
 
 
 
 export default function AdminUsers() {
 
   const { users, getUsers, loading: userLoading } = useGetUsers()
-  const [selectedUser, setSelectedUser] = useState<Users>({} as Users)
-  const [openEdit, setOpenEdit] = useState(false)
-  const [openDel, setOpenDel] = useState(false)
+  const [selectedUser, setSelectedUser] = useState<Users | null>(null)
+  const [editDialog, setEditDialog] = useState(false)
   const [createDialog, setCreateDialog] = useState(false)
+  const [deleteAlert, setDeleteAlert] = useState(false)
+  const [showPassword, setShowPassword] = useState(false)
+
   const columns: ColumnDef<Users>[] = [
     {
       id: "Sıra",
@@ -104,10 +118,8 @@ export default function AdminUsers() {
 
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => {
-              setSelectedUser(row.original)
-              setOpenEdit(true)
+              openEditDialog(row.original)
             }
-              // editUser(row.original)
             }>
               <PencilLine className="mr-2 h-4 w-4" />
               Düzenle
@@ -116,10 +128,8 @@ export default function AdminUsers() {
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
               onClick={() => {
-                setSelectedUser(row.original)
-                setOpenDel(true)
+                openDeleteDialog(row.original)
               }
-                // deleteUser(String(row.original._id))
               }
             >
               <Trash2 className="mr-2 h-4 w-4" />
@@ -131,7 +141,24 @@ export default function AdminUsers() {
     }
 
   ]
+  const openDeleteDialog = (t: any) => {
 
+    console.log("dialog secimi:", t)
+    setSelectedUser(t);
+    setDeleteAlert(true);
+  };
+  const form = useForm<z.infer<typeof userCreateSchema>>({
+    resolver: zodResolver(userCreateSchema),
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      roleName: undefined,
+      isActive: true,
+      password: ""
+    },
+  })
 
   useEffect(() => {
     getUsers()
@@ -141,18 +168,32 @@ export default function AdminUsers() {
     getUsers()
   }
 
-  const deleteUser = async (id: string) => {
-    try {
-      await axiosInstance.delete(API_PATHS.deleteUser(id))
-      getUsers()
-    } catch (error) {
-      console.error("[v0] Error deleting user:", error)
-    }
+
+
+  const openCreateDialog = () => {
+    form.reset({
+      firstName: "",
+      lastName: "",
+      email: "",
+      phoneNumber: "",
+      roleName: undefined,
+      isActive: true,
+      password: ""
+    })
+    setCreateDialog(true)
   }
 
-  const editUser = (user: Users) => {
+  const openEditDialog = (user: Users) => {
     setSelectedUser(user)
-    setOpenEdit(true)
+    form.reset({
+      firstName: user.firstName ?? "Bilimeyen",
+      lastName: user.lastName ?? "Bilimeyen",
+      email: user.email ?? "Bilimeyen",
+      phoneNumber: user.phoneNumber ?? "",
+      roleName: user.roleName ?? "Garson",
+      isActive: user.isActive ?? false,
+    })
+    setEditDialog(true)
   }
   const badgePrinter = (roleName: "Asci" | "Yonetici" | "Garson" | "Kasiyer") => {
     switch (roleName) {
@@ -188,6 +229,43 @@ export default function AdminUsers() {
         return <Badge variant="secondary">{roleName}</Badge>
     }
   }
+
+
+  const handleCreate = async (data: z.infer<typeof userCreateSchema>) => {
+    console.log("[v0] Form submitted:", data)
+    // TODO: Add API call here
+    const res = await axiosInstance.post(API_PATHS.createUser, data)
+    if (res.data.status) {
+      onSuccess()
+      toast.success("kullanıcı basarlılı olusturuldu", successStyle)
+      setCreateDialog(false)
+      return
+    } else {
+      toast.warning(res.data.message || "işlem hatası ", warningStyle)
+    }
+  }
+ const handleDelete = async (user: Users | null) => {
+  if (!user) return;
+
+  try {
+    const res = await axiosInstance.delete<ApiResponse>(
+      API_PATHS.deleteUser(user._id.toString())
+    );
+
+    if (res.data.status) {
+      onSuccess();
+      toast.success("Kullanıcı başarıyla silindi", successStyle);
+      setDeleteAlert(false);
+      setSelectedUser(null);
+     
+    } else {
+      toast.warning(res.data.message || "Silme işlemi başarısız", warningStyle);
+    }
+  } catch (error) {
+    toast.error("Kullanıcı silinirken bir hata oluştu", warningStyle);
+    console.error("Kullanıcı silme hatası:", error);
+  }
+};
   return (
     <div className="container mx-auto p-4 md:p-6 space-y-6 overflow-x-auto">
       <div className="space-y-2">
@@ -236,7 +314,7 @@ export default function AdminUsers() {
                         className="pl-9 w-full"
                       />
                     </div>
-                    <Button className="w-full md:w-auto" onClick={() => setCreateDialog(true)}>
+                    <Button className="w-full md:w-auto" onClick={openCreateDialog}>
                       Yeni Eleman
                     </Button>
                   </div>
@@ -249,20 +327,152 @@ export default function AdminUsers() {
 
 
 
-      <EditDialog open={openEdit} setOpenEdit={setOpenEdit} user={selectedUser} onSuccess={onSuccess} />
-      <CreateUserDialog open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess} />
-      <CustomAlertDialog open={openDel} onOpenChange={() => {
-        setOpenDel(false)
-        setSelectedUser({} as Users)
-      }}
-        title={
-          <p> <span className="text-destructive">{selectedUser.firstName}</span> isimli kişiyi silmek istiyroumusunuz </p>
-        }
-        onConfirm={() => {
-          deleteUser(selectedUser._id.toString())
-          setSelectedUser({} as Users)
-          setOpenDel(false)
+      <CustomDialog  // Create Dialog
+        open={createDialog}
+        onOpenChange={() => {
+          setCreateDialog(false)
         }}
+        title="Kullanıcıyı Olustur"
+        // onConfirm={() => {handleSave(form.getValues())}}
+        onConfirm={() => { handleCreate(form.getValues()) }}
+
+        description={
+          <Form  {...form}>
+            <form onSubmit={form.handleSubmit(handleCreate,
+              (errors) => {
+                console.log("Form validation errors:", errors);
+
+              }
+            )} className="space-y-5">
+              {/* Name Fields Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <CustomFormField control={form.control} name="firstName" title="Ad">
+                  {(field: any) => (
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input {...field} placeholder="Ahmet" className="pl-9" />
+                    </div>
+                  )}
+                </CustomFormField>
+
+                <CustomFormField control={form.control} name="lastName" title="Soyad">
+                  {(field: any) => <Input {...field} placeholder="Yılmaz" />}
+                </CustomFormField>
+              </div>
+
+              {/* Email Field */}
+              <CustomFormField control={form.control} name="email" title="E-posta">
+                {(field: any) => (
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input {...field} type="email" placeholder="ornek@email.com" className="pl-9" />
+                  </div>
+                )}
+              </CustomFormField>
+
+              {/* Phone Field with formatting */}
+              <div className="grid grid-cols-2 gap-4">
+                <CustomFormField control={form.control} name="phoneNumber" title="Telefon Numarası">
+                  {(field: any) => (
+                    <div className="relative">
+                      <Phone className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        {...field}
+                        placeholder="555 555 5555"
+                        className="pl-9"
+                        onChange={(e) => {
+                          const value = e.target.value.replace(/\D/g, "") // sadece rakam
+                          if (/^\d{0,10}$/.test(value)) {
+                            field.onChange(value)
+                          }
+                        }}
+                        maxLength={13}
+                      />
+                    </div>
+                  )}
+                </CustomFormField>
+
+                <CustomFormField control={form.control} name={"password"} title="Sifre"  >
+                  {(field: any) => (
+                    <div className="relative">
+                      <Input
+                        {...field}
+                        type={showPassword ? "text" : "password"}
+                        placeholder="••••••••"
+                        className="bg-slate-50 border-slate-200  placeholder:text-slate-400 focus:border-amber-500 focus:ring-amber-500 rounded-lg pr-10"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-700"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  )}
+                </CustomFormField>
+              </div>
+
+              {/* Role Field */}
+              <CustomFormField control={form.control} name="roleName" title="Rol">
+                {(field: any) => (
+                  <div className="relative">
+                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="pl-9">
+                        <SelectValue placeholder="Rol seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="Yonetici">Yönetici</SelectItem>
+                        <SelectItem value="Garson">Garson</SelectItem>
+                        <SelectItem value="Kasiyer">Kasiyer</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </CustomFormField>
+
+              {/* Active Status Toggle */}
+              <CustomFormField control={form.control} name="isActive" title="Kullanıcı Durumu">
+                {(field: any) => (
+                  <div className="flex items-center justify-between rounded-lg border p-4 bg-muted/30">
+                    <div className="flex items-center gap-2">
+                      <Power className="h-4 w-4 text-muted-foreground" />
+                      <div className="space-y-0.5">
+                        <Label className="text-sm font-medium">{field.value ? "Aktif" : "Pasif"}</Label>
+                        <p className="text-xs text-muted-foreground">
+                          {field.value ? "Kullanıcı sisteme giriş yapabilir" : "Kullanıcı sisteme giriş yapamaz"}
+                        </p>
+                      </div>
+                    </div>
+                    <Switch checked={field.value ?? false} onCheckedChange={field.onChange} />
+                  </div>
+                )}
+              </CustomFormField>
+
+              <DialogFooter className=" flex gap-2 ">
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    İptal
+                  </Button>
+                </DialogClose>
+                <Button type="submit">Kaydet</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        }
+      />
+
+      {selectedUser &&
+        <EditDialog open={editDialog} setOpenEdit={setEditDialog} user={selectedUser} onSuccess={onSuccess} />
+      }
+
+
+      <CustomAlertDialog open={deleteAlert} onOpenChange={setDeleteAlert}
+        title={
+          <p> <span className="text-destructive">{selectedUser?.firstName}</span> isimli kişiyi silmek istiyroumusunuz </p>
+        }
+        onConfirm={() => { handleDelete(selectedUser) }}
       />
     </div>
   )

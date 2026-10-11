@@ -3,7 +3,6 @@ import Login from "./pages/Landing/Login";
 import Register from "./pages/Landing/Register";
 import NotFound from "./pages/NotFound";
 import DashboardLayout from "./pages/Dashboard/DashboardLayout";
-import UserOverview from "./pages/Dashboard/User/UserOverview";
 import AdminOverview from "./pages/Dashboard/Admin/AdminOverview";
 import AdminUsers from "./pages/Dashboard/Admin/AdminUsers";
 import AdminFoods from "./pages/Dashboard/Admin/AdminFoods";

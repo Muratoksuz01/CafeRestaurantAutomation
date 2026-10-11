@@ -13,9 +13,12 @@ import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
 import Filter from "@/pages/Dashboard/components/Filter";
-import TableFormDialog from "./TableFormDialog";
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
+import CustomDialog from "../components/CustomDialog";
+import { Form } from "@/components/ui/form";
+import CustomFormField from "../components/CustomFormField";
+import { Input } from "@/components/ui/input";
 declare module '@tanstack/react-table' {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   interface ColumnMeta<TData extends RowData, TValue> {
@@ -26,18 +29,28 @@ function TableList() {
   const [editOpen, setEditOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
   const [createOpen, setCreateOpen] = useState(false)
-  const [selected, setSelected] = useState<AllTable | null>(null);
+  const [selectTable, setSelectTable] = useState<AllTable | null>(null);
   const { tables, getTables } = useGetTables()
+  const form = useForm({
+    resolver: zodResolver(tableCreateEditSchema),
+    defaultValues: {
+      name: "",
+    },
+  })
   useEffect(() => {
     getTables()
   }, [])
-
-  const openEditDialog = (t: AllTable) => {
+  const openCreateDialog = () => {
+    form.reset({ name: "" })
+    setCreateOpen(true);
+  };
+  const openEditDialog = async(t: AllTable) => {
     if (["dolu", "rezerve"].includes(t.status)) {
       toast.warning("Bu masa dolu olduğu için düzenleme yapamazsın.", warningStyle);
       return;
     }
-    setSelected(t);
+   await setSelectTable(t);
+    form.reset({ name: t?.name || " Bilimeyen" })
     setEditOpen(true);
   };
   const openDeleteDialog = (t: AllTable) => {
@@ -46,7 +59,7 @@ function TableList() {
       return;
     }
     console.log("dialog secimi:", t)
-    setSelected(t);
+    setSelectTable(t);
     setDeleteOpen(true);
   };
   const deleteTable = async (table: AllTable | null) => {
@@ -58,7 +71,7 @@ function TableList() {
     if (res.data.status) {
       toast.success("silindi", successStyle);
       await getTables();
-      setSelected(null);
+      setSelectTable(null);
     } else {
       toast.success("silinmedi", warningStyle);
     }
@@ -135,11 +148,7 @@ function TableList() {
       cell: ({ row }) => (
         <div
           onClick={(e) => e.stopPropagation()}
-          className="
-      flex items-center gap-1
-      transition-all
-      group-hover:opacity-100
-    "
+          className="flex items-center gap-1 transition-all group-hover:opacity-100"
         >
           <Button
             size="icon"
@@ -180,7 +189,7 @@ function TableList() {
   ]
 
 
- /*  const handleCreate = async (data: any) => {
+  const handleCreate = async (data: any) => {
     try {
       console.log(data)
       const res = await axiosInstance.post(API_PATHS.createTable, data)
@@ -199,7 +208,7 @@ function TableList() {
   const handleEdit = async (data: any) => {
     try {
       console.log(data)
-      const res = await axiosInstance.put(API_PATHS.editTable(selected!._id), data)
+      const res = await axiosInstance.put(API_PATHS.editTable(selectTable!._id), data)
 
       // Backend'den dönen başarı flag'lerini kontrol et (status veya success)
       if (res.data.status) {
@@ -211,87 +220,144 @@ function TableList() {
     } catch (error) {
       toast.error("İşlem sırasında bir hata oluştu")
     }
-  } */
+  }
 
-  const form = useForm({
-    resolver: zodResolver(tableCreateEditSchema),
-    defaultValues: {
-      name: "",
-    },
-  })
-  useEffect(() => {
-    if (selected && editOpen) {
-      form.reset({
-        name: selected.name || ""
-      });
-    }
-    
-  }, [ editOpen]);
+
+
   return (
-  <div className=" p-2">
-    <div className="rounded-xl  bg-background shadow-sm overflow-hidden">
-      <CustomDataTable
-        header={(table) => (
-          <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-5 p-3 border-b">
-            
-            <h2 className="text-lg sm:text-xl font-semibold">
-              Masalar
-            </h2>
+    <div className=" p-2">
+      <div className="rounded-xl  bg-background shadow-sm overflow-hidden">
+        <CustomDataTable
+          header={(table) => (
+            <div className="flex flex-col gap-4 sm:flex-row sm:justify-between sm:items-center mb-5 p-3 border-b">
 
-            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
-              <div className="w-full sm:w-44">
-                <Filter column={table.getColumn('name')!} />
+              <h2 className="text-lg sm:text-xl font-semibold">
+                Masalar
+              </h2>
+
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                <div className="w-full sm:w-44">
+                  <Filter column={table.getColumn('name')!} />
+                </div>
+                <div className="w-full sm:w-44">
+                  <Filter column={table.getColumn('status')!} />
+                </div>
               </div>
-              <div className="w-full sm:w-44">
-                <Filter column={table.getColumn('status')!} />
-              </div>
+
+              <Button
+                onClick={openCreateDialog}
+                className="w-full sm:w-auto"
+              >
+                Yeni Masa
+              </Button>
+
             </div>
+          )}
+          data={tables}
+          columns={column}
+        />
+      </div>
 
-            <Button
-              onClick={() => setCreateOpen(true)}
-              className="w-full sm:w-auto"
-            >
-              Yeni Masa
-            </Button>
+      <CustomDialog  // Create Table
+        open={createOpen}
+        onOpenChange={() => {
+          setSelectTable(null)
+          setCreateOpen(false)
+        }}
+        confirmText={"Ekle"}
+        title={"Yeni Masa Ekle"}
+        onConfirm={() => { handleCreate(form.getValues()) }}
+        description={
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-4">
+              <CustomFormField
+                title="Masa İsmi"
+                control={form.control}
+                name="name"
+              >
+                {(field: any) => (
+                  <Input
+                    {...field}
+                    placeholder="Örn: Masa 1"
+                    autoComplete="off"
+                  />
+                )}
+              </CustomFormField>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" type="button" onClick={() => {
+                  setCreateOpen(false)
+                }}>
+                  İptal
+                </Button>
+                <Button type="submit">Kaydet</Button>
+              </div>
 
+
+            </form>
+          </Form>
+        }
+      />
+
+      <CustomDialog  // Edit Table
+        open={editOpen}
+        onOpenChange={() => {
+          setSelectTable(null)
+          setEditOpen(false)
+        }}
+        confirmText={"Güncelle"}
+        title={"Masayı Düzenle"}
+        onConfirm={() => { handleCreate(form.getValues()) }}
+        description={
+          <Form {...form}>
+            <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-4">
+              <CustomFormField
+                title="Masa İsmi"
+                control={form.control}
+                name="name"
+              >
+                {(field: any) => (
+                  <Input
+                    {...field}
+                    placeholder="Örn: Masa 1"
+                    autoComplete="off"
+                  />
+                )}
+              </CustomFormField>
+              <div className="flex justify-end gap-2">
+                <Button variant="outline" type="button" onClick={() => {
+                  setEditOpen(false)
+                }}>
+                  İptal
+                </Button>
+                <Button type="submit">Kaydet</Button>
+              </div>
+
+
+            </form>
+          </Form>
+        }
+      />
+
+      
+
+      <CustomAlertDialog
+        open={deleteOpen}
+        onOpenChange={setDeleteOpen}
+        title={
+          <span>
+            <strong>{selectTable?.name}  </strong> <strong className="text-destructive">silmek</strong> istiyor musun?
+          </span>
+        }
+        description={
+          <div className="text-sm text-muted-foreground">
+            <p>Bu işlem geri alınamaz.</p>
+            <p>Masa: <b>{selectTable ? selectTable.name : "veri gelmedi"}</b></p>
           </div>
-        )}
-        data={tables}
-        columns={column}
+        }
+        onConfirm={() => deleteTable(selectTable)}
       />
     </div>
-
-    <TableFormDialog
-      open={createOpen}
-      onOpenChange={setCreateOpen}
-      onSuccess={onSuccess}
-    />
-
-    <TableFormDialog
-      open={editOpen}
-      onOpenChange={setEditOpen}
-      table={selected}
-      onSuccess={onSuccess}
-    />
-
-    <CustomAlertDialog
-      open={deleteOpen}
-      onOpenChange={setDeleteOpen}
-      title={
-        <span>
-          Bu masayı <strong className="text-destructive">silmek</strong> istiyor musun?
-        </span>
-      }
-      description={
-        <div className="text-sm text-muted-foreground">
-          <p>Bu işlem geri alınamaz.</p>
-          <p>Masa: <b>{selected ? selected.name : "veri gelmedi"}</b></p>
-        </div>
-      }
-      onConfirm={() => deleteTable(selected)}
-    />
-  </div>
-);
+  );
 }
 
 export default TableList;
