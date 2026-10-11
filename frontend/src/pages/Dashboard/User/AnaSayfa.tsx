@@ -1,20 +1,14 @@
 import { useState, useMemo, useEffect } from "react";
-import {
-  Search,
-  Plus,
-  Minus,
-  Coffee,
-  X,
-  Printer,
-  CreditCard,
-  Trash2,
-  Utensils,
-  Loader2,
-  ArrowLeft,
+import {Search,Plus,Minus,
+  Coffee,X,Printer,CreditCard,
+  Trash2,Utensils,Loader2,
+  ArrowLeft,Settings,
 } from "lucide-react";
+import {Tooltip,TooltipContent,TooltipProvider,TooltipTrigger,} from "@/components/ui/tooltip";
 import { useGetTables } from "@/hooks/useGetTables";
 import { useGetFoods } from "@/hooks/useGetFoods";
 import { useGetCategory } from "@/hooks/useGetCategory";
+import { useGetPrinter } from "@/hooks/useGetPrinter";
 import { AllTable } from "@/models/Tables";
 import { Food } from "@/models/Food";
 import { API_BASE_URL, API_PATHS } from "@/lib/api";
@@ -36,6 +30,7 @@ export default function AnaSayfa() {
   const { tables, getTables, loading: tablesLoading } = useGetTables();
   const { foods, getFoods, loading: foodsLoading } = useGetFoods();
   const { categories, getCategories } = useGetCategory();
+  const { printers, getPrinters } = useGetPrinter();
 
   // Durum Eyaletleri (State)
   const [selectedTable, setSelectedTable] = useState<AllTable | null>(null);
@@ -51,7 +46,7 @@ export default function AnaSayfa() {
     getTables();
     getFoods();
     getCategories();
-
+    getPrinters();
     // Sayfa dışı scrollbar kilit mekanizması
     const prevHtmlOverflow = document.documentElement.style.overflow;
     const prevBodyOverflow = document.body.style.overflow;
@@ -124,7 +119,25 @@ export default function AnaSayfa() {
       setMobileOpen(true);
     }
   };
+ const handlePrinter = async (title: string, selectedTableId: string) => {
+  try {
+    const res = await axiosInstance.post(API_PATHS.printAdisyon, {
+      title,
+      tableId: selectedTableId,
+    });
 
+    if (res.data?.success) {
+      toast.success(res.data?.message || "Adisyon yazdırma işlemi başarılı.", successStyle);
+    } else {
+      toast.error(res.data?.message || "Adisyon yazdırılamadı.", warningStyle);
+    }
+  } catch (error: any) {
+    toast.error(
+      error.response?.data?.message || "Yazdırma işlemi sırasında bir hata oluştu.",
+      warningStyle
+    );
+  }
+};
   // Sepete Ürün Ekle
   const handleAddToCart = (food: Food) => {
     if (!selectedTable) {
@@ -175,7 +188,7 @@ export default function AnaSayfa() {
   };
 
   // Onayla & Yazdır
-  const handleConfirmAndPrint = async () => {
+  const handleConfirm = async () => {
     if (!selectedTable) return;
     if (basket.length === 0) {
       toast.warning("Sepet boş, lütfen ürün ekleyiniz.", warningStyle);
@@ -202,12 +215,11 @@ export default function AnaSayfa() {
         });
       }
 
-      toast.success(`${selectedTable.name} siparişi kaydedildi ve yazdırılıyor...`, successStyle);
+      toast.success(`${selectedTable.name} siparişi kaydedildi `, successStyle);
       getTables();
       setOriginalBasket(basket);
 
-      // Yazdırma işlemi
-      window.print();
+
       setMobileOpen(false);
     } catch (err: any) {
       toast.error(err.response?.data?.message || "Sipariş kaydedilirken bir hata oluştu.", warningStyle);
@@ -553,8 +565,6 @@ export default function AnaSayfa() {
             </div>
           </section>
         ) : (
-
-
           <section className="hidden md:flex flex-col min-h-0 h-full rounded-[12px] bg-white dark:bg-card border border-[#e4e9e5] dark:border-border p-3.5 shadow-xs">
 
             {/* Üst Seçili Masa Başlığı */}
@@ -579,7 +589,34 @@ export default function AnaSayfa() {
                 </div>
               </div>
 
-              {selectedTable && (
+              <div className="flex items-center gap-2">
+                {localStorage.getItem("printer_settings") && (
+                  <TooltipProvider>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Printer
+                          size={20}
+                          className="hidden sm:block cursor-pointer text-gray-500 dark:text-gray-400"
+                          onClick={() => {
+                            handlePrinter("Test Fişi",selectedTable._id)
+                          }}
+                        />
+                      </TooltipTrigger>
+
+                      <TooltipContent>
+                        <p>
+                          {printers?.length > 0
+                            ? printers.find(
+                              (printer) =>
+                                String(printer._id) ===
+                                String(JSON.parse(localStorage.getItem("printer_settings") || "{}").printer?._id)
+                            )?.name || "Yazıcı"
+                            : "Yazıcı bulunamadı"}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
                 <span
                   className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${selectedTable.status === "dolu"
                     ? "bg-[#d9eaff] dark:bg-sky-950/60 text-[#316da7] dark:text-sky-300"
@@ -588,7 +625,10 @@ export default function AnaSayfa() {
                 >
                   {selectedTable.status === "dolu" ? "Dolu Masa" : "Boş Masa"}
                 </span>
-              )}
+
+
+              </div>
+
             </div>
 
 
@@ -675,7 +715,7 @@ export default function AnaSayfa() {
                 </button>
 
                 <button
-                  onClick={handleConfirmAndPrint}
+                  onClick={handleConfirm}
                   disabled={!selectedTable || basket.length === 0 || isSubmitting}
                   className="h-9 px-3 rounded-lg bg-[#255f4b] dark:bg-emerald-600 hover:bg-[#1e4e3d] dark:hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-1.5 shadow-xs transition-colors disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
                 >
@@ -684,7 +724,7 @@ export default function AnaSayfa() {
                   ) : (
                     <Printer size={14} />
                   )}
-                  <span>Onayla & Yazdır</span>
+                  <span>Onayla </span>
                 </button>
               </div>
 
@@ -837,7 +877,7 @@ export default function AnaSayfa() {
             {/* 4. En Altta Onayla & Yazdır ve Ödeme Al Butonları */}
             <div className="pt-3 mt-auto shrink-0 flex gap-2">
               <button
-                onClick={handleConfirmAndPrint}
+                onClick={handleConfirm}
                 disabled={basket.length === 0 || isSubmitting}
                 className="flex-1 h-11 rounded-xl bg-[#255f4b] dark:bg-emerald-600 hover:bg-[#1e4e3d] dark:hover:bg-emerald-700 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md active:scale-[0.99] transition-all disabled:opacity-40 disabled:cursor-not-allowed cursor-pointer"
               >
@@ -846,7 +886,7 @@ export default function AnaSayfa() {
                 ) : (
                   <Printer size={16} />
                 )}
-                <span>Onayla & Yazdır ({totalAmount} ₺)</span>
+                <span>Onayla ({totalAmount} ₺)</span>
               </button>
 
               <button
@@ -864,6 +904,8 @@ export default function AnaSayfa() {
           </div>
         </div>
       )}
+
+
     </div>
   );
 }

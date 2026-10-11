@@ -115,7 +115,7 @@ function AppSidebar({ settitle }: any) {
 
               {open && (
                 <span className="font-medium transition-opacity duration-300">
-                  Profil & Ayarlar
+                  Profil 
                 </span>
               )}
             </SidebarMenuButton>

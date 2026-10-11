@@ -50,7 +50,7 @@ export class OrderService {
       const newOrder = new this.orderModel({
         tableId,
         total,
-        status: 'siparisAlindi',
+        status: 'SiparisAlindi',
         waiterId: userId,
         orderItems: [], // Şimdilik boş, birazdan ID'leri ekleyeceğiz
       });
