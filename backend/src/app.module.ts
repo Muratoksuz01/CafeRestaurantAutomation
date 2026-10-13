@@ -17,6 +17,7 @@ import { FoodsModule } from './modules/foods/foods.module';
 import { OrderModule } from './modules/order/order.module';
 import { RezerveModule } from './modules/rezerve/rezerve.module';
 import { PrinterModule } from './modules/printer/printer.module';
+import { SeedService } from './shared/database/seed.service';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -57,29 +58,7 @@ import { PrinterModule } from './modules/printer/printer.module';
   controllers: [AppController],
   providers: [
     AppService,
-    // SeedService
+     SeedService
   ],
 })
 export class AppModule { }
-
-
-
-    /*     connectionFactory: (connection) => {
-          // Başarılı bağlantı durumu
-          console.log("deneniyor ")
-          connection.on('connected', () => {
-            console.log('✅ MongoDB bağlantısı başarıyla tamamlandı.');
-          });
-
-          // Bağlantı hatası durumu
-          connection.on('error', (error) => {
-            console.error('❌ MongoDB bağlantı hatası:', error);
-          });
-
-          // Bağlantı koptuğunda
-          connection.on('disconnected', () => {
-            console.warn('⚠️ MongoDB bağlantısı kesildi!');
-          });
-
-          return connection;
-        }, */
