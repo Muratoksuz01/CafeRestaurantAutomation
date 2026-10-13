@@ -6,4 +6,4 @@ yapılacaklar
 11.10.2026 TODO
 - gercek yazıcı kodlarını aktif et thermal.engine.ts  
 - data seed gibi bir yapı role ve ilk user lar icin 
--
+- adminPrinter, category, food,orders icinde create edit işlemleri tek sayfada yap                  13.10.2026 

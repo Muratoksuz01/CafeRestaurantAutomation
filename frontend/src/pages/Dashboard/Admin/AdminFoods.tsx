@@ -193,7 +193,6 @@ export default function AdminFoods() {
       <CreateFoodForm open={showCreate} setOpen={setShowCreate} onUpdate={onSuccess} />
 
 
-      {/* Delete AlertDialog */}
       <CustomAlertDialog open={showDelete} onOpenChange={setShowDelete}
         title={
           <p >

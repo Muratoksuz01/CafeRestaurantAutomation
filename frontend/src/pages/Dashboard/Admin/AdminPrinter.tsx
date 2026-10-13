@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import axiosInstance from "@/lib/axiosInstance"
-import { Search, Trash2, PencilLine, MoreVertical } from "lucide-react"
+import { Search, Trash2, PencilLine, MoreVertical, Shield, User } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -12,9 +12,17 @@ import CustomDataTable from "@/pages/Dashboard/components/CustomDataTable"
 import { DataTableColumnHeader } from "../components/data-table-column-header"
 import CustomAlertDialog from "../components/CustomAlertDialog"
 import { useGetPrinter } from "@/hooks/useGetPrinter"
-import { Printers } from "@/models/Food"
-import EditPrinter from "./components/EditPrinter"
-import CreatePrinter from "./components/CreatePrinter"
+import { printerCreateEditSchema, Printers } from "@/models/Food"
+import { Form } from "@/components/ui/form"
+import { DialogClose, DialogFooter } from "@/components/ui/dialog"
+import CustomFormField from "../components/CustomFormField"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useForm } from "react-hook-form"
+import z from "zod"
+import { zodResolver } from "@hookform/resolvers/zod"
+import CustomDialog from "../components/CustomDialog"
+import { toast } from "sonner"
+import { successStyle, warningStyle } from "@/lib/toastStyle"
 
 
 
@@ -24,18 +32,76 @@ function AdminPrinter() {
   const [openEdit, setOpenEdit] = useState(false)
   const [openDel, setOpenDel] = useState(false)
   const [createDialog, setCreateDialog] = useState(false)
+  const form = useForm<z.infer<typeof printerCreateEditSchema>>({
+    resolver: zodResolver(printerCreateEditSchema),
+    defaultValues: {
+      name: "",
+      printerIp: "",
+      printerType:""
+
+    },
+  })
   useEffect(() => {
     getPrinters()
   }, [])
   const onSuccess = async () => {
     getPrinters()
   }
-  const deletePrinter = async (id: string) => {
+  const handleEditDialog = (printer: Printers) => {
+    setSelectedPrinter(printer)
+    form.reset({
+      name: printer.name,
+      printerIp: printer.printerIp,
+      printerType:printer.printerType
+    })
+    setOpenEdit(true)
+  }
+  const handleDeleteDialog = (printer:Printers) => {
+    setSelectedPrinter(printer)
+    setOpenDel(true)
+
+  }
+  const handleCreateDialog= () => {
+    form.reset({
+       name: "",
+      printerIp: "",
+      printerType:""
+    })
+    setCreateDialog(true)
+  }
+  const handleDelete = async (id: string) => {
     try {
       await axiosInstance.delete(API_PATHS.deletePrinter(id))
-      getPrinters()
+      onSuccess()
     } catch (error) {
       console.error("[v0] Error deleting printer:", error)
+    }
+  }
+  const handleCreate = async (data: z.infer<typeof printerCreateEditSchema>) => {
+    console.log("[v0] Form submitted:", data)
+    // TODO: Add API call here
+    const res = await axiosInstance.post(API_PATHS.createPrinter, data)
+    if (res.data.status) {
+      onSuccess()
+      toast.success("kullanıcı basarlılı olusturuldu", successStyle)
+      setCreateDialog(false)
+      return
+    } else {
+      toast.warning(res.data.message || "işlem hatası ", warningStyle)
+    }
+  }
+  const handleEdit = async (data: z.infer<typeof printerCreateEditSchema>) => {
+    console.log("[v0] Form submitted:", data)
+    // TODO: Add API call here
+    const res = await axiosInstance.put(API_PATHS.updatePrinter(String(selectedPrinter._id)), data)
+    if (res.data.status) {
+      onSuccess()
+      toast.success("kullanıcı basarlılı guncellendi", successStyle)
+      setOpenEdit(false)
+      return
+    }
+    else {
+      toast.warning(res.data.message || "işlem hatası ", warningStyle)
     }
   }
   const { printers, getPrinters, loading: printerLoading } = useGetPrinter()
@@ -79,8 +145,6 @@ function AdminPrinter() {
         <div>{row.getValue("printerType")}</div>
       ),
     },
-
-
     {
       id: "İşlemler",
       header: "İşlemler",
@@ -98,10 +162,8 @@ function AdminPrinter() {
 
           <DropdownMenuContent align="end">
             <DropdownMenuItem onClick={() => {
-              setSelectedPrinter(row.original)
-              setOpenEdit(true)
+              handleEditDialog(row.original)
             }
-              // editUser(row.original)
             }>
               <PencilLine className="mr-2 h-4 w-4" />
               Düzenle
@@ -110,8 +172,7 @@ function AdminPrinter() {
             <DropdownMenuItem
               className="text-destructive focus:text-destructive"
               onClick={() => {
-                setSelectedPrinter(row.original)
-                setOpenDel(true)
+                handleDeleteDialog(row.original)
               }
                 // deleteUser(String(row.original._id))
               }
@@ -174,7 +235,7 @@ function AdminPrinter() {
                         className="pl-9 w-full"
                       />
                     </div>
-                    <Button className="w-full md:w-auto" onClick={() => setCreateDialog(true)}>
+                    <Button className="w-full md:w-auto" onClick={handleCreateDialog}>
                       Yeni Yazıcı
                     </Button>
                   </div>
@@ -185,10 +246,151 @@ function AdminPrinter() {
         </CardContent>
       </Card>
 
+      <CustomDialog   // create Dialog
+        open={createDialog}
+        onOpenChange={() => {
+          form.reset()
+          setCreateDialog(false)
+        }}
+        title="Yazıcı olusvfvdtur"
+        //  onConfirm={() => { handleSave(form.getValues()) }}
+        description={
+          <Form  {...form}>
+            <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-5">
+              {/* Name Fields Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <CustomFormField control={form.control} name="name" title="Yazıcı ismi">
+                  {(field: any) => (
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input {...field} className="pl-9" placeholder="Kasiyer 1 yazıcı" />
+                    </div>
+                  )}
+                </CustomFormField>
+
+                <CustomFormField control={form.control} name="printerIp" title="Yazıcı Ip">
+                  {(field: any) => (
+                    <Input
+                      {...field}
+                      placeholder="192.168.1.100"
+                      onChange={(e) => {
+                        let value = e.target.value.replace(/[^0-9.]/g, ""); // Sadece rakam ve nokta
+
+                        const blocks = value.split(".");
+
+                        // 1. En fazla 4 blok olabilir (1.2.3.4 gibi)
+                        if (blocks.length > 4) return;
+
+                        // 2. Her blok 0-255 arası olmalı ve en fazla 3 haneli olmalı
+                        const isValid = blocks.every((block) => {
+                          if (block === "") return true; // Yazma anında boş olabilir
+                          const num = parseInt(block, 10);
+                          return num >= 0 && num <= 255 && block.length <= 3;
+                        });
+
+                        if (isValid) {
+                          field.onChange(value);
+                        }
+                      }}
+                    />
+                  )}
+                </CustomFormField>
+              </div>
 
 
-      <EditPrinter open={openEdit} setOpenEdit={setOpenEdit} printer={selectedPrinter} onSuccess={onSuccess} />
-      <CreatePrinter open={createDialog} setOpen={setCreateDialog} onSuccess={onSuccess} />
+
+              <CustomFormField control={form.control} name="printerType" title="Yazıcı Tipi">
+                {(field: any) => (
+                  <div className="relative">
+                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="pl-9">
+                        <SelectValue placeholder="Tip seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="58">58</SelectItem>
+                        <SelectItem value="80">80</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </CustomFormField>
+
+
+
+              <DialogFooter className=" flex gap-2 ">
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    İptal
+                  </Button>
+                </DialogClose>
+                <Button type="submit">Kaydet</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        }
+      />
+      <CustomDialog  // edit dialog
+        open={openEdit}
+        onOpenChange={() => {
+          form.reset()
+          setOpenEdit(false)
+        }}
+        title="Yazıcıyı Düzenle"
+        // onConfirm={() => {handleSave(form.getValues())}}
+        description={
+          <Form  {...form}>
+            <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-5">
+              {/* Name Fields Row */}
+              <div className="grid grid-cols-2 gap-4">
+                <CustomFormField control={form.control} name="name" title="Yazıcı ismi">
+                  {(field: any) => (
+                    <div className="relative">
+                      <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input {...field} className="pl-9" />
+                    </div>
+                  )}
+                </CustomFormField>
+
+                <CustomFormField control={form.control} name="printerIp" title="Yazıcı Ip">
+                  {(field: any) => <Input {...field} />}
+                </CustomFormField>
+              </div>
+
+
+
+              {/* Role Field */}
+              <CustomFormField control={form.control} name="printerType" title="Yazıcı Tipi">
+                {(field: any) => (
+                  <div className="relative">
+                    <Shield className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground z-10" />
+                    <Select name={field.name} value={field.value} onValueChange={field.onChange}>
+                      <SelectTrigger className="pl-9">
+                        <SelectValue placeholder="Tip seçin" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="58">58</SelectItem>
+                        <SelectItem value="80">80</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                )}
+              </CustomFormField>
+
+
+
+              <DialogFooter className=" flex gap-2 ">
+                <DialogClose asChild>
+                  <Button type="button" variant="outline">
+                    İptal
+                  </Button>
+                </DialogClose>
+                <Button type="submit">Kaydet</Button>
+              </DialogFooter>
+            </form>
+          </Form>
+        }
+      />
       <CustomAlertDialog open={openDel} onOpenChange={() => {
         setOpenDel(false)
         setSelectedPrinter({} as Printers)
@@ -197,7 +399,7 @@ function AdminPrinter() {
           <p> <span className="text-destructive">{selectedPrinter.name}</span> isimli Yazıcıyı silmek istiyormusunuz  </p>
         }
         onConfirm={() => {
-          deletePrinter(selectedPrinter._id.toString())
+          handleDelete(selectedPrinter._id.toString())
           setSelectedPrinter({} as Printers)
           setOpenDel(false)
         }}

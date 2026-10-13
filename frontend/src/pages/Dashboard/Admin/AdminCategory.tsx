@@ -20,7 +20,7 @@ import CustomFormField from "../components/CustomFormField";
 import { DialogClose, DialogFooter } from "@/components/ui/dialog";
 import { Form } from "@/components/ui/form";
 import { useForm } from "react-hook-form";
-import {Select,SelectContent,SelectItem,SelectTrigger,SelectValue,} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue, } from "@/components/ui/select"
 type SelectedCategory = Category & {
     newCategoryId?: string
 }
@@ -32,8 +32,12 @@ export default function AdminCategory() {
     const [showCreate, setShowCreate] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState<SelectedCategory>();
-    const [nameInput, setNameInput] = useState("");
-
+    const form = useForm<z.infer<typeof categoryCreateEditSchema>>({
+        resolver: zodResolver(categoryCreateEditSchema),
+        defaultValues: {
+            name: ""
+        }
+    })
     useEffect(() => {
         getCategories();
         getFoods()
@@ -41,10 +45,50 @@ export default function AdminCategory() {
     const onSuccess = () => {
         getCategories()
     }
-
-
-
-
+     const handleDeleteDialog= (cat:SelectedCategory) => {
+        setShowDelete(true)
+        setSelectedCategory(cat)
+    }
+    const handleEditDialog= (cat:SelectedCategory) => {
+        form.reset({
+            name:cat.name
+        })
+        setShowEdit(true)
+        setSelectedCategory(cat)
+    }
+    const handleCreateDialog= () => {
+        form.reset({
+            name:""
+        })
+        setShowCreate(true)
+    }
+    const handleEdit = async (data: any) => {
+        try {
+            const response = await axiosInstance.put<ApiResponse>(API_PATHS.updateCategory(String(selectedCategory!._id)),
+                data);
+            if (response.status) {
+                onSuccess();
+                toast.success("Kategori güncellendi", successStyle);
+            }
+        } catch (err: any) {
+            toast.warning(err.message || "Hata", warningStyle);
+        } finally {
+            setShowEdit(false);
+        }
+    };
+    const handleCreate = async (data: any) => {
+        try {
+            const response = await axiosInstance.post<ApiResponse>(API_PATHS.createCategory, data);
+            if (response.status) {
+                onSuccess();
+                toast.success("Kategori kayıt edildi", successStyle);
+            }
+        } catch (err: any) {
+            toast.warning(err.message || "Hata", warningStyle);
+        } finally {
+            setShowCreate(false);
+        }
+    };
     const handleDelete = async (id: string) => {
         try {
             const { data } = await axiosInstance.delete(API_PATHS.deleteCategory(id));
@@ -68,7 +112,7 @@ export default function AdminCategory() {
         <div className="p-6">
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">Kategori Yönetimi</h1>
-                <Button className="bg-foreground text-background" onClick={() => setShowCreate(true)}>Yeni Kategori</Button>
+                <Button className="bg-foreground text-background" onClick={handleCreateDialog}>Yeni Kategori</Button>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
                 {categories.map((cat) => (
@@ -87,11 +131,7 @@ export default function AdminCategory() {
                                 variant="outline"
                                 className="h-9 flex-1 min-w-[100px] gap-2 border-green-500/50 text-green-600 hover:bg-green-500/10 hover:text-green-600 bg-transparent"
                                 size="sm"
-                                onClick={() => {
-                                    setSelectedCategory(cat);
-                                   // setNameInput(cat.name);
-                                    setShowEdit(true);
-                                }}
+                                onClick={() => {handleEditDialog(cat)  }}
                             >
                                 <Pencil className="h-4 w-4" />
                                 Düzenle
@@ -102,8 +142,7 @@ export default function AdminCategory() {
                                 className="h-9 flex-1 min-w-[80px] gap-2 border-rose-500/50 text-rose-600 hover:bg-rose-500/10 hover:text-rose-600 bg-transparent"
                                 size="sm"
                                 onClick={() => {
-                                    setSelectedCategory(cat);
-                                    setShowDelete(true);
+                                   handleDeleteDialog(cat)
                                 }}
                             >
                                 <X className="h-4 w-4" />
@@ -115,23 +154,67 @@ export default function AdminCategory() {
             </div>
 
 
-
-            <CreateCategoryDialog
+            <CustomDialog  // create Dialog
                 open={showCreate}
-                setOpenCreate={setShowCreate}
-                onSuccess={onSuccess}
-            />
+                onOpenChange={
+                    () => {
+                        form.reset({ name: "" })
+                        setShowCreate(false)
+                    }}
+                title="Kategorriyi Olustur "
+                description={
+                    <Form  {...form}>
+                        <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-5">
+                            <div className="">
+                                <CustomFormField control={form.control} name="name" title="Kategori İsmi">
+                                    {(field: any) => <Input {...field} placeholder="Soğuk İçecekler" />}
+                                </CustomFormField>
+                            </div>
+                            <DialogFooter className=" flex gap-2 ">
+                                <DialogClose asChild>
+                                    <Button type="button" variant="outline">
+                                        İptal
+                                    </Button>
+                                </DialogClose>
+                                <Button type="submit">Kaydet</Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                }
+            >
 
+            </CustomDialog>
 
-            {/* Edit Dialog */}
-            {selectedCategory && (
-                <EditCategoryDialog
-                    open={showEdit}
-                    setOpenEdit={setShowEdit}
-                    category={selectedCategory}
-                    onSuccess={onSuccess}
-                />
-            )}
+            <CustomDialog // edit Dialog 
+                open={showEdit}
+                onOpenChange={() => {
+                    form.reset({ name: "" })
+                    setShowEdit(false)
+                }}
+                title="Kategorriyi Düzenle"
+                description={
+                    <Form  {...form}>
+                        <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-5">
+                            <div className="">
+                                <CustomFormField control={form.control} name="name" title="Kategori İsmi">
+                                    {(field: any) => <Input {...field} placeholder="Soğuk İçecekler" />}
+                                </CustomFormField>
+                            </div>
+                            <DialogFooter className=" flex gap-2 ">
+                                <DialogClose asChild>
+                                    <Button type="button" variant="outline">
+                                        İptal
+                                    </Button>
+                                </DialogClose>
+                                <Button type="submit">Kaydet</Button>
+                            </DialogFooter>
+                        </form>
+                    </Form>
+                }
+            >
+
+            </CustomDialog>
+           
 
             {/* DELETE CATEGORY DIALOG WITH OPTIONS */}
             <CustomAlertDialog open={showDelete} onOpenChange={setShowDelete}
@@ -222,124 +305,4 @@ export default function AdminCategory() {
             />
         </div>
     );
-}
-interface EditDialogProps {
-    open: boolean
-    setOpenEdit: (open: boolean) => void
-    category: SelectedCategory
-    onSuccess: () => void
-}
-function EditCategoryDialog({ open, setOpenEdit, category, onSuccess }: EditDialogProps) {
-    const form = useForm<z.infer<typeof categoryCreateEditSchema>>({
-        resolver: zodResolver(categoryCreateEditSchema),
-        defaultValues: {
-            name: category?.name || ""
-        }
-    })
-    useEffect(() => {
-        form.reset({ name: category.name })
-    }, [open])
-    const handleEdit = async (data: any) => {
-        try {
-            const response = await axiosInstance.put<ApiResponse>(API_PATHS.updateCategory(String(category._id)),
-                data);
-            if (response.status) {
-                onSuccess();
-                toast.success("Kategori güncellendi", successStyle);
-            }
-        } catch (err: any) {
-            toast.warning(err.message || "Hata", warningStyle);
-        } finally {
-            setOpenEdit(false);
-        }
-    };
-    return (
-        <CustomDialog
-            open={open}
-            onOpenChange={() => {
-                form.reset({ name: "" })
-                setOpenEdit(false)
-            }}
-            title="Kategorriyi Düzenle"
-            description={
-                <Form  {...form}>
-                    <form onSubmit={form.handleSubmit(handleEdit)} className="space-y-5">
-                        <div className="">
-                            <CustomFormField control={form.control} name="name" title="Kategori İsmi">
-                                {(field: any) => <Input {...field} placeholder="Soğuk İçecekler" />}
-                            </CustomFormField>
-                        </div>
-                        <DialogFooter className=" flex gap-2 ">
-                            <DialogClose asChild>
-                                <Button type="button" variant="outline">
-                                    İptal
-                                </Button>
-                            </DialogClose>
-                            <Button type="submit">Kaydet</Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
-            }
-        >
-
-        </CustomDialog>
-    )
-}
-interface CreateDialogProps {
-    open: boolean
-    setOpenCreate: (open: boolean) => void
-    onSuccess: () => void
-}
-function CreateCategoryDialog({ open, setOpenCreate, onSuccess }: CreateDialogProps) {
-    const form = useForm<z.infer<typeof categoryCreateEditSchema>>({
-        resolver: zodResolver(categoryCreateEditSchema),
-        defaultValues: {
-            name: ""
-        }
-    })
-    const handleCreate = async (data: any) => {
-        try {
-            const response = await axiosInstance.post<ApiResponse>(API_PATHS.createCategory, data);
-            if (response.status) {
-                onSuccess();
-                toast.success("Kategori kayıt edildi", successStyle);
-            }
-        } catch (err: any) {
-            toast.warning(err.message || "Hata", warningStyle);
-        } finally {
-            setOpenCreate(false);
-        }
-    };
-    return (
-        <CustomDialog
-            open={open}
-            onOpenChange={
-                () => {
-                    form.reset({ name: "" })
-                    setOpenCreate(false)
-                }}
-            title="Kategorriyi Olustur "
-            description={
-                <Form  {...form}>
-                    <form onSubmit={form.handleSubmit(handleCreate)} className="space-y-5">
-                        <div className="">
-                            <CustomFormField control={form.control} name="name" title="Kategori İsmi">
-                                {(field: any) => <Input {...field} placeholder="Soğuk İçecekler" />}
-                            </CustomFormField>
-                        </div>
-                        <DialogFooter className=" flex gap-2 ">
-                            <DialogClose asChild>
-                                <Button type="button" variant="outline">
-                                    İptal
-                                </Button>
-                            </DialogClose>
-                            <Button type="submit">Kaydet</Button>
-                        </DialogFooter>
-                    </form>
-                </Form>
-            }
-        >
-
-        </CustomDialog>
-    )
 }
