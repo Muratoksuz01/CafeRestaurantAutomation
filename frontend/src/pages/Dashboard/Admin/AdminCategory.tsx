@@ -12,7 +12,7 @@ import { useGetFoods } from "@/hooks/useGetFoods";
 import { Pencil, X } from "lucide-react";
 import CustomDialog from "@/pages/Dashboard/components/CustomDialog";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";
-import { Category, categoryCreateEditSchema, categorySchema, } from "@/models/Food";
+import { Category, categoryCreateEditSchema,  } from "@/models/Food";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
 import { ApiResponse } from "@/lib/apiTypes";

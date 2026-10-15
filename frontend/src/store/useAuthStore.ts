@@ -1,7 +1,7 @@
 import { API_PATHS } from '@/lib/api';
 import axios from 'axios';
 import { create } from 'zustand';
-import { persist, createJSONStorage } from 'zustand/middleware';
+import { persist } from 'zustand/middleware';
 
 // 1. Kullanıcı verisi için tip tanımı
 interface User {

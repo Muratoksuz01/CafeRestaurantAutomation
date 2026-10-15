@@ -9,7 +9,7 @@ import { toast } from "sonner"
 import { successStyle, warningStyle } from "@/lib/toastStyle"
 import { loginSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
-import { useEffect, useState } from "react"
+import {  useState } from "react"
 import CustomFormField from "@/pages/Dashboard/components/CustomFormField"
 import useAuthStore from '../../store/useAuthStore';
 import { useAuthControl } from "@/lib/useAuthControl";
@@ -17,7 +17,7 @@ export default function Login() {
   // const login = useAuthStore((state) => state.login);
   // const loading = useAuthStore((state) => state.loading);
   // const user = useAuthStore((state) => state.user);
-const {login,loading,user} =useAuthStore((state)=>state)
+const {login,loading} =useAuthStore((state)=>state)
 useAuthControl();
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState("")

@@ -238,10 +238,10 @@ export default function AnaSayfa() {
     }
   };
   // Siparişi Sıfırla / İptal Et
-  const handleClearBasket = () => {
+ /*  const handleClearBasket = () => {
     setBasket(originalBasket);
     toast.info("Değişiklikler sıfırlandı.");
-  };
+  }; */
 
   // Onayla 
   const handleConfirm = async () => {

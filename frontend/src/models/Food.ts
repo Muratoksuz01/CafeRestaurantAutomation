@@ -1,4 +1,4 @@
-import z, { string } from "zod";
+import z  from "zod";
 
 export const foodSchema = z.object({
     _id: z.number(),

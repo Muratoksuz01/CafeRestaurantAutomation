@@ -10,7 +10,6 @@ import { toast } from "sonner";
 import { successStyle, warningStyle } from "@/lib/toastStyle";
 import { useGetCategory } from "@/hooks/useGetCategory";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Search, Plus, UtensilsCrossed, Pencil, Trash2 } from "lucide-react";
 import CustomAlertDialog from "@/pages/Dashboard/components/CustomAlertDialog";

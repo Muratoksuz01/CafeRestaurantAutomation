@@ -4,11 +4,8 @@ import { Button } from "@/components/ui/button"
 import { useForm } from "react-hook-form"
 import type { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useDispatch, useSelector } from "react-redux"
 
-import { Link, useNavigate } from "react-router-dom"
-import { toast } from "sonner"
-import { successStyle, warningStyle } from "@/lib/toastStyle"
+import { Link,  } from "react-router-dom"
 import { registerSchema } from "@/models/User"
 import { Eye, EyeOff } from "lucide-react"
 import { useState } from "react"
@@ -16,8 +13,7 @@ import { useAuthControl } from "@/lib/useAuthControl"
 export default function Register() {
   useAuthControl()
   const [showPassword, setShowPassword] = useState(false)
-  const navigate = useNavigate()
-const [loading, setLoading] = useState(false)
+const [loading,] = useState(false)
   const form = useForm<z.infer<typeof registerSchema>>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -31,7 +27,7 @@ const [loading, setLoading] = useState(false)
   })
 
 
-  const onSubmit = async (data: z.infer<typeof registerSchema>) => {
+ /*  const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     // if (res.payload.success) {
     //   if (res.payload.data) {
     //     toast.success(res.payload.message, successStyle)
@@ -43,7 +39,7 @@ const [loading, setLoading] = useState(false)
     // } else {
     //   toast.warning(res.payload.message, warningStyle)
     // }
-  }
+  } */
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 via-amber-50 to-orange-100 flex items-center justify-center p-4 py-12">
@@ -67,7 +63,7 @@ const [loading, setLoading] = useState(false)
 
           {/* Form */}
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-5">
+            <form  className="space-y-5">
               {/* Name fields */}
               <div className="grid grid-cols-2 gap-4">
                 <FormField

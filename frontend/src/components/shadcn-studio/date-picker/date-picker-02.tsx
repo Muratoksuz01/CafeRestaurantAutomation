@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CalendarIcon, ChevronDownIcon, X } from 'lucide-react'
+import { CalendarIcon, ChevronDownIcon } from 'lucide-react'
 import { DateRange } from 'react-day-picker'
 import { tr } from 'date-fns/locale'  // date-fns locale import
 
