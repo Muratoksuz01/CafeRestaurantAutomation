@@ -2,11 +2,11 @@ import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import * as fs from "fs";
 import * as path from "path";
 
-const ROOT = path.resolve(__dirname, "..", "..");
+const ROOT = process.cwd();
 @Injectable()
 export class HelperService {
 
-private readonly uploadPath = path.join(ROOT, "assets", "foods");
+  private readonly uploadPath = path.join(ROOT, "assets", "foods");
 
   constructor() {
     // Klasör yoksa oluştur
@@ -28,10 +28,14 @@ private readonly uploadPath = path.join(ROOT, "assets", "foods");
 
       // Multer memoryStorage kullanıyorsa buffer buradadır
       fs.writeFileSync(filePath, file.buffer);
-
+      console.log("yazıldı")
+      console.log("Çalışma dizini:", process.cwd());
+      console.log("__dirname:", __dirname);
+      console.log("Kayıt dizini:", this.uploadPath);
+      console.log("Dosya adı:", filename);
       // Veritabanına kaydedilecek URL yolunu dönüyoruz
       return `/assets/foods/${filename}`;
-    } catch (error:any) {
+    } catch (error: any) {
       throw new InternalServerErrorException("Dosya kaydedilirken hata oluştu");
     }
   }

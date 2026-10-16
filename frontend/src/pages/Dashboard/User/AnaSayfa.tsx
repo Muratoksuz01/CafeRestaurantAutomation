@@ -1,5 +1,6 @@
 import { useState, useMemo, useEffect } from "react";
-import {Search, Plus, Minus,
+import {
+  Search, Plus, Minus,
   Coffee, X, Printer, CreditCard,
   Trash2, Utensils, Loader2,
   ArrowLeft,
@@ -127,7 +128,7 @@ export default function AnaSayfa() {
   const handlePrinter = async (title: string, selectedOrderId: string) => {
     try {
       const savedSettings = localStorage.getItem("printer_settings");
-      
+
       const printerSettings = savedSettings ? JSON.parse(savedSettings) : null;
 
       const res = await axiosInstance.post(API_PATHS.printAdisyon, {
@@ -137,7 +138,7 @@ export default function AnaSayfa() {
       });
 
       if (res.data?.status) {
-        toast.success("Adisyon yazdırma işlemi başarılı.",successStyle);
+        toast.success("Adisyon yazdırma işlemi başarılı.", successStyle);
       } else {
         toast.error(
           res.data?.message || "Adisyon yazdırılamadı.",
@@ -200,23 +201,23 @@ export default function AnaSayfa() {
 
     try {
       const hasOriginal = originalBasket && originalBasket.length > 0;
-      let orderId=null
+      let orderId = null
       if (!hasOriginal) {
-        let res=await axiosInstance.post<ApiResponse<CreateOrder>>(API_PATHS.createOrder, {
+        let res = await axiosInstance.post<ApiResponse<CreateOrder>>(API_PATHS.createOrder, {
           tableId: selectedTable._id,
           basket,
           total: totalAmount,
         });
-        orderId=res.data.data.order._id
+        orderId = res.data.data.order._id
 
       } else {
-        let res=await axiosInstance.put<ApiResponse<EditOrder>>(API_PATHS.editOrder, {
+        let res = await axiosInstance.put<ApiResponse<EditOrder>>(API_PATHS.editOrder, {
           tableId: selectedTable._id,
           basket,
           total: totalAmount,
           orderId: selectedTable.currentOrderId,
         });
-        orderId=res.data.data._id
+        orderId = res.data.data._id
       }
       toast.success(`${selectedTable.name} siparişi kaydedildi`, successStyle);
 
@@ -238,10 +239,10 @@ export default function AnaSayfa() {
     }
   };
   // Siparişi Sıfırla / İptal Et
- /*  const handleClearBasket = () => {
-    setBasket(originalBasket);
-    toast.info("Değişiklikler sıfırlandı.");
-  }; */
+  /*  const handleClearBasket = () => {
+     setBasket(originalBasket);
+     toast.info("Değişiklikler sıfırlandı.");
+   }; */
 
   // Onayla 
   const handleConfirm = async () => {
@@ -459,15 +460,14 @@ export default function AnaSayfa() {
                       key={food._id}
                       className="group flex flex-col justify-between bg-white dark:bg-card border border-[#e4e9e5] dark:border-border rounded-[12px] p-2.5 hover:shadow-md hover:border-[#255f4b]/40 dark:hover:border-emerald-500/40 transition-all duration-200"
                     >
-                      {/* Ürün Görseli: Masaüstünde şık yerleşim, mobilde tamamen gizli */}
-                      <div className="hidden md:block w-full h-24 rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 relative mb-2 group-hover:opacity-95 transition-opacity shrink-0">
+                      {/* Ürün Görseli: 4:3 Oranı Zorunlu Kılındı */}
+                      <div className="w-full aspect-[4/3] rounded-lg overflow-hidden bg-muted/30 dark:bg-muted/20 relative mb-2 group-hover:opacity-95 transition-opacity shrink-0">
                         {imgUrl ? (
                           <img
                             src={imgUrl}
                             alt={food.name}
-                            className="w-full  h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                             onError={(e) => {
-                              // Resim yüklenemezse ikon göster
                               (e.target as HTMLElement).style.display = "none";
                             }}
                           />
@@ -496,7 +496,7 @@ export default function AnaSayfa() {
                         <span className="text-xs font-extrabold text-[#255f4b] dark:text-emerald-400">
                           {food.price} ₺
                         </span>
-                        {selectedTable &&
+                        {selectedTable && (
                           <button
                             onClick={() => handleAddToCart(food)}
                             disabled={!selectedTable}
@@ -505,7 +505,7 @@ export default function AnaSayfa() {
                           >
                             <Plus size={15} />
                           </button>
-                        }
+                        )}
                       </div>
                     </div>
                   );
@@ -632,7 +632,7 @@ export default function AnaSayfa() {
               </div>
 
               <div className="flex items-center gap-2">
-                {selectedTable.currentOrderId &&  localStorage.getItem("printer_settings") && (
+                {selectedTable.currentOrderId && localStorage.getItem("printer_settings") && (
                   <TooltipProvider>
                     <Tooltip>
                       <TooltipTrigger asChild>
@@ -794,7 +794,6 @@ export default function AnaSayfa() {
       {mobileOpen && selectedTable && (
         <div
           className="fixed inset-0 z-50 bg-black/60 dark:bg-black/75 backdrop-blur-[2px] flex items-end justify-center md:hidden p-0 animate-in fade-in duration-200"
-          onClick={() => setMobileOpen(false)}
         >
           <div
             className="w-full max-h-[92vh] bg-[#f7f9f7] dark:bg-card rounded-t-2xl border-t border-[#e4e9e5] dark:border-border p-4 flex flex-col min-h-0 shadow-2xl animate-in slide-in-from-bottom duration-300"
