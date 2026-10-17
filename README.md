@@ -1,12 +1,8 @@
-Harika! Projenin evrimini ve yeni teknolojilerini yansıtacak, profesyonel ve modern bir **README.md** hazırladım. State management'ın Redux'tan **Zustand**'a geçişi ve rol ayrımı (Garson vs Kasiyer) gibi detayları netleştirdim.
 
-Aşağıdaki taslağı doğrudan kopyalayıp kullanabilirsin:
-
-***
 
 # 🍽️ Restoran Yönetim Sistemi (POS)
 
-Modern, hızlı ve ölçeklenebilir bir restoran yönetim çözümü. Garsonların sipariş almasını, kasiyerlerin ödeme yönetmesini ve yöneticilerin işletme verilerini anlık olarak takip etmesini sağlar.
+Modern, hızlı ve ölçeklenebilir bir restoran yönetim çözümü. Garsonların sipariş almasını, kasiyerlerin ödeme yönetmesini ve sipariş alabilmesi: Yöneticilerin işletme verilerini anlık olarak takip etmesini sağlar.
 
 ## 🚀 Teknolojiler
 
@@ -18,9 +14,9 @@ Bu proje, yüksek performans ve kullanıcı deneyimi odaklı modern bir stack il
     
 *   **Veritabanı:** MongoDB (Mongoose ORM)
     
-*   **State Management:** Zustand (Performanslı ve hafif state yönetimi)
+*   **State Management:** Zustand 
     
-*   **UI Bileşenleri:** Shadcn UI + Tailwind CSS (Theming desteği ile)
+*   **UI Bileşenleri:** Shadcn UI + Tailwind CSS (Tema desteği ile)
 *   **Kimlik Doğrulama:** JWT tabanlı Auth yapısı
     
 
@@ -68,11 +64,12 @@ Sistem üç temel rol üzerine kurgulanmıştır:
 
 ## 📸 Ekran Görüntüleri
 
-<p float="left"> <img src="adminOverview.png" width="45%" alt="Admin Overview" /> <img src="adminUsers.png" width="45%" alt="Admin Users" /> </p>
+<p float="left"> <img src="sunumResimleri/adminOverview.png" width="45%" alt="Admin Overview" /> <img src="sunumResimleri/adminUsers.png" width="45%" alt="Admin Users" /> </p>
 
-<p float="left"> <img src="adminfood.png" width="45%" alt="Admin Food Management" /> <img src="adminOrders.png" width="45%" alt="Admin Orders" /> </p>
+<p float="left"> <img src="sunumResimleri/adminfood.png" width="45%" alt="Admin Food Management" /> <img src="sunumResimleri/adminOrders.png" width="45%" alt="Admin Orders" /> </p>
 
-<p float="left"> <img src="usersOverview.png" width="45%" alt="User Overview" /> <img src="userList.png" width="45%" alt="User List" /> </p>
+<p float="left"> <img src="sunumResimleri/usersOverview.png" width="45%" alt="User Overview" /> <img src="sunumResimleri/adminUsers.png" width="45%" alt="User List" /> </p>
+<p float="left"><img src="sunumResimleri/adminPrint.png" width="45%" alt="User List" /> <img src="sunumResimleri/kasiyeroverview.png" width="45%" alt="User List" /></p>
 
 ***
 
@@ -82,7 +79,7 @@ Sistem üç temel rol üzerine kurgulanmıştır:
     
 2.  Gerekli bağımlılıkları yükleyin: `npm install`
     
-3.  `.env` dosyanızı oluşturun (Örnek yapı `index.js` içerisinde belirtilmiştir):
+3.  `.env` dosyanızı oluşturun (Örnek yapı `example.env` içerisinde belirtilmiştir):
     
     Kod snippet'i
     

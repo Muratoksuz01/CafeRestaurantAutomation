@@ -1,36 +1,18 @@
+once servera mongodb server ve combası kur gerekirse compas ile "kafeotomasyonuDb" adında databse olustur 
 
-
-projeye devam edilirse 
-    - kasiyer sipariş alırken musteri ismi vs girebilmeli ama bos da bırakabilmeli 
-    - rezerve btn tıklanıgında musteri bilgilerini ister isim soyisim tlelefon gibi untilTime  
-    - order createOrder geldiginde bir pdf dosyası olusmalı hatta cıktı alınmalı bunu ayarla ve olursa cıktı alabilmeli 
-    
-    - redis koyulacaklar 
-        tum get istekleri 
-        
-    
-    - admin sipariş sayfası  tarih secildiinde birde carpı iconu olsun 
-    - kasiyer giriş yaptıgında sayfa acıldıgında dunden kalma tamamlanmamıs order varsa bunlar gostereilmeli     bunu tekrar dusunelim
-    - getir ,trendyol,vs bunlar icin sayfalama olmalı 
-
-   
-
-
-
- 
 Server Pc 
     ip:192.168.10.10
     modeme baglı 
     buna mongodb desktop kurulacak 
     nodejs kur 
     ana nest js projeesin kur ve vite caliştir 
-    vitenin hostunu agdaki tum pc lere paylas 
-        ana nest i buna gore ayarla 
-    ileride belkki buna alan adı alırız 
+    vitenin api.ts dosyasında ana istegin degişkenni degistir 192.168.10.10:6001 yap 
+    bu iki projeyi pc basladıgında calişacak sekilde duzenle
 Client 1
     ip:192.1168.10.11
     modeme baglı 
-    buna 'nestjs printer' kur yani nodejs kur 
+    192.168.10.10:6174 adresine git ve bunu kısayol olustur 
+    yazıcı icin admin girişi yap yazıcı ekle bundan once yazıcıyı aga bagla onun ip adresini ogren 
     
 
 
@@ -51,12 +33,8 @@ Client 1
 
 
 
-
-
-
-
-
-
+    
+    
 
 
 useDebounce:search input da her vurustan sonra istak atılmasını engeller yazma biter 300ms sonra istek atar 
